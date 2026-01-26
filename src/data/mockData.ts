@@ -112,6 +112,73 @@ export const experiences: Experience[] = [
   },
 ];
 
+export interface Traveller {
+  id: string;
+  name: string;
+  email: string;
+  country: string;
+  photo: string;
+}
+
+export const travellers: Traveller[] = [
+  {
+    id: 'TRV001',
+    name: 'Sarah Johnson',
+    email: 'sarah.j@email.com',
+    country: 'United States',
+    photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop',
+  },
+  {
+    id: 'TRV002',
+    name: 'Marco Rossi',
+    email: 'marco.r@email.com',
+    country: 'Italy',
+    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop',
+  },
+  {
+    id: 'TRV003',
+    name: 'Emma Wilson',
+    email: 'emma.w@email.com',
+    country: 'United Kingdom',
+    photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop',
+  },
+  {
+    id: 'TRV004',
+    name: 'Hans Mueller',
+    email: 'hans.m@email.com',
+    country: 'Germany',
+    photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop',
+  },
+  {
+    id: 'TRV005',
+    name: 'Yuki Tanaka',
+    email: 'yuki.t@email.com',
+    country: 'Japan',
+    photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop',
+  },
+  {
+    id: 'TRV006',
+    name: 'Pierre Dupont',
+    email: 'pierre.d@email.com',
+    country: 'France',
+    photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop',
+  },
+  {
+    id: 'TRV007',
+    name: 'Ana Garcia',
+    email: 'ana.g@email.com',
+    country: 'Spain',
+    photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop',
+  },
+  {
+    id: 'TRV008',
+    name: 'James Smith',
+    email: 'james.s@email.com',
+    country: 'Australia',
+    photo: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&h=100&fit=crop',
+  },
+];
+
 export const reviews: Review[] = [
   {
     id: 'rev1',
