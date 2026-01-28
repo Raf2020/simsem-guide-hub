@@ -24,11 +24,11 @@ interface NavItem {
 const navItems: NavItem[] = [
   { icon: LayoutGrid, label: "Home", href: "/" },
   { icon: MapPin, label: "Experiences", href: "/experiences" },
-  { icon: Star, label: "Reviews", href: "/reviews", active: true },
+  { icon: Star, label: "Reviews", href: "/reviews" },
   { icon: Gift, label: "Promotions", href: "/promotions" },
   { icon: Users, label: "Hosts", href: "/hosts" },
   { icon: Plane, label: "Travelers", href: "/travelers", badge: "SOON" },
-  { icon: CreditCard, label: "Payments", href: "/payments", badge: "SO..." },
+  { icon: CreditCard, label: "Payments", href: "/payments" },
 ];
 
 export function Sidebar() {

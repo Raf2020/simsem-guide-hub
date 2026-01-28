@@ -232,4 +232,117 @@ export const reviews: Review[] = [
   },
 ];
 
+export interface PaymentRequest {
+  id: string;
+  amount: number;
+  country: string;
+  email: string;
+  invoiceId: string;
+  invoiceUrl?: string;
+  isPaid: boolean;
+  experienceDetails: {
+    id: string;
+    name: string;
+    cost: number;
+  };
+  payerName: string;
+  payerId: string;
+  payerPhone: string;
+  createdAt: string;
+  paidAt?: string;
+}
+
+export const paymentRequests: PaymentRequest[] = [
+  {
+    id: 'MtWIsuokWj',
+    amount: 170.00,
+    country: 'Egypt',
+    email: 'hassan.luxortourguide@gmail.com',
+    invoiceId: 'INV1769464981795',
+    invoiceUrl: 'https://simemmedia.b-cdn.net/invoices/P4RrshMtjX/INV1769464981795.pdf',
+    isPaid: true,
+    experienceDetails: {
+      id: 'uvlPzCZpTm',
+      name: 'Luxor: Amazing Sunrise Hot Air Balloon Ride',
+      cost: 170.0,
+    },
+    payerName: 'Hassan Tayea',
+    payerId: 'iougtALBnw',
+    payerPhone: '+201062217720',
+    createdAt: '01/26/2026 22:03:11',
+    paidAt: '01/27/2026 09:27:10',
+  },
+  {
+    id: 'Mpt6oCBBYS',
+    amount: 85.00,
+    country: 'Egypt',
+    email: 'hassan.luxortourguide@gmail.com',
+    invoiceId: 'INV1741589641889',
+    isPaid: true,
+    experienceDetails: {
+      id: 'F6Bmq9J7PR',
+      name: 'Luxor Day Trip from Hurghada',
+      cost: 85.0,
+    },
+    payerName: 'Hassan Tayea',
+    payerId: 'iougtALBnw',
+    payerPhone: '+201062217720',
+    createdAt: '03/10/2025 07:00:41',
+    paidAt: '01/26/2026 09:39:03',
+  },
+  {
+    id: 'ol9RJ6SR4A',
+    amount: 70.00,
+    country: 'Egypt',
+    email: 'abanop.photographer@gmail.com',
+    invoiceId: 'INV1768920926745',
+    invoiceUrl: 'https://simemmedia.b-cdn.net/invoices/BWA81qgARf/INV1768920926745.pdf',
+    isPaid: true,
+    experienceDetails: {
+      id: 'cUTJotNNLd',
+      name: 'Discovering The Secrets of Garbage City and the Cave Church',
+      cost: 73.5,
+    },
+    payerName: 'Abanoub Melad',
+    payerId: 'gfDfszVhLz',
+    payerPhone: '+201001752498',
+    createdAt: '01/20/2026 14:55:27',
+    paidAt: '01/26/2026 09:38:38',
+  },
+  {
+    id: 'PND001',
+    amount: 120.00,
+    country: 'Jordan',
+    email: 'firas.guide@gmail.com',
+    invoiceId: 'INV1769500001',
+    isPaid: false,
+    experienceDetails: {
+      id: 'mMbcSsU0Uq',
+      name: '7 Nights in Jordan: Explore Ancient Wonders',
+      cost: 120.0,
+    },
+    payerName: 'Firas Al-Samahin',
+    payerId: '2zha1o6cgl',
+    payerPhone: '+962791234567',
+    createdAt: '01/27/2026 10:00:00',
+  },
+  {
+    id: 'PND002',
+    amount: 95.00,
+    country: 'Egypt',
+    email: 'sameh.guide@gmail.com',
+    invoiceId: 'INV1769500002',
+    isPaid: false,
+    experienceDetails: {
+      id: 'EoX72aJxbb',
+      name: 'Echoes of Cairo: Tanoura Night & Local Secrets',
+      cost: 95.0,
+    },
+    payerName: 'Sameh Muhammed',
+    payerId: 'p7C5x0LVjl',
+    payerPhone: '+201098765432',
+    createdAt: '01/28/2026 08:30:00',
+  },
+];
+
 export const countries = ['All', 'Egypt', 'Jordan', 'Morocco', 'Turkey'];
