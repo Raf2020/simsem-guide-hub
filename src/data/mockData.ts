@@ -250,6 +250,7 @@ export interface PaymentRequest {
   payerPhone: string;
   createdAt: string;
   paidAt?: string;
+  commissionRate: number; // e.g., 0.15 for 15%
 }
 
 export const paymentRequests: PaymentRequest[] = [
@@ -271,6 +272,7 @@ export const paymentRequests: PaymentRequest[] = [
     payerPhone: '+201062217720',
     createdAt: '01/26/2026 22:03:11',
     paidAt: '01/27/2026 09:27:10',
+    commissionRate: 0.15,
   },
   {
     id: 'Mpt6oCBBYS',
@@ -289,6 +291,7 @@ export const paymentRequests: PaymentRequest[] = [
     payerPhone: '+201062217720',
     createdAt: '03/10/2025 07:00:41',
     paidAt: '01/26/2026 09:39:03',
+    commissionRate: 0.15,
   },
   {
     id: 'ol9RJ6SR4A',
@@ -308,6 +311,7 @@ export const paymentRequests: PaymentRequest[] = [
     payerPhone: '+201001752498',
     createdAt: '01/20/2026 14:55:27',
     paidAt: '01/26/2026 09:38:38',
+    commissionRate: 0.12,
   },
   {
     id: 'PND001',
@@ -325,6 +329,7 @@ export const paymentRequests: PaymentRequest[] = [
     payerId: '2zha1o6cgl',
     payerPhone: '+962791234567',
     createdAt: '01/27/2026 10:00:00',
+    commissionRate: 0.18,
   },
   {
     id: 'PND002',
@@ -342,6 +347,7 @@ export const paymentRequests: PaymentRequest[] = [
     payerId: 'p7C5x0LVjl',
     payerPhone: '+201098765432',
     createdAt: '01/28/2026 08:30:00',
+    commissionRate: 0.15,
   },
 ];
 
