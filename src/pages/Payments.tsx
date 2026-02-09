@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PaymentsTable } from "@/components/payments/PaymentsTable";
+import { FinanceReports } from "@/components/payments/FinanceReports";
 import { paymentRequests as initialPayments, PaymentRequest } from "@/data/mockData";
-import { Search, DollarSign, Clock, CheckCircle } from "lucide-react";
+import { Search, DollarSign, Clock, CheckCircle, BarChart3 } from "lucide-react";
 
 export default function Payments() {
   const [payments, setPayments] = useState<PaymentRequest[]>(initialPayments);
@@ -130,12 +130,31 @@ export default function Payments() {
               <TabsTrigger value="paid">
                 Paid ({paidCount})
               </TabsTrigger>
+              <TabsTrigger value="reports" className="gap-1">
+                <BarChart3 className="h-4 w-4" />
+                Reports
+              </TabsTrigger>
             </TabsList>
-            <TabsContent value={activeTab} className="mt-4">
+            <TabsContent value="all" className="mt-4">
               <PaymentsTable
                 payments={filteredPayments}
                 onUpdatePaymentStatus={handleUpdatePaymentStatus}
               />
+            </TabsContent>
+            <TabsContent value="pending" className="mt-4">
+              <PaymentsTable
+                payments={filteredPayments}
+                onUpdatePaymentStatus={handleUpdatePaymentStatus}
+              />
+            </TabsContent>
+            <TabsContent value="paid" className="mt-4">
+              <PaymentsTable
+                payments={filteredPayments}
+                onUpdatePaymentStatus={handleUpdatePaymentStatus}
+              />
+            </TabsContent>
+            <TabsContent value="reports" className="mt-4">
+              <FinanceReports payments={payments} />
             </TabsContent>
           </Tabs>
         </div>
