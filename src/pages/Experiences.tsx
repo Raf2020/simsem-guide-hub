@@ -89,19 +89,9 @@ const ExperiencesPage = () => {
               >
                 <div className="text-4xl mb-4">{type.icon}</div>
                 <h3 className="text-lg font-bold text-foreground mb-2">{type.name}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed flex-1 mb-6">
+                <p className="text-muted-foreground text-sm leading-relaxed flex-1">
                   {type.description}
                 </p>
-                <a
-                  href={type.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-sm font-semibold text-primary group-hover:text-accent transition-colors"
-                  aria-label={`Explore ${type.name} experiences`}
-                >
-                  Explore {type.name}
-                  <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                </a>
               </article>
             ))}
           </div>
