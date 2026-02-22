@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { MapPin, Clock, Users, ArrowRight, Star, Globe2, ChevronDown } from "lucide-react";
+import { Link } from "react-router-dom";
 import { countries, tourTypes } from "@/data/experiencesData";
 
 const ExperiencesPage = () => {
@@ -230,16 +231,27 @@ const ExperiencesPage = () => {
                               </div>
 
                               {/* CTA */}
-                              <a
-                                href={city.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 active:scale-95 transition-all duration-200"
-                                aria-label={`Explore tours in ${city.name}, ${country.name}`}
-                              >
-                                Explore {city.name}
-                                <ArrowRight size={14} />
-                              </a>
+                              {city.url.startsWith('/') ? (
+                                <Link
+                                  to={city.url}
+                                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 active:scale-95 transition-all duration-200"
+                                  aria-label={`Explore tours in ${city.name}, ${country.name}`}
+                                >
+                                  Explore {city.name}
+                                  <ArrowRight size={14} />
+                                </Link>
+                              ) : (
+                                <a
+                                  href={city.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 active:scale-95 transition-all duration-200"
+                                  aria-label={`Explore tours in ${city.name}, ${country.name}`}
+                                >
+                                  Explore {city.name}
+                                  <ArrowRight size={14} />
+                                </a>
+                              )}
                             </div>
                           </article>
                         ))}
