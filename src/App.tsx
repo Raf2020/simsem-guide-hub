@@ -23,6 +23,8 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/experiences" element={<Experiences />} />
+            <Route path="/tours/jordan/wadi-rum-overnight-4x4-jeep-tour" element={<WadiRumTour />} />
+            {/* Legacy redirect */}
             <Route path="/experiences/wadi-rum-overnight-jeep-tour" element={<WadiRumTour />} />
             <Route path="/reviews" element={<Reviews />} />
             <Route path="/payments" element={<Payments />} />

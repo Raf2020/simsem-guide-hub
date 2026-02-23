@@ -139,7 +139,7 @@ export const countries: Country[] = [
         photo: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
         description: 'Camp under billions of stars in the Valley of the Moon — a Martian landscape of red sand dunes and towering sandstone cliffs.',
         tourCount: 11,
-        url: '/experiences/wadi-rum-overnight-jeep-tour',
+        url: '/tours/jordan/wadi-rum-overnight-4x4-jeep-tour',
       },
       {
         name: 'Aqaba',

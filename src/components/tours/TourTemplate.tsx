@@ -132,14 +132,14 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a2e]/90 via-[#1a1a2e]/30 to-transparent" />
 
-          <nav className="absolute top-0 left-0 right-0 z-20 px-4 sm:px-8 pt-5">
-            <Link
-              to="/experiences"
-              className="inline-flex items-center gap-1.5 text-white/80 hover:text-white text-sm font-medium transition-colors backdrop-blur-sm bg-white/10 rounded-full px-4 py-2"
-            >
-              <ChevronLeft size={16} />
-              All Experiences
-            </Link>
+          <nav className="absolute top-0 left-0 right-0 z-20 px-4 sm:px-8 pt-5" aria-label="Breadcrumb">
+            <ol className="flex items-center gap-1.5 text-white/70 text-sm font-medium backdrop-blur-sm bg-white/10 rounded-full px-4 py-2 w-fit">
+              <li><Link to="/experiences" className="hover:text-white transition-colors flex items-center gap-1"><ChevronLeft size={14} /> Tours</Link></li>
+              <li className="text-white/40">/</li>
+              <li><Link to={`/tours/${tour.country.toLowerCase()}`} className="hover:text-white transition-colors capitalize">{tour.country}</Link></li>
+              <li className="text-white/40">/</li>
+              <li className="text-white/90 truncate max-w-[200px]">{tour.location}</li>
+            </ol>
           </nav>
 
           <div className="absolute bottom-0 left-0 right-0 z-10 px-4 sm:px-8 pb-6 sm:pb-10">
