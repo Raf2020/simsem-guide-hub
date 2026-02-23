@@ -9,6 +9,8 @@ import Reviews from "./pages/Reviews";
 import Payments from "./pages/Payments";
 import Experiences from "./pages/Experiences";
 import WadiRumTour from "./pages/WadiRumTour";
+import WadiRumGuidedTour from "./pages/WadiRumGuidedTour";
+import WadiRumFromAqaba from "./pages/WadiRumFromAqaba";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +26,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/experiences" element={<Experiences />} />
             <Route path="/tours/jordan/wadi-rum-overnight-4x4-jeep-tour" element={<WadiRumTour />} />
+            <Route path="/tours/jordan/wadi-rum-guided-tour" element={<WadiRumGuidedTour />} />
+            <Route path="/tours/jordan/wadi-rum-tours-from-aqaba" element={<WadiRumFromAqaba />} />
             {/* Legacy redirect */}
             <Route path="/experiences/wadi-rum-overnight-jeep-tour" element={<WadiRumTour />} />
             <Route path="/reviews" element={<Reviews />} />
