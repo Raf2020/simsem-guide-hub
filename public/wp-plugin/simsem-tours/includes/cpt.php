@@ -21,7 +21,7 @@ function simsem_register_tours_cpt() {
         'labels'             => $labels,
         'public'             => true,
         'has_archive'        => true,
-        'rewrite'            => ['slug' => 'experiences', 'with_front' => false],
+        'rewrite'            => ['slug' => 'tours', 'with_front' => false],
         'supports'           => ['title', 'editor', 'thumbnail', 'excerpt'],
         'menu_icon'          => 'dashicons-palmtree',
         'show_in_rest'       => true,
