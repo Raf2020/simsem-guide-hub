@@ -1,0 +1,50 @@
+/* SimSem Tours — Admin Styles */
+
+.simsem-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.simsem-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.simsem-field label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #555;
+}
+
+.simsem-field input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.simsem-field input:focus {
+    border-color: #d4af37;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(212,175,55,0.2);
+}
+
+#simsem_tour_details .inside,
+#simsem_tour_highlights .inside,
+#simsem_tour_included .inside,
+#simsem_tour_itinerary .inside,
+#simsem_tour_content .inside,
+#simsem_tour_guide .inside,
+#simsem_tour_faqs .inside,
+#simsem_tour_gallery .inside,
+#simsem_tour_seo .inside {
+    padding: 12px;
+}
+
+textarea {
+    border-radius: 6px !important;
+}
