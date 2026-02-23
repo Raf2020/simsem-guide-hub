@@ -432,25 +432,6 @@ export default function WadiRumTour() {
                   <ArrowRight size={20} />
                 </a>
               </div>
-
-              {/* SEO Meta Preview */}
-              <section className="mb-12">
-                <details className="rounded-xl border border-dashed border-[#ddd] bg-white/50 overflow-hidden">
-                  <summary className="cursor-pointer px-5 py-4 text-xs font-bold uppercase tracking-[2px] text-[#999]">
-                    📋 SEO Meta — Copy to Yoast / RankMath
-                  </summary>
-                  <div className="px-5 pb-5">
-                    <p className="text-xs text-[#999] mb-1"><strong>Meta Title</strong> <span className="text-green-600">(56 chars)</span></p>
-                    <p className="text-sm font-semibold text-[#1a1a2e] mb-4 p-3 bg-[#faf9f7] border border-[#eee] rounded-lg">
-                      Wadi Rum Overnight Safari: 2-Day 4x4 Jeep Tour from $147
-                    </p>
-                    <p className="text-xs text-[#999] mb-1"><strong>Meta Description</strong> <span className="text-green-600">(157 chars)</span></p>
-                    <p className="text-sm text-[#333] leading-relaxed p-3 bg-[#faf9f7] border border-[#eee] rounded-lg">
-                      Wadi Rum overnight safari: Book your 2-day 4x4 Jeep tour in Wadi Rum, Jordan, with a local guide from just $147.00. Experience stargazing & desert adventure!
-                    </p>
-                  </div>
-                </details>
-              </section>
             </div>
 
             {/* ===== RIGHT COLUMN — BOOKING CARD (STICKY) ===== */}
