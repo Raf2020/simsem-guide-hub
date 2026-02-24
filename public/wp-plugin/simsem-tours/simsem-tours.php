@@ -21,6 +21,7 @@ require_once SIMSEM_TOURS_PATH . 'includes/cpt.php';
 require_once SIMSEM_TOURS_PATH . 'includes/metaboxes.php';
 require_once SIMSEM_TOURS_PATH . 'includes/template.php';
 require_once SIMSEM_TOURS_PATH . 'includes/schema.php';
+require_once SIMSEM_TOURS_PATH . 'includes/html-importer.php';
 
 // Activation hook
 register_activation_hook(__FILE__, function () {
