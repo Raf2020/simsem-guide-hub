@@ -137,7 +137,7 @@
 }
 
 .wr-hero-inner {
-    max-width: 1152px;
+    max-width: 1400px;
     margin: 0 auto;
 }
 
@@ -220,9 +220,9 @@
 }
 
 .wr-thumb-strip-inner {
-    max-width: 1152px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 12px 16px;
+    padding: 12px 24px;
     display: flex;
     gap: 8px;
     overflow-x: auto;
@@ -332,9 +332,9 @@
 
 /* ---- Main Layout ---- */
 .wr-layout {
-    max-width: 1152px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 32px 16px;
+    padding: 32px 24px;
     display: grid;
     grid-template-columns: 1fr;
     gap: 40px;
@@ -971,7 +971,7 @@
 }
 
 .wr-related-inner {
-    max-width: 1152px;
+    max-width: 1400px;
     margin: 0 auto;
 }
 
@@ -1102,7 +1102,7 @@
     padding: 60px 24px 0;
 }
 .wr-footer-inner {
-    max-width: 1100px;
+    max-width: 1400px;
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -1146,7 +1146,7 @@
     transform: scale(1.15);
 }
 .wr-footer-copy {
-    max-width: 1100px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 20px 0;
     text-align: center;
@@ -1211,9 +1211,9 @@
     .wr-thumb-strip-inner { padding: 12px 32px; }
 
     .wr-layout {
-        grid-template-columns: 1fr 380px;
-        gap: 56px;
-        padding: 48px 32px;
+        grid-template-columns: 1fr 400px;
+        gap: 60px;
+        padding: 48px 40px;
     }
 
     .wr-sidebar-col { display: block; }
