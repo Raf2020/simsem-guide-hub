@@ -339,15 +339,24 @@ function simsem_parse_tour_html($html) {
 
         // Guide
         if (stripos($h, 'Your Guide') !== false || stripos($h, 'Guide:') !== false) {
-            // Extract name from heading
+            // Extract name from heading — remove prefix and parenthetical notes
             $guideName = preg_replace('/^Your Guide[:\s]*/i', '', $h);
             $guideName = trim($guideName);
+            // Strip "(name shared after booking)" or similar parenthetical
+            $guideNote = '';
+            if (preg_match('/\(([^)]+)\)/', $guideName, $paren)) {
+                $guideNote = trim($paren[1]);
+                $guideName = trim(preg_replace('/\s*\([^)]+\)/', '', $guideName));
+            }
             if ($guideName) {
                 $data['guide_name'] = $guideName;
             }
+            if ($guideNote) {
+                $data['guide_note'] = ucfirst($guideNote);
+            }
             $data['guide_bio'] = simsem_extract_paragraphs($nodes);
-            // If guide bio mentions "after booking", add note
-            if (stripos($data['guide_bio'] ?? '', 'after booking') !== false) {
+            // Fallback: if guide bio mentions "after booking", add note
+            if (empty($data['guide_note']) && stripos($data['guide_bio'] ?? '', 'after booking') !== false) {
                 $data['guide_note'] = 'Name shared after booking';
             }
         }
