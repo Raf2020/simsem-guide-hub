@@ -209,11 +209,11 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
 
               {/* Quick facts — minimal horizontal strip */}
               <FadeIn delay={0.05}>
-              <div className="flex flex-wrap gap-x-8 gap-y-4 mb-16 pb-16 border-b border-[#eee]">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-6 mb-16 pb-16 border-b border-[#eee]">
                 {tour.details.map(d => (
                   <div key={d.label}>
-                    <div className="text-[12px] font-semibold uppercase tracking-[0.15em] text-[#999] mb-1">{d.label}</div>
-                    <div className="text-[16px] font-semibold text-[#1a1a2e]">{d.value}</div>
+                    <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#999] mb-1.5">{d.label}</div>
+                    <div className="text-[15px] font-semibold text-[#1a1a2e] leading-snug">{d.value}</div>
                   </div>
                 ))}
               </div>
