@@ -1,4 +1,4 @@
-import { useState, ReactNode } from "react";
+import { useState, useEffect, useCallback, ReactNode } from "react";
 import { Helmet } from "react-helmet-async";
 import { ArrowRight, Check, X, ChevronDown, Minus } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -45,26 +45,80 @@ export interface TourData {
 export default function TourTemplate({ tour }: { tour: TourData }) {
   const [heroImg, setHeroImg] = useState(0);
   const [activeDay, setActiveDay] = useState(1);
+  const [isPaused, setIsPaused] = useState(false);
+
+  /* ── Auto-play gallery ── */
+  const nextSlide = useCallback(() => {
+    setHeroImg(i => (i < tour.gallery.length - 1 ? i + 1 : 0));
+  }, [tour.gallery.length]);
+
+  useEffect(() => {
+    if (isPaused) return;
+    const interval = setInterval(nextSlide, 4000);
+    return () => clearInterval(interval);
+  }, [isPaused, nextSlide]);
 
   const schedule = tour.itinerary.find(d => d.day === activeDay)?.items ?? [];
   const cta = tour.ctaText || "Reserve Now";
   const cancel = tour.cancelNote || "Free cancellation · Instant confirmation";
 
+  /* ── Enhanced JSON-LD for booking SERP ── */
   const jsonLd = {
-    "@context": "https://schema.org", "@type": "TouristTrip",
-    name: tour.title, description: tour.metaDescription,
+    "@context": "https://schema.org",
+    "@type": "TouristTrip",
+    name: tour.title,
+    description: tour.metaDescription,
     touristType: ["Adventure", "Cultural", "Nature"],
-    offers: { "@type": "Offer", price: tour.price, priceCurrency: "USD", availability: "https://schema.org/InStock" },
-    provider: { "@type": "TravelAgency", name: "SimSem", url: "https://mysimsem.com" },
-    aggregateRating: { "@type": "AggregateRating", ratingValue: "4.9", bestRating: "5", ratingCount: "127" },
+    image: tour.gallery[0]?.src,
+    url: typeof window !== "undefined" ? window.location.href : "",
+    itinerary: {
+      "@type": "ItemList",
+      numberOfItems: tour.itinerary.length,
+      itemListElement: tour.itinerary.map((day, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: `Day ${day.day}`,
+      })),
+    },
+    offers: {
+      "@type": "Offer",
+      price: tour.price,
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
+      url: tour.bookingUrl,
+      validFrom: new Date().toISOString().split("T")[0],
+    },
+    provider: {
+      "@type": "TravelAgency",
+      name: "SimSem",
+      url: "https://mysimsem.com",
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.9",
+      bestRating: "5",
+      ratingCount: "127",
+    },
   };
+
+  const faqLd = tour.faqs.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: tour.faqs.map(faq => ({
+      "@type": "Question",
+      name: faq.q,
+      acceptedAnswer: { "@type": "Answer", text: faq.a },
+    })),
+  } : null;
 
   return (
     <>
       <Helmet>
         <title>{tour.metaTitle}</title>
         <meta name="description" content={tour.metaDescription} />
+        <link rel="canonical" href={typeof window !== "undefined" ? window.location.href : ""} />
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+        {faqLd && <script type="application/ld+json">{JSON.stringify(faqLd)}</script>}
       </Helmet>
 
       <div className="min-h-screen bg-white font-sans text-[#1a1a2e]">
@@ -78,27 +132,43 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
           <span className="text-[#555]">{tour.location}</span>
         </nav>
 
-        {/* ─── HERO IMAGE (contained) ─── */}
+        {/* ─── HERO IMAGE (contained, auto-play) ─── */}
         <div className="max-w-6xl mx-auto px-6 lg:px-10">
-          <div className="relative w-full aspect-[16/9] max-h-[520px] rounded-xl overflow-hidden bg-[#f5f5f5]">
+          <div
+            className="relative w-full aspect-[16/9] max-h-[520px] rounded-xl overflow-hidden bg-[#f5f5f5]"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
             <img
               src={tour.gallery[heroImg]?.src}
               alt={tour.gallery[heroImg]?.alt}
               className="w-full h-full object-cover object-center transition-opacity duration-500"
               loading="eager"
             />
+            {/* Progress bar */}
+            {!isPaused && (
+              <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-black/10 z-20">
+                <motion.div
+                  key={heroImg}
+                  className="h-full bg-[#d4af37]"
+                  initial={{ width: "0%" }}
+                  animate={{ width: "100%" }}
+                  transition={{ duration: 4, ease: "linear" }}
+                />
+              </div>
+            )}
             {/* Gallery nav */}
             <div className="absolute bottom-4 right-4 z-20 flex items-center gap-2">
               <span className="text-white/70 text-xs tracking-wider mr-1 drop-shadow">{heroImg + 1}/{tour.gallery.length}</span>
-              <button onClick={() => setHeroImg(i => i > 0 ? i - 1 : tour.gallery.length - 1)} className="w-9 h-9 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/60 transition">←</button>
-              <button onClick={() => setHeroImg(i => i < tour.gallery.length - 1 ? i + 1 : 0)} className="w-9 h-9 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/60 transition">→</button>
+              <button onClick={() => { setHeroImg(i => i > 0 ? i - 1 : tour.gallery.length - 1); setIsPaused(true); }} className="w-9 h-9 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/60 transition">←</button>
+              <button onClick={() => { setHeroImg(i => i < tour.gallery.length - 1 ? i + 1 : 0); setIsPaused(true); }} className="w-9 h-9 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/60 transition">→</button>
             </div>
           </div>
 
           {/* Thumbnail row */}
           <div className="flex gap-1.5 py-3 overflow-x-auto" style={{ WebkitOverflowScrolling: "touch" }}>
             {tour.gallery.map((img, i) => (
-              <button key={i} onClick={() => setHeroImg(i)}
+              <button key={i} onClick={() => { setHeroImg(i); setIsPaused(true); }}
                 className={`flex-shrink-0 w-14 h-14 lg:w-16 lg:h-16 rounded overflow-hidden transition-all ${heroImg === i ? "ring-2 ring-[#d4af37] opacity-100" : "opacity-40 hover:opacity-70"}`}>
                 <img src={img.src} alt={img.alt} className="w-full h-full object-cover" loading="lazy" />
               </button>
@@ -107,7 +177,7 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
         </div>
 
         {/* ─── TITLE BLOCK (below image) ─── */}
-        <div className="max-w-6xl mx-auto px-6 lg:px-10 pt-6 pb-2">
+        <header className="max-w-6xl mx-auto px-6 lg:px-10 pt-6 pb-2">
           <div className="flex items-center gap-3 mb-3">
             <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#d4af37] bg-[#d4af37]/10 px-3 py-1.5 rounded">{tour.country}</span>
             {tour.badge && <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#666] bg-[#f0f0f0] px-3 py-1.5 rounded">{tour.badge}</span>}
@@ -122,14 +192,14 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
             <span className="w-1 h-1 rounded-full bg-[#ccc]" />
             <span className="text-[#d4af37] font-medium">★ 4.9</span>
           </div>
-        </div>
+        </header>
 
         {/* ─── MAIN ─── */}
-        <div className="max-w-6xl mx-auto px-6 lg:px-10 py-12 lg:py-20">
+        <main className="max-w-6xl mx-auto px-6 lg:px-10 py-12 lg:py-20">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-16 lg:gap-20">
 
-            {/* LEFT */}
-            <div>
+            {/* LEFT — CONTENT */}
+            <article>
               {/* Description */}
               <FadeIn>
               <div className="text-lg lg:text-[21px] text-[#555] leading-[1.7] mb-16 max-w-xl">
@@ -153,7 +223,7 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
               {tour.highlights.length > 0 && (
                 <FadeIn>
                 <section className="mb-16">
-                  <h2 className="font-display text-2xl text-[#1a1a2e] mb-6">What to Expect</h2>
+                  <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-6">What to Expect</h2>
                   <ul className="space-y-4">
                     {tour.highlights.map((h, i) => (
                       <li key={i} className="flex items-start gap-4 text-[17px] text-[#333] leading-relaxed">
@@ -170,7 +240,7 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
               {(tour.included.length > 0 || tour.notIncluded.length > 0) && (
                 <FadeIn>
                 <section className="mb-16 pb-16 border-b border-[#eee]">
-                  <h2 className="font-display text-2xl text-[#1a1a2e] mb-6">What's Included</h2>
+                  <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-6">What's Included</h2>
                   <div className="grid md:grid-cols-2 gap-x-12 gap-y-0">
                     <ul className="space-y-3">
                       {tour.included.map(item => (
@@ -206,7 +276,7 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
               {tour.itinerary.length > 0 && (
                 <FadeIn>
                 <section className="mb-16">
-                  <h2 className="font-display text-2xl text-[#1a1a2e] mb-6">Itinerary</h2>
+                  <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-6">Itinerary</h2>
                   {tour.itinerary.length > 1 && (
                     <div className="flex gap-2 mb-8">
                       {tour.itinerary.map(d => (
@@ -220,8 +290,8 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
                   <div className="space-y-0">
                     {schedule.map((item, i) => (
                       <div key={i} className="flex gap-6 py-6 border-t border-[#f0f0f0] first:border-t-0">
-                        <div className="flex-shrink-0 w-20 text-xs font-semibold text-[#d4af37] uppercase tracking-wider pt-0.5">{item.time}</div>
-                        <div>
+                        <div className="flex-shrink-0 w-[120px] text-xs font-semibold text-[#d4af37] uppercase tracking-wider pt-0.5 whitespace-nowrap">{item.time}</div>
+                        <div className="min-w-0">
                           <h4 className="text-[17px] font-semibold text-[#1a1a2e] mb-1">{item.title}</h4>
                           <p className="text-[15px] text-[#777] leading-relaxed">{item.desc}</p>
                         </div>
@@ -238,13 +308,13 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
                 <section className="mb-16 pb-16 border-b border-[#eee]">
                   {tour.whoFor && (
                     <div className="mb-10">
-                      <h2 className="font-display text-2xl text-[#1a1a2e] mb-4">Who Is This For</h2>
+                      <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-4">Who Is This For</h2>
                       <p className="text-[17px] text-[#555] leading-relaxed max-w-xl">{tour.whoFor}</p>
                     </div>
                   )}
                   {tour.whatDifferent && (
                     <div>
-                      <h2 className="font-display text-2xl text-[#1a1a2e] mb-4">What Makes It Different</h2>
+                      <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-4">What Makes It Different</h2>
                       <p className="text-[17px] text-[#555] leading-relaxed max-w-xl mb-4">{tour.whatDifferent}</p>
                       {tour.diffPoints && (
                         <ul className="space-y-2">
@@ -265,7 +335,7 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
               {tour.meetingPoint && (
                 <FadeIn>
                 <section className="mb-16">
-                  <h2 className="font-display text-2xl text-[#1a1a2e] mb-4">Meeting Point</h2>
+                  <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-4">Meeting Point</h2>
                   <p className="text-[17px] text-[#555] leading-relaxed max-w-xl">{tour.meetingPoint}</p>
                 </section>
                 </FadeIn>
@@ -275,7 +345,7 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
               {tour.guide && (
                 <FadeIn>
                 <section className="mb-16 pb-16 border-b border-[#eee]">
-                  <h2 className="font-display text-2xl text-[#1a1a2e] mb-6">Your Guide</h2>
+                  <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-6">Your Guide</h2>
                   <div className="flex items-start gap-5">
                     <div className="w-14 h-14 rounded-full bg-[#1a1a2e] text-white flex items-center justify-center text-xl font-bold flex-shrink-0">
                       {tour.guide.initial || tour.guide.name.charAt(0)}
@@ -294,7 +364,7 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
               {tour.faqs.length > 0 && (
                 <FadeIn>
                 <section className="mb-12">
-                  <h2 className="font-display text-2xl text-[#1a1a2e] mb-6">Questions & Answers</h2>
+                  <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-6">Questions & Answers</h2>
                   <div>
                     {tour.faqs.map((faq, i) => (
                       <details key={i} className="group border-t border-[#f0f0f0] first:border-t-0">
@@ -309,10 +379,10 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
                 </section>
                 </FadeIn>
               )}
-            </div>
+            </article>
 
             {/* RIGHT — BOOKING CARD */}
-            <div className="hidden lg:block">
+            <aside className="hidden lg:block">
               <div className="sticky top-8">
                 <div className="border border-[#e5e5e5] rounded-2xl overflow-hidden shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)]">
                   
@@ -367,15 +437,15 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
                   </div>
                 </div>
               </div>
-            </div>
+            </aside>
           </div>
-        </div>
+        </main>
 
         {/* ─── RELATED ─── */}
         {tour.relatedLinks && tour.relatedLinks.length > 0 && (
           <section className="border-t border-[#eee] py-12">
             <div className="max-w-6xl mx-auto px-6 lg:px-10">
-              <h2 className="font-display text-2xl text-[#1a1a2e] mb-5">You Might Also Like</h2>
+              <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-5">You Might Also Like</h2>
               {tour.relatedLinks.map(link => (
                 <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer" 
                   className="block py-4 text-[16px] font-medium text-[#1a1a2e] hover:text-[#d4af37] transition border-b border-[#f0f0f0] last:border-b-0">
