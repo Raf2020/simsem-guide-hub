@@ -13,7 +13,7 @@ add_action('add_meta_boxes', function () {
         'normal',
         'high'
     );
-}, 5); // Priority 5 = before other metaboxes
+}, 5);
 
 function simsem_html_import_cb($post) {
     ?>
@@ -36,7 +36,6 @@ function simsem_html_import_cb($post) {
     </div>
     <script>
     (function(){
-        // File upload → textarea
         document.getElementById('simsem-html-file').addEventListener('change', function(e) {
             var file = e.target.files[0];
             if (!file) return;
@@ -48,7 +47,6 @@ function simsem_html_import_cb($post) {
             reader.readAsText(file);
         });
 
-        // Import button
         document.getElementById('simsem-import-btn').addEventListener('click', function() {
             var html = document.getElementById('simsem-html-raw').value.trim();
             if (!html) {
@@ -75,7 +73,6 @@ function simsem_html_import_cb($post) {
                     var d = res.data;
                     var filled = 0;
 
-                    // Helper: set input/textarea value by name attribute
                     function setField(name, val) {
                         if (!val) return;
                         var el = document.querySelector('[name="' + name + '"]');
@@ -86,7 +83,6 @@ function simsem_html_import_cb($post) {
                     if (d.title) {
                         var titleEl = document.getElementById('title') || document.querySelector('#titlewrap input');
                         if (titleEl) { titleEl.value = d.title; filled++; }
-                        // Gutenberg title
                         var gbTitle = document.querySelector('.editor-post-title__input, .wp-block-post-title');
                         if (gbTitle) {
                             gbTitle.textContent = d.title;
@@ -115,7 +111,7 @@ function simsem_html_import_cb($post) {
                     setField('_simsem_badge', d.badge);
                     setField('_simsem_booking_url', d.booking_url);
 
-                    // Textarea fields (newline-separated)
+                    // Textarea fields
                     setField('_simsem_highlights', d.highlights);
                     setField('_simsem_included', d.included);
                     setField('_simsem_not_included', d.not_included);
@@ -180,7 +176,6 @@ add_action('wp_ajax_simsem_parse_html', function () {
 function simsem_parse_tour_html($html) {
     $data = [];
 
-    // Use DOMDocument
     libxml_use_internal_errors(true);
     $doc = new DOMDocument();
     $doc->loadHTML('<?xml encoding="UTF-8">' . $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
@@ -188,27 +183,25 @@ function simsem_parse_tour_html($html) {
 
     $xpath = new DOMXPath($doc);
 
-    // --- Title: <h1>
+    // Title
     $h1 = $xpath->query('//h1');
     if ($h1->length) {
         $data['title'] = trim($h1->item(0)->textContent);
     }
 
-    // --- Meta description
+    // Meta description
     $metaDesc = $xpath->query('//meta[@name="description"]/@content');
     if ($metaDesc->length) {
         $data['meta_desc'] = trim($metaDesc->item(0)->nodeValue);
     }
 
-    // --- Meta title from <title>
+    // Meta title
     $titleTag = $xpath->query('//title');
     if ($titleTag->length) {
-        $rawTitle = trim($titleTag->item(0)->textContent);
-        // Truncate to 60 chars for SEO
-        $data['meta_title'] = mb_substr($rawTitle, 0, 60);
+        $data['meta_title'] = mb_substr(trim($titleTag->item(0)->textContent), 0, 60);
     }
 
-    // --- First paragraph after h1 = excerpt
+    // Excerpt — first <p> after <h1>
     $h1Node = $h1->length ? $h1->item(0) : null;
     if ($h1Node) {
         $sibling = $h1Node->nextSibling;
@@ -221,7 +214,7 @@ function simsem_parse_tour_html($html) {
         }
     }
 
-    // --- Find all h2 sections and map content
+    // Collect all h2 sections
     $h2s = $xpath->query('//h2');
     $sections = [];
     for ($i = 0; $i < $h2s->length; $i++) {
@@ -252,29 +245,22 @@ function simsem_parse_tour_html($html) {
                 if (preg_match('/Language[:\s]*(.+)/i', $item, $m)) $data['language'] = trim($m[1]);
                 if (preg_match('/Location[:\s]*(.+)/i', $item, $m)) {
                     $loc = trim($m[1]);
-                    // Extract country (last part after comma)
                     $parts = array_map('trim', explode(',', $loc));
-                    if (count($parts) > 1) {
-                        $data['country'] = end($parts);
-                    } else {
-                        $data['country'] = $loc;
-                    }
+                    $data['country'] = count($parts) > 1 ? end($parts) : $loc;
                 }
                 if (preg_match('/Transport[:\s]*(.+)/i', $item, $m)) $data['transport'] = trim($m[1]);
                 if (preg_match('/Group\s*Size[:\s]*(.+)/i', $item, $m)) $data['group'] = trim($m[1]);
             }
         }
 
-        // What to Expect / Highlights
+        // Highlights
         if (stripos($h, 'What to Expect') !== false) {
             $items = simsem_extract_list_items($nodes);
-            $data['highlights'] = implode("\n", array_map(function($i) {
-                return trim(strip_tags($i));
-            }, $items));
+            $data['highlights'] = implode("\n", array_map(fn($i) => trim(strip_tags($i)), $items));
         }
 
-        // Tour Details (terrain, fitness, private)
-        if ($h === 'Tour Details' || stripos($h, 'Tour Details') !== false) {
+        // Tour Details
+        if (stripos($h, 'Tour Details') !== false) {
             $items = simsem_extract_list_items($nodes);
             foreach ($items as $item) {
                 $item = preg_replace('/^[📏🏜💪🔒\s]+/', '', strip_tags($item));
@@ -287,17 +273,13 @@ function simsem_parse_tour_html($html) {
         // What's Included
         if (stripos($h, "What's Included") !== false || stripos($h, 'What is Included') !== false) {
             $items = simsem_extract_list_items($nodes);
-            $data['included'] = implode("\n", array_map(function($i) {
-                return trim(preg_replace('/^[✓✗\s]+/', '', strip_tags($i)));
-            }, $items));
+            $data['included'] = implode("\n", array_map(fn($i) => trim(preg_replace('/^[✓✗\s]+/', '', strip_tags($i))), $items));
         }
 
         // Not Included
         if (stripos($h, 'Not Included') !== false && stripos($h, "What's") === false) {
             $items = simsem_extract_list_items($nodes);
-            $data['not_included'] = implode("\n", array_map(function($i) {
-                return trim(preg_replace('/^[✓✗\s]+/', '', strip_tags($i)));
-            }, $items));
+            $data['not_included'] = implode("\n", array_map(fn($i) => trim(preg_replace('/^[✓✗\s]+/', '', strip_tags($i))), $items));
         }
 
         // Who Is This For
@@ -310,9 +292,7 @@ function simsem_parse_tour_html($html) {
             $paras = [];
             $points = [];
             foreach ($nodes as $n) {
-                if ($n->nodeName === 'p') {
-                    $paras[] = trim($n->textContent);
-                }
+                if ($n->nodeName === 'p') $paras[] = trim($n->textContent);
                 if ($n->nodeName === 'ul' || $n->nodeName === 'ol') {
                     $lis = $n->getElementsByTagName('li');
                     for ($j = 0; $j < $lis->length; $j++) {
@@ -324,12 +304,12 @@ function simsem_parse_tour_html($html) {
             $data['diff_points'] = implode("\n", $points);
         }
 
-        // Where Does the Tour Start
+        // Meeting Point
         if (stripos($h, 'Where Does') !== false || stripos($h, 'Meeting Point') !== false) {
             $data['meeting_point'] = simsem_extract_paragraphs($nodes);
         }
 
-        // Detailed Itinerary
+        // Itinerary
         if (stripos($h, 'Itinerary') !== false) {
             $itinerary = simsem_parse_itinerary_nodes($nodes);
             if (!empty($itinerary)) {
@@ -337,44 +317,53 @@ function simsem_parse_tour_html($html) {
             }
         }
 
-        // Guide
+        // Guide — hardened extraction
         if (stripos($h, 'Your Guide') !== false || stripos($h, 'Guide:') !== false) {
             $guideName = '';
             $guideNote = '';
 
-            // 1) Prefer <strong> text inside guide section (most reliable in imported HTML)
+            // 1) Try <strong> inside the section nodes
             foreach ($nodes as $n) {
                 if (!($n instanceof DOMElement)) continue;
                 $strongs = $n->getElementsByTagName('strong');
                 if ($strongs->length > 0) {
-                    $guideName = trim($strongs->item(0)->textContent);
-                    break;
+                    $candidate = trim($strongs->item(0)->textContent);
+                    // Only accept if it looks like a name (not a long sentence)
+                    if (mb_strlen($candidate) < 60 && !preg_match('/\b(the|this|our|your|and|with)\b/i', $candidate)) {
+                        $guideName = $candidate;
+                        break;
+                    }
                 }
             }
 
-            // 2) Fallback to heading-derived value
+            // 2) Fallback: extract from heading text after "Your Guide:"
             if (empty($guideName)) {
                 $guideName = trim(preg_replace('/^Your Guide[:\s]*/i', '', $h));
             }
 
-            // 3) Extract parenthetical note from guide name
+            // 3) Strip parenthetical note from name: "Name (note here)" → name + note
             if (!empty($guideName) && preg_match('/^(.*?)\s*\(([^)]+)\)\s*$/u', $guideName, $m)) {
                 $guideName = trim($m[1]);
-                $guideNote = trim($m[2]);
+                $guideNote = ucfirst(trim($m[2]));
             }
+
+            // 4) Clean up: if guide name still contains "Your Guide" prefix, strip it
+            $guideName = trim(preg_replace('/^Your Guide[:\s]*/i', '', $guideName));
 
             if (!empty($guideName)) {
                 $data['guide_name'] = $guideName;
             }
             if (!empty($guideNote)) {
-                $data['guide_note'] = ucfirst($guideNote);
+                $data['guide_note'] = $guideNote;
             }
 
             $data['guide_bio'] = simsem_extract_paragraphs($nodes);
 
-            // 4) Fallback: infer note from bio text
-            if (empty($data['guide_note']) && stripos($data['guide_bio'] ?? '', 'after booking') !== false) {
-                $data['guide_note'] = 'Name shared after booking';
+            // 5) Infer note from bio if still empty
+            if (empty($data['guide_note']) && !empty($data['guide_bio'])) {
+                if (stripos($data['guide_bio'], 'after booking') !== false) {
+                    $data['guide_note'] = 'Name shared after booking';
+                }
             }
         }
 
@@ -384,9 +373,7 @@ function simsem_parse_tour_html($html) {
             $currentQ = null;
             foreach ($nodes as $n) {
                 if ($n->nodeName === 'h3') {
-                    if ($currentQ !== null) {
-                        $faqs[] = $currentQ;
-                    }
+                    if ($currentQ !== null) $faqs[] = $currentQ;
                     $currentQ = ['q' => trim($n->textContent), 'a' => ''];
                 }
                 if ($n->nodeName === 'p' && $currentQ !== null) {
@@ -403,7 +390,8 @@ function simsem_parse_tour_html($html) {
         if (stripos($h, 'Image URL') !== false) {
             $urls = [];
             foreach ($nodes as $n) {
-                $anchors = ($n instanceof DOMElement) ? $n->getElementsByTagName('a') : [];
+                if (!($n instanceof DOMElement)) continue;
+                $anchors = $n->getElementsByTagName('a');
                 foreach ($anchors as $a) {
                     $href = $a->getAttribute('href');
                     if (preg_match('/\.(jpg|jpeg|png|webp|gif)/i', $href)) {
@@ -417,12 +405,11 @@ function simsem_parse_tour_html($html) {
         }
     }
 
-    // --- Booking URL: find CTA link
+    // Booking URL
     $ctaLinks = $xpath->query('//a[contains(@class,"seo-cta")]/@href');
     if ($ctaLinks->length) {
         $data['booking_url'] = $ctaLinks->item($ctaLinks->length - 1)->nodeValue;
     }
-    // Fallback: look for any link with "book" text
     if (empty($data['booking_url'])) {
         $allLinks = $xpath->query('//a');
         for ($i = 0; $i < $allLinks->length; $i++) {
@@ -433,7 +420,7 @@ function simsem_parse_tour_html($html) {
         }
     }
 
-    // --- Badge: derive from duration if not set
+    // Badge from duration
     if (empty($data['badge']) && !empty($data['duration'])) {
         $data['badge'] = $data['duration'] . ' Adventure';
     }
@@ -473,7 +460,6 @@ function simsem_extract_paragraphs($nodes) {
 
 /**
  * Parse itinerary from h3 + p nodes
- * Expected: h3 = "Day X: Title", followed by p with <strong>Time</strong> — <strong>Title</strong> then desc p
  */
 function simsem_parse_itinerary_nodes($nodes) {
     $days = [];
@@ -483,19 +469,14 @@ function simsem_parse_itinerary_nodes($nodes) {
     foreach ($nodes as $n) {
         if (!($n instanceof DOMElement)) continue;
 
-        // Day header
         if ($n->nodeName === 'h3') {
-            // Save previous item
             if ($currentItem && $currentDay) {
                 $currentDay['items'][] = $currentItem;
                 $currentItem = null;
             }
-            // Save previous day
-            if ($currentDay) {
-                $days[] = $currentDay;
-            }
+            if ($currentDay) $days[] = $currentDay;
+
             $text = trim($n->textContent);
-            // Extract day number
             $dayNum = 1;
             if (preg_match('/Day\s*(\d+)/i', $text, $m)) {
                 $dayNum = (int)$m[1];
@@ -504,28 +485,17 @@ function simsem_parse_itinerary_nodes($nodes) {
             continue;
         }
 
-        // Paragraph with bold = itinerary step
         if ($n->nodeName === 'p' && $currentDay) {
             $strongs = $n->getElementsByTagName('strong');
             if ($strongs->length > 0) {
-                // Save previous item
-                if ($currentItem) {
-                    $currentDay['items'][] = $currentItem;
-                }
+                if ($currentItem) $currentDay['items'][] = $currentItem;
+
                 $time = trim($strongs->item(0)->textContent);
-                $title = '';
-                if ($strongs->length > 1) {
-                    $title = trim($strongs->item(1)->textContent);
-                }
-                // Clean time: remove trailing " —" 
+                $title = $strongs->length > 1 ? trim($strongs->item(1)->textContent) : '';
                 $time = preg_replace('/\s*[—–-]\s*$/', '', $time);
-                $currentItem = [
-                    'time' => $time,
-                    'title' => $title,
-                    'desc' => '',
-                ];
+
+                $currentItem = ['time' => $time, 'title' => $title, 'desc' => ''];
             } else if ($currentItem) {
-                // Description paragraph
                 $desc = trim($n->textContent);
                 if ($desc) {
                     $currentItem['desc'] .= ($currentItem['desc'] ? ' ' : '') . $desc;
@@ -534,13 +504,8 @@ function simsem_parse_itinerary_nodes($nodes) {
         }
     }
 
-    // Save last item and day
-    if ($currentItem && $currentDay) {
-        $currentDay['items'][] = $currentItem;
-    }
-    if ($currentDay) {
-        $days[] = $currentDay;
-    }
+    if ($currentItem && $currentDay) $currentDay['items'][] = $currentItem;
+    if ($currentDay) $days[] = $currentDay;
 
     return $days;
 }
