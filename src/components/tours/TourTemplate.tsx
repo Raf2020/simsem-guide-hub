@@ -415,7 +415,7 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
                 <section className="mb-12 p-8 rounded-2xl bg-gradient-to-br from-[#fdf8f0] to-[#f9f4ec] border border-[#ede5d8]">
                   <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-2">See It Before You Go</h2>
                   <p className="text-[17px] text-[#777] leading-relaxed mb-6 max-w-lg">
-                    Real moments from real travellers — follow our adventures on Instagram and picture yourself here.
+                    {tour.metaDescription}
                   </p>
                   <a
                     href={tour.instagramUrl}
