@@ -232,25 +232,27 @@ $details = array_filter([
                 </section>
                 <?php endif; ?>
 
-                <!-- Who Is This For -->
-                <?php if ($who_for) : ?>
+                <!-- Who Is This For + What Makes It Different (combined section) -->
+                <?php if ($who_for || $what_diff) : ?>
                 <section class="wr-section wr-section-border">
-                    <h2 class="wr-heading">Who Is This For</h2>
-                    <p class="wr-body-text"><?php echo esc_html($who_for); ?></p>
-                </section>
-                <?php endif; ?>
-
-                <!-- What Makes It Different -->
-                <?php if ($what_diff) : ?>
-                <section class="wr-section">
-                    <h2 class="wr-heading">What Makes It Different</h2>
-                    <p class="wr-body-text"><?php echo esc_html($what_diff); ?></p>
-                    <?php if (!empty($diff_points)) : ?>
-                    <ul class="wr-dash-list">
-                        <?php foreach ($diff_points as $pt) : ?>
-                        <li><span class="wr-dash">—</span> <?php echo esc_html($pt); ?></li>
-                        <?php endforeach; ?>
-                    </ul>
+                    <?php if ($who_for) : ?>
+                    <div style="margin-bottom: <?php echo $what_diff ? '40px' : '0'; ?>">
+                        <h2 class="wr-heading">Who Is This For</h2>
+                        <p class="wr-body-text"><?php echo esc_html($who_for); ?></p>
+                    </div>
+                    <?php endif; ?>
+                    <?php if ($what_diff) : ?>
+                    <div>
+                        <h2 class="wr-heading">What Makes It Different</h2>
+                        <p class="wr-body-text"><?php echo esc_html($what_diff); ?></p>
+                        <?php if (!empty($diff_points)) : ?>
+                        <ul class="wr-dash-list">
+                            <?php foreach ($diff_points as $pt) : ?>
+                            <li><span class="wr-dash">—</span> <?php echo esc_html($pt); ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                        <?php endif; ?>
+                    </div>
                     <?php endif; ?>
                 </section>
                 <?php endif; ?>

@@ -3,7 +3,7 @@
  * Plugin Name: SimSem Tours
  * Plugin URI: https://mysimsem.com
  * Description: A beautiful tours management system with custom post type, admin fields, and a stunning front-end template. Built for Middle Eastern travel experiences.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: SimSem
  * Author URI: https://mysimsem.com
  * License: GPL v2 or later
@@ -12,7 +12,7 @@
 
 if (!defined('ABSPATH')) exit;
 
-define('SIMSEM_TOURS_VERSION', '1.0.0');
+define('SIMSEM_TOURS_VERSION', '1.1.0');
 define('SIMSEM_TOURS_PATH', plugin_dir_path(__FILE__));
 define('SIMSEM_TOURS_URL', plugin_dir_url(__FILE__));
 
