@@ -284,13 +284,51 @@
 /* ── HEADINGS ── */
 .wr-heading {
     font-family: 'DM Serif Display', serif !important;
-    font-size: 1.5rem !important;
+    font-size: 28px !important;
     font-weight: 400 !important;
     color: #1a1a2e !important;
     margin-bottom: 24px !important;
     text-transform: none !important;
     letter-spacing: normal !important;
     line-height: 1.2 !important;
+}
+
+/* Instagram Section */
+.wr-instagram-card {
+    padding: 32px !important;
+    border-radius: 16px !important;
+    background: linear-gradient(135deg, #fdf8f0, #f9f4ec) !important;
+    border: 1px solid #ede5d8 !important;
+}
+
+.wr-instagram-card .wr-heading {
+    margin-bottom: 8px !important;
+}
+
+.wr-instagram-card .wr-body-text {
+    margin-bottom: 24px !important;
+}
+
+.wr-instagram-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 12px 24px !important;
+    border-radius: 12px !important;
+    background: linear-gradient(to right, #f09433, #e6683c, #dc2743) !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+    font-size: 15px !important;
+    text-decoration: none !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
+}
+.wr-instagram-btn:hover {
+    transform: scale(1.02) !important;
+    box-shadow: 0 8px 24px rgba(220,39,67,0.3) !important;
+    color: #fff !important;
+}
+.wr-instagram-btn:active {
+    transform: scale(0.98) !important;
 }
 
 /* ── DESCRIPTION ── */
@@ -822,6 +860,7 @@
     .wr-title-block { padding: 24px 40px 8px !important; }
     .wr-main { padding: 80px 40px !important; }
     .wr-facts-wrap { grid-template-columns: repeat(3, 1fr) !important; }
+    .wr-heading { font-size: 32px !important; }
 
     .wr-thumb { width: 64px !important; height: 64px !important; }
 
@@ -862,7 +901,7 @@
     .wr-fact-value { font-size: 14px !important; }
     .wr-section { margin-bottom: 40px !important; }
     .wr-section-border { padding-bottom: 40px !important; }
-    .wr-heading { font-size: 1.3rem !important; margin-bottom: 16px !important; }
+    .wr-heading { font-size: 24px !important; margin-bottom: 16px !important; }
 
     .wr-list li { font-size: 15px !important; gap: 12px !important; margin-bottom: 12px !important; }
     .wr-dot { width: 5px !important; height: 5px !important; margin-top: 7px !important; }
