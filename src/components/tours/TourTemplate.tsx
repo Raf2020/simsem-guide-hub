@@ -70,11 +70,11 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
       <div className="min-h-screen bg-white font-sans text-[#1a1a2e]">
 
         {/* ─── HERO ─── */}
-        <section className="relative w-full h-[50vh] lg:h-[55vh] max-h-[560px] lg:max-h-[620px] overflow-hidden">
+        <section className="relative w-full h-[42vh] lg:h-[46vh] max-h-[460px] lg:max-h-[520px] overflow-hidden">
           <img
             src={tour.gallery[heroImg]?.src}
             alt={tour.gallery[heroImg]?.alt}
-            className="absolute inset-0 w-full h-full object-cover object-[center_40%] transition-opacity duration-700"
+            className="absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-700"
             loading="eager"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
