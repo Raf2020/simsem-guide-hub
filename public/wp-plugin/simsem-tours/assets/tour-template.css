@@ -307,9 +307,9 @@
    QUICK FACTS — HORIZONTAL WRAP (matches React)
    ══════════════════════════════════════════════ */
 .wr-facts-wrap {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 32px !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 24px 32px !important;
     margin-bottom: 64px !important;
     padding-bottom: 64px !important;
     border-bottom: 1px solid #eee !important;
@@ -453,8 +453,8 @@
 
 .wr-itin-time {
     flex-shrink: 0 !important;
-    width: 80px !important;
-    min-width: 80px !important;
+    width: 120px !important;
+    min-width: 120px !important;
     font-size: 12px !important;
     font-weight: 600 !important;
     color: #d4af37 !important;
@@ -821,6 +821,7 @@
     .wr-hero-container { padding: 0 40px !important; }
     .wr-title-block { padding: 24px 40px 8px !important; }
     .wr-main { padding: 80px 40px !important; }
+    .wr-facts-wrap { grid-template-columns: repeat(3, 1fr) !important; }
 
     .wr-thumb { width: 64px !important; height: 64px !important; }
 
@@ -835,6 +836,7 @@
 
 /* Tablet (640–1023px) */
 @media (min-width: 640px) and (max-width: 1023px) {
+    .wr-facts-wrap { grid-template-columns: repeat(3, 1fr) !important; }
     .wr-incl-cols { grid-template-columns: 1fr 1fr !important; }
     .wr-mobile-cta { display: block !important; }
 }
@@ -871,7 +873,7 @@
     .wr-mobile-cta { display: block !important; }
 
     .wr-itin-row { gap: 16px !important; padding: 16px 0 !important; }
-    .wr-itin-time { width: 70px !important; min-width: 70px !important; font-size: 11px !important; }
+    .wr-itin-time { width: 90px !important; min-width: 90px !important; font-size: 11px !important; }
     .wr-itin-body h4 { font-size: 15px !important; }
     .wr-itin-body p { font-size: 14px !important; }
 
