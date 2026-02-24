@@ -163,10 +163,12 @@ function simsem_tour_booking_cb($post) {
     $url = simsem_get($post->ID, '_simsem_booking_url', '');
     $cta = simsem_get($post->ID, '_simsem_cta_text', 'Reserve Now');
     $cancel = simsem_get($post->ID, '_simsem_cancel_note', 'Free cancellation · Instant confirmation');
+    $instagram = simsem_get($post->ID, '_simsem_instagram_url', '');
 
     printf('<label>Booking URL</label><input type="url" name="_simsem_booking_url" value="%s" style="width:100%%" />', esc_attr($url));
     printf('<br/><label>CTA Text</label><input type="text" name="_simsem_cta_text" value="%s" style="width:100%%" />', esc_attr($cta));
     printf('<br/><label>Note below CTA</label><input type="text" name="_simsem_cancel_note" value="%s" style="width:100%%" />', esc_attr($cancel));
+    printf('<br/><label>📸 Instagram URL</label><input type="url" name="_simsem_instagram_url" value="%s" placeholder="https://www.instagram.com/simsem.travel/" style="width:100%%" />', esc_attr($instagram));
 }
 
 /**
@@ -192,7 +194,7 @@ add_action('save_post_simsem_tour', function ($post_id) {
         '_simsem_faqs', '_simsem_gallery', '_simsem_meta_desc',
     ];
 
-    $url_fields = ['_simsem_booking_url'];
+    $url_fields = ['_simsem_booking_url', '_simsem_instagram_url'];
 
     foreach ($text_fields as $key) {
         if (isset($_POST[$key])) {

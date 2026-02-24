@@ -138,6 +138,9 @@ function simsem_html_import_cb($post) {
                     setField('_simsem_meta_title', d.meta_title);
                     setField('_simsem_meta_desc', d.meta_desc);
 
+                    // Instagram
+                    setField('_simsem_instagram_url', d.instagram_url);
+
                     status.textContent = '✅ Imported! ' + filled + ' fields filled. Review & save.';
                     status.style.color = '#00a32a';
                 })
@@ -403,6 +406,12 @@ function simsem_parse_tour_html($html) {
                 $data['gallery'] = implode("\n", $urls);
             }
         }
+    }
+
+    // Instagram URL
+    $igLinks = $xpath->query('//a[contains(@href,"instagram.com")]/@href');
+    if ($igLinks->length) {
+        $data['instagram_url'] = $igLinks->item(0)->nodeValue;
     }
 
     // Booking URL
