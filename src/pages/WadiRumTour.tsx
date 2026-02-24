@@ -131,6 +131,8 @@ const wadiRumTour: TourData = {
   relatedLinks: [
     { label: "Book Wadi Rum in Jordan – Visitor Center to Village Tour", href: "https://mysimsem.com/experiences/unforgettable-full-day-adventure-in-wadi-rum/" },
   ],
+
+  instagramUrl: "https://www.instagram.com/simsem.travel/",
 };
 
 export default function WadiRumTour() {
