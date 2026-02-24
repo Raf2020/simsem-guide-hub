@@ -69,64 +69,58 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
 
       <div className="min-h-screen bg-white font-sans text-[#1a1a2e]">
 
-        {/* ─── HERO ─── */}
-        <section className="relative w-full h-[50vh] lg:h-[55vh] max-h-[560px] lg:max-h-[620px] overflow-hidden bg-black">
-          <img
-            src={tour.gallery[heroImg]?.src}
-            alt={tour.gallery[heroImg]?.alt}
-            className="absolute inset-0 w-full h-full object-contain object-center transition-opacity duration-700"
-            loading="eager"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+        {/* ─── BREADCRUMB ─── */}
+        <nav className="max-w-6xl mx-auto px-6 lg:px-10 pt-6 pb-4 text-[13px] tracking-wide text-[#999]" aria-label="Breadcrumb">
+          <Link to="/experiences" className="hover:text-[#1a1a2e] transition">Tours</Link>
+          <span className="mx-2">›</span>
+          <Link to={`/tours/${tour.country.toLowerCase()}`} className="hover:text-[#1a1a2e] transition capitalize">{tour.country}</Link>
+          <span className="mx-2">›</span>
+          <span className="text-[#555]">{tour.location}</span>
+        </nav>
 
-          {/* Breadcrumb */}
-          <nav className="absolute top-6 left-6 lg:left-10 z-20 text-white/60 text-[13px] tracking-wide" aria-label="Breadcrumb">
-            <Link to="/experiences" className="hover:text-white transition">Tours</Link>
-            <span className="mx-2">/</span>
-            <Link to={`/tours/${tour.country.toLowerCase()}`} className="hover:text-white transition capitalize">{tour.country}</Link>
-            <span className="mx-2">/</span>
-            <span className="text-white/80">{tour.location}</span>
-          </nav>
-
-          {/* Hero content */}
-          <div className="absolute bottom-0 left-0 right-0 z-10 px-6 lg:px-10 pb-10 lg:pb-16">
-            <div className="max-w-5xl">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#d4af37] bg-[#d4af37]/15 backdrop-blur-sm px-3 py-1.5 rounded">{tour.country}</span>
-                {tour.badge && <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/80 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded">{tour.badge}</span>}
-              </div>
-              <h1 className="font-display text-4xl sm:text-5xl lg:text-[64px] text-white leading-[1.08] tracking-tight max-w-4xl">
-                {tour.title}
-              </h1>
-              <div className="flex items-center gap-6 mt-5 text-white/60 text-[15px] tracking-wide">
-                <span>{tour.location}</span>
-                <span className="w-1 h-1 rounded-full bg-white/30" />
-                <span>{tour.duration}</span>
-                <span className="w-1 h-1 rounded-full bg-white/30" />
-                <span className="text-[#d4af37]">★ 4.9</span>
-              </div>
+        {/* ─── HERO IMAGE (contained) ─── */}
+        <div className="max-w-6xl mx-auto px-6 lg:px-10">
+          <div className="relative w-full aspect-[16/9] max-h-[520px] rounded-xl overflow-hidden bg-[#f5f5f5]">
+            <img
+              src={tour.gallery[heroImg]?.src}
+              alt={tour.gallery[heroImg]?.alt}
+              className="w-full h-full object-cover object-center transition-opacity duration-500"
+              loading="eager"
+            />
+            {/* Gallery nav */}
+            <div className="absolute bottom-4 right-4 z-20 flex items-center gap-2">
+              <span className="text-white/70 text-xs tracking-wider mr-1 drop-shadow">{heroImg + 1}/{tour.gallery.length}</span>
+              <button onClick={() => setHeroImg(i => i > 0 ? i - 1 : tour.gallery.length - 1)} className="w-9 h-9 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/60 transition">←</button>
+              <button onClick={() => setHeroImg(i => i < tour.gallery.length - 1 ? i + 1 : 0)} className="w-9 h-9 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/60 transition">→</button>
             </div>
           </div>
 
-          {/* Gallery nav */}
-          <div className="absolute bottom-6 right-6 lg:right-10 z-20 flex items-center gap-2">
-            <span className="text-white/50 text-xs tracking-wider mr-2">{heroImg + 1}/{tour.gallery.length}</span>
-            <button onClick={() => setHeroImg(i => i > 0 ? i - 1 : tour.gallery.length - 1)} className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-sm text-white flex items-center justify-center hover:bg-white/20 transition">←</button>
-            <button onClick={() => setHeroImg(i => i < tour.gallery.length - 1 ? i + 1 : 0)} className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-sm text-white flex items-center justify-center hover:bg-white/20 transition">→</button>
+          {/* Thumbnail row */}
+          <div className="flex gap-1.5 py-3 overflow-x-auto" style={{ WebkitOverflowScrolling: "touch" }}>
+            {tour.gallery.map((img, i) => (
+              <button key={i} onClick={() => setHeroImg(i)}
+                className={`flex-shrink-0 w-14 h-14 lg:w-16 lg:h-16 rounded overflow-hidden transition-all ${heroImg === i ? "ring-2 ring-[#d4af37] opacity-100" : "opacity-40 hover:opacity-70"}`}>
+                <img src={img.src} alt={img.alt} className="w-full h-full object-cover" loading="lazy" />
+              </button>
+            ))}
           </div>
-        </section>
+        </div>
 
-        {/* ─── THUMBNAIL ROW ─── */}
-        <div className="border-b border-[#eee]">
-          <div className="max-w-6xl mx-auto px-6 lg:px-10">
-            <div className="flex gap-1.5 py-3 overflow-x-auto" style={{ WebkitOverflowScrolling: "touch" }}>
-              {tour.gallery.map((img, i) => (
-                <button key={i} onClick={() => setHeroImg(i)}
-                  className={`flex-shrink-0 w-14 h-14 lg:w-16 lg:h-16 rounded overflow-hidden transition-all ${heroImg === i ? "ring-2 ring-[#d4af37] opacity-100" : "opacity-40 hover:opacity-70"}`}>
-                  <img src={img.src} alt={img.alt} className="w-full h-full object-cover" loading="lazy" />
-                </button>
-              ))}
-            </div>
+        {/* ─── TITLE BLOCK (below image) ─── */}
+        <div className="max-w-6xl mx-auto px-6 lg:px-10 pt-6 pb-2">
+          <div className="flex items-center gap-3 mb-3">
+            <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#d4af37] bg-[#d4af37]/10 px-3 py-1.5 rounded">{tour.country}</span>
+            {tour.badge && <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#666] bg-[#f0f0f0] px-3 py-1.5 rounded">{tour.badge}</span>}
+          </div>
+          <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl text-[#1a1a2e] leading-[1.12] tracking-tight max-w-3xl">
+            {tour.title}
+          </h1>
+          <div className="flex items-center gap-5 mt-4 text-[15px] text-[#777]">
+            <span>{tour.location}</span>
+            <span className="w-1 h-1 rounded-full bg-[#ccc]" />
+            <span>{tour.duration}</span>
+            <span className="w-1 h-1 rounded-full bg-[#ccc]" />
+            <span className="text-[#d4af37] font-medium">★ 4.9</span>
           </div>
         </div>
 
