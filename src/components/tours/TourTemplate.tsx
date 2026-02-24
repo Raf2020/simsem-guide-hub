@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, ReactNode } from "react";
 import { Helmet } from "react-helmet-async";
 import { ArrowRight, Check, X, ChevronDown, Minus } from "lucide-react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 /* ============ FADE-IN WRAPPER ============ */
 const FadeIn = ({ children, delay = 0, className = "" }: { children: ReactNode; delay?: number; className?: string }) => (
@@ -139,12 +139,19 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >
-            <img
-              src={tour.gallery[heroImg]?.src}
-              alt={tour.gallery[heroImg]?.alt}
-              className="w-full h-full object-cover object-center transition-opacity duration-500"
-              loading="eager"
-            />
+            <AnimatePresence mode="popLayout">
+              <motion.img
+                key={heroImg}
+                src={tour.gallery[heroImg]?.src}
+                alt={tour.gallery[heroImg]?.alt}
+                className="absolute inset-0 w-full h-full object-cover object-center"
+                loading="eager"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.6, ease: "easeInOut" }}
+              />
+            </AnimatePresence>
             {/* Progress bar */}
             {!isPaused && (
               <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-black/10 z-20">
