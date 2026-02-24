@@ -1,7 +1,7 @@
 <?php
 /**
  * Single Tour Template — SimSem Tours
- * Minimalist editorial layout matching React TourTemplate
+ * Minimalist editorial layout matching React TourTemplate pixel-for-pixel
  */
 if (!defined('ABSPATH')) exit;
 get_header();
@@ -49,15 +49,21 @@ $gallery      = array_filter(array_map('trim', explode("\n", $gallery_raw)));
 $itinerary    = json_decode($itinerary_raw, true) ?: [];
 $faqs         = json_decode($faqs_raw, true) ?: [];
 
-// Details strip
-$details = array_filter([
+// Quick facts — vertical list rows (label | value)
+$facts = array_filter([
     ['label' => 'Host',      'value' => $host],
     ['label' => 'Duration',  'value' => $duration],
     ['label' => 'Pickup',    'value' => $pickup],
     ['label' => 'Language',  'value' => $language],
-    ['label' => 'Group',     'value' => $group],
+    ['label' => 'Group Size','value' => $group],
     ['label' => 'Transport', 'value' => $transport],
+    ['label' => 'Terrain',   'value' => $terrain],
+    ['label' => 'Fitness',   'value' => $fitness],
+    ['label' => 'Private',   'value' => $private_opt],
 ], fn($d) => !empty($d['value']));
+
+// Guide initial
+$guide_initial = $guide_name ? mb_substr(trim($guide_name), 0, 1) : 'G';
 ?>
 
 <div class="wr-page">
@@ -142,13 +148,13 @@ $details = array_filter([
                 <div class="wr-desc"><?php echo esc_html(get_the_excerpt()); ?></div>
                 <?php endif; ?>
 
-                <!-- Quick Facts Strip -->
-                <?php if (!empty($details)) : ?>
+                <!-- Quick Facts — Vertical List Rows -->
+                <?php if (!empty($facts)) : ?>
                 <div class="wr-facts">
-                    <?php foreach ($details as $d) : ?>
+                    <?php foreach ($facts as $d) : ?>
                     <div class="wr-fact">
-                        <div class="wr-fact-label"><?php echo esc_html($d['label']); ?></div>
-                        <div class="wr-fact-value"><?php echo esc_html($d['value']); ?></div>
+                        <span class="wr-fact-label"><?php echo esc_html($d['label']); ?></span>
+                        <span class="wr-fact-value"><?php echo esc_html($d['value']); ?></span>
                     </div>
                     <?php endforeach; ?>
                 </div>
@@ -223,7 +229,9 @@ $details = array_filter([
                             <div class="wr-itin-time"><?php echo esc_html($item['time']); ?></div>
                             <div class="wr-itin-body">
                                 <h4><?php echo esc_html($item['title']); ?></h4>
+                                <?php if (!empty($item['desc'])) : ?>
                                 <p><?php echo esc_html($item['desc']); ?></p>
+                                <?php endif; ?>
                             </div>
                         </div>
                         <?php endforeach; ?>
@@ -232,11 +240,11 @@ $details = array_filter([
                 </section>
                 <?php endif; ?>
 
-                <!-- Who Is This For + What Makes It Different (combined section) -->
+                <!-- Who Is This For + What Makes It Different -->
                 <?php if ($who_for || $what_diff) : ?>
                 <section class="wr-section wr-section-border">
                     <?php if ($who_for) : ?>
-                    <div style="margin-bottom: <?php echo $what_diff ? '40px' : '0'; ?>">
+                    <div style="margin-bottom: <?php echo $what_diff ? '40px' : '0'; ?>;">
                         <h2 class="wr-heading">Who Is This For</h2>
                         <p class="wr-body-text"><?php echo esc_html($who_for); ?></p>
                     </div>
@@ -270,7 +278,7 @@ $details = array_filter([
                 <section class="wr-section wr-section-border">
                     <h2 class="wr-heading">Your Guide</h2>
                     <div class="wr-guide">
-                        <div class="wr-guide-avatar"><?php echo esc_html(mb_substr(trim($guide_name ?: 'G'), 0, 1)); ?></div>
+                        <div class="wr-guide-avatar"><?php echo esc_html($guide_initial); ?></div>
                         <div>
                             <h3 class="wr-guide-name"><?php echo esc_html($guide_name ?: 'Your Guide'); ?></h3>
                             <?php if ($guide_note) : ?><p class="wr-guide-note"><?php echo esc_html($guide_note); ?></p><?php endif; ?>
@@ -295,15 +303,6 @@ $details = array_filter([
                 </section>
                 <?php endif; ?>
 
-                <!-- Post Content (if any extra from WP editor) -->
-                <?php
-                $content = get_the_content();
-                if (!empty(trim($content))) : ?>
-                <div class="wr-section">
-                    <div class="entry-content"><?php the_content(); ?></div>
-                </div>
-                <?php endif; ?>
-
             </div>
 
             <!-- RIGHT COLUMN — BOOKING SIDEBAR -->
@@ -326,8 +325,8 @@ $details = array_filter([
                     <!-- Inclusions -->
                     <?php if (!empty($included)) : ?>
                     <div class="wr-sidebar-incl">
-                        <?php foreach (array_slice($included, 0, 4) as $item) : ?>
-                        <p class="wr-sidebar-incl-item">✓ <?php echo esc_html($item); ?></p>
+                        <?php foreach (array_slice($included, 0, 5) as $item) : ?>
+                        <p class="wr-sidebar-incl-item"><span class="wr-sidebar-incl-check">✓</span> <?php echo esc_html($item); ?></p>
                         <?php endforeach; ?>
                     </div>
                     <?php endif; ?>
