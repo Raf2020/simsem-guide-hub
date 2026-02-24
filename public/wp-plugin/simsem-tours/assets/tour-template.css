@@ -23,7 +23,7 @@
     -moz-osx-font-smoothing: grayscale;
     background: #faf9f7;
     line-height: 1.6;
-    font-size: 16px;
+    font-size: 18px;
     scroll-behavior: smooth;
 }
 
@@ -342,7 +342,7 @@
 
 /* ---- Intro Text ---- */
 .wr-intro {
-    font-size: 18px;
+    font-size: 20px;
     color: #444;
     line-height: 1.7;
     margin-bottom: 40px;
@@ -381,7 +381,7 @@
 }
 
 .wr-detail-label {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1.2px;
@@ -390,7 +390,7 @@
 }
 
 .wr-detail-value {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
     color: #1a1a2e;
 }
@@ -405,7 +405,7 @@
     border-radius: 16px;
     background: #1a1a2e;
     color: #fff;
-    font-size: 14px;
+    font-size: 16px;
     margin-bottom: 48px;
 }
 
@@ -415,7 +415,7 @@
 }
 
 .wr-section-title {
-    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    font-size: clamp(1.5rem, 3vw, 2rem);
     font-weight: 800;
     color: #1a1a2e;
     margin-bottom: 24px;
@@ -452,7 +452,7 @@
     border-radius: 14px;
     border: 1px solid #eee;
     background: #fff;
-    font-size: 15px;
+    font-size: 17px;
     line-height: 1.5;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
@@ -499,7 +499,7 @@
 }
 
 .wr-incl-box h3 {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -519,7 +519,7 @@
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    font-size: 15px;
+    font-size: 17px;
     margin-bottom: 10px;
     line-height: 1.5;
 }
@@ -540,7 +540,7 @@
     gap: 6px;
     padding: 8px 16px;
     border-radius: 9999px;
-    font-size: 13px;
+    font-size: 15px;
     color: #555;
     border: 1px solid #e5e5e5;
     background: #fff;
@@ -593,7 +593,7 @@
 .wr-day-tab {
     padding: 12px 24px;
     border-radius: 9999px;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
     border: 1px solid #e5e5e5;
     background: #fff;
@@ -657,7 +657,7 @@
 }
 
 .wr-timeline-time {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     color: #d4af37;
     text-transform: uppercase;
@@ -665,14 +665,14 @@
 }
 
 .wr-timeline-title {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
     margin: 6px 0 4px;
     color: #1a1a2e;
 }
 
 .wr-timeline-desc {
-    font-size: 15px;
+    font-size: 17px;
     color: #666;
     line-height: 1.65;
 }
@@ -687,14 +687,14 @@
 }
 
 .wr-content-card-title {
-    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    font-size: clamp(1.3rem, 2.5vw, 1.6rem);
     font-weight: 800;
     color: #1a1a2e;
     margin: 0 0 16px;
 }
 
 .wr-content-card p {
-    font-size: 16px;
+    font-size: 18px;
     color: #555;
     line-height: 1.7;
 }
@@ -706,7 +706,7 @@
 }
 
 .wr-star-list li {
-    font-size: 15px;
+    font-size: 17px;
     margin-bottom: 8px;
     color: #333;
 }
@@ -745,14 +745,14 @@
 }
 
 .wr-guide-note {
-    font-size: 13px;
+    font-size: 15px;
     color: #d4af37;
     font-weight: 600;
     margin: 0 0 8px;
 }
 
 .wr-guide-bio {
-    font-size: 16px;
+    font-size: 18px;
     color: #555;
     line-height: 1.65;
 }
@@ -777,7 +777,7 @@
 .wr-faq summary {
     cursor: pointer;
     padding: 20px 24px;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
     color: #1a1a2e;
     list-style: none;
@@ -807,7 +807,7 @@
 
 .wr-faq details > div {
     padding: 0 24px 20px;
-    font-size: 15px;
+    font-size: 17px;
     color: #666;
     line-height: 1.7;
 }
@@ -886,7 +886,7 @@
 .wr-sidebar-row {
     display: flex;
     justify-content: space-between;
-    font-size: 14px;
+    font-size: 16px;
     padding: 10px 0;
     border-bottom: 1px solid #f5f5f5;
 }
@@ -911,7 +911,7 @@
 }
 
 .wr-sidebar-incl-item {
-    font-size: 14px;
+    font-size: 16px;
     margin-bottom: 8px;
     color: #333;
 }
@@ -935,7 +935,7 @@
     background: linear-gradient(135deg, #d4af37 0%, #c9a230 100%);
     color: #1a1a2e;
     font-weight: 700;
-    font-size: 16px;
+    font-size: 18px;
     text-decoration: none;
     transition: all 0.25s ease;
     border: none;
