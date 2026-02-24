@@ -60,7 +60,11 @@ function simsem_register_tours_cpt() {
         'show_in_rest' => true,
     ]);
 }
-add_action('init', 'simsem_register_tours_cpt');
+add_action('init', function () {
+    // Register the rewrite tag so WordPress can PARSE incoming /tours/{country}/{slug}/ URLs
+    add_rewrite_tag('%tour_country%', '([^/]+)');
+    simsem_register_tours_cpt();
+});
 
 /**
  * Replace %tour_country% placeholder in tour permalinks with the
