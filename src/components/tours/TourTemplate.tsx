@@ -81,10 +81,10 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
                 <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#d4af37] bg-[#d4af37]/15 backdrop-blur-sm px-3 py-1.5 rounded">{tour.country}</span>
                 {tour.badge && <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/80 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded">{tour.badge}</span>}
               </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.05] tracking-tight max-w-4xl">
+              <h1 className="font-display text-4xl sm:text-5xl lg:text-[64px] text-white leading-[1.08] tracking-tight max-w-4xl">
                 {tour.title}
               </h1>
-              <div className="flex items-center gap-6 mt-5 text-white/60 text-sm tracking-wide">
+              <div className="flex items-center gap-6 mt-5 text-white/60 text-[15px] tracking-wide">
                 <span>{tour.location}</span>
                 <span className="w-1 h-1 rounded-full bg-white/30" />
                 <span>{tour.duration}</span>
@@ -123,7 +123,7 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
             {/* LEFT */}
             <div>
               {/* Description */}
-              <div className="text-lg lg:text-xl text-[#555] leading-relaxed mb-16 max-w-xl">
+              <div className="text-lg lg:text-[21px] text-[#555] leading-[1.7] mb-16 max-w-xl">
                 {tour.description}
               </div>
 
@@ -131,8 +131,8 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
               <div className="flex flex-wrap gap-x-8 gap-y-4 mb-16 pb-16 border-b border-[#eee]">
                 {tour.details.map(d => (
                   <div key={d.label}>
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[#999] mb-1">{d.label}</div>
-                    <div className="text-[15px] font-semibold text-[#1a1a2e]">{d.value}</div>
+                    <div className="text-[12px] font-semibold uppercase tracking-[0.15em] text-[#999] mb-1">{d.label}</div>
+                    <div className="text-[16px] font-semibold text-[#1a1a2e]">{d.value}</div>
                   </div>
                 ))}
               </div>
@@ -140,10 +140,10 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
               {/* Highlights */}
               {tour.highlights.length > 0 && (
                 <section className="mb-16">
-                  <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-[#999] mb-6">What to Expect</h2>
+                  <h2 className="font-display text-2xl text-[#1a1a2e] mb-6">What to Expect</h2>
                   <ul className="space-y-4">
                     {tour.highlights.map((h, i) => (
-                      <li key={i} className="flex items-start gap-4 text-[16px] text-[#333] leading-relaxed">
+                      <li key={i} className="flex items-start gap-4 text-[17px] text-[#333] leading-relaxed">
                         <span className="flex-shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-[#d4af37]" />
                         {h}
                       </li>
@@ -155,12 +155,12 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
               {/* Included / Not Included */}
               {(tour.included.length > 0 || tour.notIncluded.length > 0) && (
                 <section className="mb-16 pb-16 border-b border-[#eee]">
-                  <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-[#999] mb-6">What's Included</h2>
+                  <h2 className="font-display text-2xl text-[#1a1a2e] mb-6">What's Included</h2>
                   <div className="grid md:grid-cols-2 gap-x-12 gap-y-0">
                     <ul className="space-y-3">
                       {tour.included.map(item => (
                         <li key={item} className="flex items-center gap-3 text-[15px] text-[#333]">
-                          <Check size={15} className="text-emerald-500 flex-shrink-0" /> {item}
+                          <Check size={15} className="text-emerald-500 flex-shrink-0" /> <span className="text-[16px]">{item}</span>
                         </li>
                       ))}
                     </ul>
@@ -189,7 +189,7 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
               {/* Itinerary */}
               {tour.itinerary.length > 0 && (
                 <section className="mb-16">
-                  <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-[#999] mb-6">Itinerary</h2>
+                  <h2 className="font-display text-2xl text-[#1a1a2e] mb-6">Itinerary</h2>
                   {tour.itinerary.length > 1 && (
                     <div className="flex gap-2 mb-8">
                       {tour.itinerary.map(d => (
@@ -205,8 +205,8 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
                       <div key={i} className="flex gap-6 py-6 border-t border-[#f0f0f0] first:border-t-0">
                         <div className="flex-shrink-0 w-20 text-xs font-semibold text-[#d4af37] uppercase tracking-wider pt-0.5">{item.time}</div>
                         <div>
-                          <h4 className="text-[16px] font-semibold text-[#1a1a2e] mb-1">{item.title}</h4>
-                          <p className="text-[14px] text-[#777] leading-relaxed">{item.desc}</p>
+                          <h4 className="text-[17px] font-semibold text-[#1a1a2e] mb-1">{item.title}</h4>
+                          <p className="text-[15px] text-[#777] leading-relaxed">{item.desc}</p>
                         </div>
                       </div>
                     ))}
@@ -219,14 +219,14 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
                 <section className="mb-16 pb-16 border-b border-[#eee]">
                   {tour.whoFor && (
                     <div className="mb-10">
-                      <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-[#999] mb-4">Who Is This For</h2>
-                      <p className="text-[16px] text-[#555] leading-relaxed max-w-xl">{tour.whoFor}</p>
+                      <h2 className="font-display text-2xl text-[#1a1a2e] mb-4">Who Is This For</h2>
+                      <p className="text-[17px] text-[#555] leading-relaxed max-w-xl">{tour.whoFor}</p>
                     </div>
                   )}
                   {tour.whatDifferent && (
                     <div>
-                      <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-[#999] mb-4">What Makes It Different</h2>
-                      <p className="text-[16px] text-[#555] leading-relaxed max-w-xl mb-4">{tour.whatDifferent}</p>
+                      <h2 className="font-display text-2xl text-[#1a1a2e] mb-4">What Makes It Different</h2>
+                      <p className="text-[17px] text-[#555] leading-relaxed max-w-xl mb-4">{tour.whatDifferent}</p>
                       {tour.diffPoints && (
                         <ul className="space-y-2">
                           {tour.diffPoints.map(p => (
@@ -244,15 +244,15 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
               {/* Meeting Point */}
               {tour.meetingPoint && (
                 <section className="mb-16">
-                  <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-[#999] mb-4">Meeting Point</h2>
-                  <p className="text-[16px] text-[#555] leading-relaxed max-w-xl">{tour.meetingPoint}</p>
+                  <h2 className="font-display text-2xl text-[#1a1a2e] mb-4">Meeting Point</h2>
+                  <p className="text-[17px] text-[#555] leading-relaxed max-w-xl">{tour.meetingPoint}</p>
                 </section>
               )}
 
               {/* Guide */}
               {tour.guide && (
                 <section className="mb-16 pb-16 border-b border-[#eee]">
-                  <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-[#999] mb-6">Your Guide</h2>
+                  <h2 className="font-display text-2xl text-[#1a1a2e] mb-6">Your Guide</h2>
                   <div className="flex items-start gap-5">
                     <div className="w-14 h-14 rounded-full bg-[#1a1a2e] text-white flex items-center justify-center text-xl font-bold flex-shrink-0">
                       {tour.guide.initial || tour.guide.name.charAt(0)}
@@ -269,15 +269,15 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
               {/* FAQs */}
               {tour.faqs.length > 0 && (
                 <section className="mb-12">
-                  <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-[#999] mb-6">Questions & Answers</h2>
+                  <h2 className="font-display text-2xl text-[#1a1a2e] mb-6">Questions & Answers</h2>
                   <div>
                     {tour.faqs.map((faq, i) => (
                       <details key={i} className="group border-t border-[#f0f0f0] first:border-t-0">
-                        <summary className="cursor-pointer py-5 text-[16px] font-medium text-[#1a1a2e] list-none flex items-center justify-between gap-4">
+                        <summary className="cursor-pointer py-5 text-[17px] font-medium text-[#1a1a2e] list-none flex items-center justify-between gap-4">
                           {faq.q}
                           <ChevronDown size={16} className="text-[#ccc] flex-shrink-0 transition-transform group-open:rotate-180" />
                         </summary>
-                        <p className="pb-5 text-[15px] text-[#777] leading-relaxed -mt-1">{faq.a}</p>
+                        <p className="pb-5 text-[16px] text-[#777] leading-[1.7] -mt-1">{faq.a}</p>
                       </details>
                     ))}
                   </div>
@@ -338,9 +338,9 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
         {tour.relatedLinks && tour.relatedLinks.length > 0 && (
           <section className="border-t border-[#eee] py-12">
             <div className="max-w-6xl mx-auto px-6 lg:px-10">
-              <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-[#999] mb-5">You Might Also Like</h2>
+              <h2 className="font-display text-2xl text-[#1a1a2e] mb-5">You Might Also Like</h2>
               {tour.relatedLinks.map(link => (
-                <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer"
+                <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer" 
                   className="block py-4 text-[16px] font-medium text-[#1a1a2e] hover:text-[#d4af37] transition border-b border-[#f0f0f0] last:border-b-0">
                   {link.label} →
                 </a>
