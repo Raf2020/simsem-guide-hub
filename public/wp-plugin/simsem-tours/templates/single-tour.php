@@ -40,6 +40,7 @@ $guide_bio        = get_post_meta($id, '_simsem_guide_bio', true);
 $faqs_raw         = get_post_meta($id, '_simsem_faqs', true);
 $gallery_raw      = get_post_meta($id, '_simsem_gallery', true);
 $instagram_url    = get_post_meta($id, '_simsem_instagram_url', true);
+$meta_desc        = get_post_meta($id, '_simsem_meta_desc', true);
 
 // Parse fields
 $highlights   = array_filter(array_map('trim', explode("\n", $highlights_raw)));
@@ -297,7 +298,7 @@ $guide_initial = $guide_name ? mb_substr(trim($guide_name), 0, 1) : 'G';
                 <?php if (!empty($instagram_url)) : ?>
                 <section class="wr-section wr-instagram-section" style="padding:32px;border-radius:16px;background:linear-gradient(135deg,#fdf8f0,#f9f4ec);border:1px solid #ede5d8;">
                     <h2 class="wr-heading">See It Before You Go</h2>
-                    <p class="wr-body-text" style="max-width:480px;margin-bottom:24px;">Real moments from real travellers — follow our adventures on Instagram and picture yourself here.</p>
+                    <p class="wr-body-text" style="max-width:480px;margin-bottom:24px;"><?php echo esc_html($meta_desc ?: get_the_excerpt()); ?></p>
                     <a href="<?php echo esc_url($instagram_url); ?>" target="_blank" rel="noopener noreferrer"
                        style="display:inline-flex;align-items:center;gap:10px;padding:12px 24px;border-radius:12px;background:linear-gradient(to right,#f09433,#e6683c,#dc2743);color:#fff;font-weight:600;font-size:15px;text-decoration:none;transition:transform .2s,box-shadow .2s;"
                        onmouseover="this.style.transform='scale(1.02)';this.style.boxShadow='0 8px 24px rgba(220,39,67,.3)'"
