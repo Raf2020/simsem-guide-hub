@@ -39,8 +39,9 @@
 .wr-hero {
     position: relative;
     width: 100%;
-    height: 65vh;
-    min-height: 320px;
+    height: 50vh;
+    min-height: 300px;
+    max-height: 560px;
     overflow: hidden;
 }
 
@@ -50,6 +51,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center 40%;
     transition: opacity 0.7s ease;
     max-width: none;
 }
@@ -703,7 +705,7 @@
 
 /* Desktop (1024px+) */
 @media (min-width: 1024px) {
-    .wr-hero { height: 80vh; }
+    .wr-hero { height: 55vh; max-height: 620px; }
     .wr-hero-content { padding: 0 40px 64px; }
     .wr-breadcrumb { left: 40px; }
     .wr-gallery-nav { right: 40px; }
@@ -732,7 +734,7 @@
         padding-bottom: 72px;
     }
 
-    .wr-hero { height: 65vh; min-height: 280px; }
+    .wr-hero { height: 45vh; min-height: 260px; max-height: 400px; }
     .wr-hero-title { font-size: clamp(1.6rem, 6vw, 2.2rem); }
     .wr-hero-meta { font-size: 13px; gap: 12px; }
     .wr-hero-content { padding: 0 16px 24px; }
