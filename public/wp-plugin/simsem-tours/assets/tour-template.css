@@ -115,7 +115,9 @@
     min-height: 0 !important;
 }
 
-.wr-hero-img {
+.wr-hero-img,
+.wr-page .wr-hero .wr-hero-img,
+.wr-page .wr-hero img.wr-hero-img {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
@@ -123,9 +125,15 @@
     display: block !important;
     position: absolute !important;
     inset: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
     max-width: none !important;
     max-height: none !important;
+    min-width: 100% !important;
+    min-height: 100% !important;
     transition: opacity 0.5s ease !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 /* Gallery nav (inside hero) */
