@@ -250,7 +250,7 @@ $guide_initial = $guide_name ? mb_substr(trim($guide_name), 0, 1) : 'G';
                 <?php if ($who_for || $what_diff) : ?>
                 <section class="wr-section wr-section-border">
                     <?php if ($who_for) : ?>
-                    <div style="margin-bottom: <?php echo $what_diff ? '40px' : '0'; ?>;">
+                    <div style="margin-bottom: <?php echo $what_diff ? '64px' : '0'; ?>;">
                         <h2 class="wr-heading">Who Is This For</h2>
                         <p class="wr-body-text"><?php echo esc_html($who_for); ?></p>
                     </div>
