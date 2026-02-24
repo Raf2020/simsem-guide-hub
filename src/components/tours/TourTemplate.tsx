@@ -314,32 +314,43 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
             {/* RIGHT — BOOKING CARD */}
             <div className="hidden lg:block">
               <div className="sticky top-8">
-                <div className="border border-[#e5e5e5] rounded-xl overflow-hidden">
+                <div className="border border-[#e5e5e5] rounded-2xl overflow-hidden shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)]">
+                  
+                  {/* Tour name header */}
+                  <div className="px-6 pt-6 pb-4 border-b border-[#f0f0f0]">
+                    <h3 className="text-[15px] font-semibold text-[#1a1a2e] leading-snug line-clamp-2">{tour.title}</h3>
+                    <div className="flex items-center gap-2 mt-2 text-[13px] text-[#999]">
+                      <span className="text-[#d4af37]">★ 4.9</span>
+                      <span>·</span>
+                      <span>{tour.location}</span>
+                    </div>
+                  </div>
+
                   {/* Price */}
-                  <div className="p-8 text-center border-b border-[#eee]">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#999] mb-1">From</p>
-                    <p className="text-4xl font-bold text-[#1a1a2e] tracking-tight">
-                      ${tour.price}<span className="text-base font-normal text-[#aaa] ml-1">/person</span>
+                  <div className="px-6 py-5 text-center bg-[#fafafa] border-b border-[#f0f0f0]">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#bbb] mb-1">From</p>
+                    <p className="text-[42px] font-bold text-[#1a1a2e] tracking-tight leading-none">
+                      ${tour.price}<span className="text-[15px] font-normal text-[#aaa] ml-1">/person</span>
                     </p>
                   </div>
 
                   {/* Facts */}
-                  <div className="p-6 space-y-3 border-b border-[#eee]">
+                  <div className="px-6 py-5 space-y-3.5 border-b border-[#f0f0f0]">
                     {tour.sidebarFacts?.map(f => (
-                      <div key={f.label} className="flex items-center justify-between text-sm">
-                        <span className="text-[#888]">{f.label}</span>
-                        <span className="font-medium text-[#1a1a2e]">{f.value}</span>
+                      <div key={f.label} className="flex items-center justify-between text-[14px]">
+                        <span className="text-[#999]">{f.label}</span>
+                        <span className="font-semibold text-[#1a1a2e]">{f.value}</span>
                       </div>
                     ))}
                   </div>
 
                   {/* Inclusions */}
                   {tour.sidebarInclusions && (
-                    <div className="p-6 border-b border-[#eee]">
-                      <div className="space-y-2.5">
+                    <div className="px-6 py-5 border-b border-[#f0f0f0]">
+                      <div className="space-y-3">
                         {tour.sidebarInclusions.map(item => (
-                          <div key={item} className="flex items-center gap-2.5 text-sm text-[#555]">
-                            <Check size={14} className="text-emerald-500 flex-shrink-0" /> {item}
+                          <div key={item} className="flex items-center gap-3 text-[14px] text-[#555]">
+                            <Check size={15} className="text-emerald-500 flex-shrink-0" /> {item}
                           </div>
                         ))}
                       </div>
@@ -347,12 +358,12 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
                   )}
 
                   {/* CTA */}
-                  <div className="p-6">
+                  <div className="px-6 py-5">
                     <a href={tour.bookingUrl} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 w-full py-3.5 rounded-lg bg-[#d4af37] text-[#1a1a2e] font-bold text-[15px] hover:bg-[#c9a230] active:scale-[0.98] transition-all">
+                      className="flex items-center justify-center gap-2 w-full py-4 rounded-xl bg-[#d4af37] text-white font-bold text-[15px] tracking-wide hover:bg-[#c9a230] active:scale-[0.98] transition-all shadow-[0_4px_12px_-2px_rgba(212,175,55,0.4)]">
                       {cta} <ArrowRight size={16} />
                     </a>
-                    <p className="text-center text-[11px] text-[#aaa] mt-3">{cancel}</p>
+                    <p className="text-center text-[11px] text-[#bbb] mt-3 tracking-wide">{cancel}</p>
                   </div>
                 </div>
               </div>
