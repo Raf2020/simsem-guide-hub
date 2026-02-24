@@ -1081,7 +1081,7 @@
 }
 
 /* ==================================================
-   RESPONSIVE
+   RESPONSIVE — Native App-Like Mobile
    ================================================== */
 
 /* Desktop (1024px+) */
@@ -1109,62 +1109,294 @@
 /* Tablet (640px – 1023px) */
 @media (min-width: 640px) and (max-width: 1023px) {
     .wr-hero { height: 60vh; }
-    .wr-details-grid { grid-template-columns: repeat(6, 1fr); }
+    .wr-details-grid { grid-template-columns: repeat(3, 1fr); }
     .wr-highlights { grid-template-columns: repeat(2, 1fr); }
     .wr-incl-grid { grid-template-columns: 1fr 1fr; }
-    .wr-thumb-btn { width: 80px; height: 80px; }
+    .wr-thumb-btn { width: 72px; height: 72px; }
 }
 
-/* Mobile (< 1024px) */
+/* Mobile (< 1024px) — Native App Feel */
 @media (max-width: 1023px) {
-    .wr-mobile-cta-banner { display: flex; }
-    .wr-mid-cta { display: block; }
-    .wr-bottom-cta { display: block; }
+    .wr-page {
+        padding-bottom: 76px; /* space for sticky bar */
+        background: #f5f4f0;
+        font-size: 16px;
+    }
 
+    /* --- Full-bleed hero --- */
+    .wr-hero {
+        height: 65vh;
+        min-height: 280px;
+        border-radius: 0;
+    }
+
+    .wr-hero-overlay {
+        background: linear-gradient(
+            to top,
+            rgba(26,26,46,0.95) 0%,
+            rgba(26,26,46,0.4) 35%,
+            transparent 70%
+        );
+    }
+
+    .wr-hero-content { padding: 0 16px 20px; }
+
+    .wr-hero-title {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+    }
+
+    .wr-hero-meta {
+        font-size: 12px;
+        gap: 8px;
+    }
+
+    .wr-hero-badges { margin-bottom: 8px; }
+    .wr-badge { font-size: 10px; padding: 4px 10px; }
+
+    /* --- Thumbnail strip: snap scroll --- */
+    .wr-thumb-strip { background: #1a1a2e; }
+    .wr-thumb-strip-inner {
+        padding: 8px 12px;
+        gap: 6px;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+    }
+    .wr-thumb-btn {
+        width: 52px;
+        height: 52px;
+        border-radius: 8px;
+        scroll-snap-align: start;
+    }
+
+    /* --- Mobile CTA Banner: compact --- */
+    .wr-mobile-cta-banner {
+        display: flex;
+        padding: 12px 16px;
+        gap: 12px;
+        background: #fff;
+        border-bottom: 1px solid #eee;
+    }
+    .wr-mobile-cta-price { font-size: 24px; }
+    .wr-cta-pill {
+        padding: 10px 22px;
+        font-size: 14px;
+    }
+    .wr-mobile-cta-note { font-size: 11px; margin-top: 6px; }
+
+    /* --- Main content: edge-to-edge cards --- */
+    .wr-layout {
+        padding: 16px 0;
+        gap: 0;
+    }
+    .wr-layout > div:first-child {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    /* --- Intro: padded inline --- */
+    .wr-intro {
+        font-size: 15px;
+        padding: 0 16px;
+        margin-bottom: 0;
+        color: #555;
+        line-height: 1.6;
+    }
+
+    /* --- Details: horizontal scroll chips --- */
+    .wr-details-grid {
+        display: flex;
+        overflow-x: auto;
+        gap: 8px;
+        padding: 0 16px;
+        margin-bottom: 0;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .wr-details-grid::-webkit-scrollbar { display: none; }
+    .wr-detail-card {
+        flex-shrink: 0;
+        min-width: 100px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        scroll-snap-align: start;
+        border: 1px solid #eee;
+        background: #fff;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .wr-detail-emoji { font-size: 18px; margin-bottom: 4px; }
+    .wr-detail-label { font-size: 9px; letter-spacing: 1px; }
+    .wr-detail-value { font-size: 12px; }
+
+    /* --- Social proof: compact inline bar --- */
+    .wr-proof-banner {
+        margin: 0 16px;
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-size: 12px;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    /* --- Sections: card style --- */
+    .wr-section {
+        background: #fff;
+        border-radius: 16px;
+        margin: 0 12px;
+        padding: 20px 16px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        margin-bottom: 0;
+    }
+
+    .wr-section-title {
+        font-size: 1.15rem;
+        margin-bottom: 16px;
+        gap: 8px;
+    }
+
+    .wr-section-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
+        font-size: 16px;
+    }
+
+    /* --- Highlights: compact --- */
+    .wr-highlight {
+        padding: 10px 14px;
+        font-size: 14px;
+        border-radius: 10px;
+        gap: 10px;
+    }
+    .wr-highlight-check {
+        width: 22px;
+        height: 22px;
+        font-size: 12px;
+    }
+
+    /* --- Included/Not Included --- */
+    .wr-incl-box { padding: 16px; border-radius: 12px; }
+    .wr-incl-box li { font-size: 14px; margin-bottom: 8px; }
+    .wr-incl-box h3 { font-size: 12px; margin-bottom: 12px; }
+    .wr-chips { padding: 0; margin-top: 16px; }
+    .wr-chip { font-size: 13px; padding: 6px 12px; }
+
+    /* --- Mid-page CTA: styled as card --- */
+    .wr-mid-cta {
+        display: block;
+        margin: 0 12px;
+        padding: 0;
+    }
+    .wr-cta-block {
+        border-radius: 12px;
+        padding: 14px;
+        font-size: 16px;
+    }
+
+    /* --- Itinerary --- */
+    .wr-day-tabs { gap: 6px; margin-bottom: 16px; }
+    .wr-day-tab {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+    .wr-timeline { padding-left: 20px; }
+    .wr-timeline-item::before {
+        width: 14px;
+        height: 14px;
+        left: -28px;
+        top: 6px;
+        border-width: 2px;
+    }
+    .wr-timeline-card { padding: 14px 16px; border-radius: 12px; }
+    .wr-timeline-time { font-size: 11px; }
+    .wr-timeline-title { font-size: 15px; margin: 4px 0 2px; }
+    .wr-timeline-desc { font-size: 13px; }
+
+    /* --- Content cards: edge cards --- */
+    .wr-content-card {
+        margin: 0 12px;
+        padding: 18px 16px;
+        border-radius: 14px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .wr-content-card-title { font-size: 1.1rem; margin-bottom: 10px; }
+    .wr-content-card p { font-size: 14px; line-height: 1.6; }
+    .wr-star-list li { font-size: 14px; margin-bottom: 6px; }
+
+    /* --- Guide: compact card --- */
+    .wr-guide {
+        padding: 16px;
+        gap: 14px;
+        border-radius: 14px;
+    }
+    .wr-guide-avatar { width: 48px; height: 48px; font-size: 18px; }
+    .wr-guide-name { font-size: 16px; }
+    .wr-guide-note { font-size: 13px; }
+    .wr-guide-bio { font-size: 14px; }
+
+    /* --- FAQs: tight accordion --- */
+    .wr-faq details { border-radius: 12px; margin-bottom: 8px; }
+    .wr-faq summary { padding: 14px 16px; font-size: 14px; }
+    .wr-faq details > div { padding: 0 16px 14px; font-size: 13px; }
+
+    /* --- Bottom CTA: hide (sticky bar is enough) --- */
+    .wr-bottom-cta { display: none; }
+
+    /* --- Related section --- */
+    .wr-related { padding: 24px 12px; }
+    .wr-related h2 { font-size: 16px; margin-bottom: 12px; }
+    .wr-related-card {
+        padding: 14px 16px;
+        border-radius: 12px;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+    .wr-related-title { font-size: 14px; }
+    .wr-related-price { font-size: 13px; }
+
+    /* --- Footer: compact --- */
+    .wr-footer { padding: 20px 16px; }
+    .wr-footer p { font-size: 12px; }
+
+    /* --- Sticky Bottom Bar: prominent, safe-area aware --- */
     .wr-mobile-bar {
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
-        z-index: 999;
-        background: rgba(255,255,255,0.97);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border-top: 1px solid #e5e5e5;
-        padding: 12px 16px;
+        z-index: 9999;
+        background: rgba(255,255,255,0.98);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-top: 1px solid rgba(0,0,0,0.06);
+        padding: 10px 16px;
+        padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
         display: flex;
         align-items: center;
         justify-content: space-between;
-        box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+        box-shadow: 0 -2px 24px rgba(0,0,0,0.08);
     }
 
-    .wr-page { padding-bottom: 80px; }
+    .wr-mobile-bar-label { font-size: 10px; }
+    .wr-mobile-bar-price { font-size: 20px; line-height: 1.1; }
+    .wr-mobile-bar-price span { font-size: 12px; }
+
+    .wr-cta-mobile {
+        padding: 12px 28px;
+        font-size: 14px;
+        border-radius: 12px;
+    }
 }
 
-/* Small Mobile (< 640px) */
-@media (max-width: 639px) {
-    .wr-hero { height: 50vh; }
-    .wr-hero-title { font-size: 1.6rem; }
-    .wr-hero-meta { font-size: 13px; gap: 10px; }
-    .wr-thumb-btn { width: 56px; height: 56px; border-radius: 8px; }
-    .wr-intro { font-size: 16px; }
-    .wr-detail-card { padding: 12px 6px; }
-    .wr-detail-emoji { font-size: 18px; }
-    .wr-detail-label { font-size: 9px; }
-    .wr-detail-value { font-size: 12px; }
-    .wr-proof-banner { padding: 16px; font-size: 13px; gap: 12px; }
-    .wr-highlight { padding: 14px 16px; font-size: 14px; }
-    .wr-incl-box { padding: 18px; }
-    .wr-timeline-card { padding: 16px; }
-    .wr-timeline-title { font-size: 16px; }
-    .wr-timeline-desc { font-size: 14px; }
-    .wr-content-card { padding: 20px; }
-    .wr-content-card p { font-size: 15px; }
-    .wr-guide { padding: 20px; flex-direction: column; align-items: center; text-align: center; }
-    .wr-faq summary { padding: 16px 20px; font-size: 15px; }
-    .wr-faq details > div { padding: 0 20px 16px; font-size: 14px; }
-    .wr-section { margin-bottom: 36px; }
-    .wr-related-card { flex-direction: column; align-items: flex-start; }
+/* Extra small (< 380px) */
+@media (max-width: 379px) {
+    .wr-hero-title { font-size: 1.3rem; }
+    .wr-detail-card { min-width: 85px; }
+    .wr-cta-mobile { padding: 10px 20px; font-size: 13px; }
+    .wr-mobile-bar-price { font-size: 18px; }
 }
 
 /* ---- Print ---- */
