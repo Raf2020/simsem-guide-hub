@@ -268,7 +268,7 @@ $details = array_filter([
                 <section class="wr-section wr-section-border">
                     <h2 class="wr-heading">Your Guide</h2>
                     <div class="wr-guide">
-                        <div class="wr-guide-avatar"><?php echo mb_substr($guide_name ?: 'G', 0, 1); ?></div>
+                        <div class="wr-guide-avatar"><?php echo esc_html(mb_substr(trim($guide_name ?: 'G'), 0, 1)); ?></div>
                         <div>
                             <h3 class="wr-guide-name"><?php echo esc_html($guide_name ?: 'Your Guide'); ?></h3>
                             <?php if ($guide_note) : ?><p class="wr-guide-note"><?php echo esc_html($guide_note); ?></p><?php endif; ?>
@@ -345,26 +345,29 @@ $details = array_filter([
         </div>
     </div>
 
-    <!-- ═══ RELATED ═══ -->
+    <?php
+    $related = new WP_Query([
+        'post_type'      => 'simsem_tour',
+        'posts_per_page' => 3,
+        'post__not_in'   => [$id],
+        'orderby'        => 'rand',
+    ]);
+    if ($related->have_posts()) :
+    ?>
     <section class="wr-related">
         <div class="wr-related-inner">
             <h2 class="wr-heading">You Might Also Like</h2>
-            <?php
-            $related = new WP_Query([
-                'post_type'      => 'simsem_tour',
-                'posts_per_page' => 3,
-                'post__not_in'   => [$id],
-                'orderby'        => 'rand',
-            ]);
-            if ($related->have_posts()) : while ($related->have_posts()) : $related->the_post();
-                $r_price = get_post_meta(get_the_ID(), '_simsem_price', true);
-            ?>
+            <?php while ($related->have_posts()) : $related->the_post(); ?>
             <a href="<?php the_permalink(); ?>" class="wr-related-link">
                 <?php the_title(); ?> →
             </a>
-            <?php endwhile; wp_reset_postdata(); endif; ?>
+            <?php endwhile; ?>
         </div>
     </section>
+    <?php
+    endif;
+    wp_reset_postdata();
+    ?>
 
     <!-- ═══ NEWSLETTER ═══ -->
     <section class="wr-newsletter">

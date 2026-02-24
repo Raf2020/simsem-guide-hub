@@ -17,7 +17,7 @@
 }
 
 .wr-page {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
     color: #1a1a2e;
     max-width: 100%;
     margin: 0 auto;
@@ -34,6 +34,28 @@
 .wr-page h1, .wr-page h2, .wr-page h3, .wr-page h4 { margin: 0; padding: 0; line-height: 1.2; }
 .wr-page p { margin: 0; padding: 0; }
 .wr-page button { font-family: inherit; cursor: pointer; border: none; background: none; padding: 0; margin: 0; }
+
+/* Strong theme-style isolation */
+.wr-page h1,
+.wr-page h2,
+.wr-page h3,
+.wr-page h4,
+.wr-hero-title,
+.wr-heading,
+.wr-newsletter-title {
+    font-family: 'DM Serif Display', Georgia, serif !important;
+}
+
+.wr-page,
+.wr-page p,
+.wr-page li,
+.wr-page a,
+.wr-page span,
+.wr-page input,
+.wr-page textarea,
+.wr-page button {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+}
 
 /* ── HERO ── */
 .wr-hero {

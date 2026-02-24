@@ -339,23 +339,40 @@ function simsem_parse_tour_html($html) {
 
         // Guide
         if (stripos($h, 'Your Guide') !== false || stripos($h, 'Guide:') !== false) {
-            // Extract name from heading — remove prefix and parenthetical notes
-            $guideName = preg_replace('/^Your Guide[:\s]*/i', '', $h);
-            $guideName = trim($guideName);
-            // Strip "(name shared after booking)" or similar parenthetical
+            $guideName = '';
             $guideNote = '';
-            if (preg_match('/\(([^)]+)\)/', $guideName, $paren)) {
-                $guideNote = trim($paren[1]);
-                $guideName = trim(preg_replace('/\s*\([^)]+\)/', '', $guideName));
+
+            // 1) Prefer <strong> text inside guide section (most reliable in imported HTML)
+            foreach ($nodes as $n) {
+                if (!($n instanceof DOMElement)) continue;
+                $strongs = $n->getElementsByTagName('strong');
+                if ($strongs->length > 0) {
+                    $guideName = trim($strongs->item(0)->textContent);
+                    break;
+                }
             }
-            if ($guideName) {
+
+            // 2) Fallback to heading-derived value
+            if (empty($guideName)) {
+                $guideName = trim(preg_replace('/^Your Guide[:\s]*/i', '', $h));
+            }
+
+            // 3) Extract parenthetical note from guide name
+            if (!empty($guideName) && preg_match('/^(.*?)\s*\(([^)]+)\)\s*$/u', $guideName, $m)) {
+                $guideName = trim($m[1]);
+                $guideNote = trim($m[2]);
+            }
+
+            if (!empty($guideName)) {
                 $data['guide_name'] = $guideName;
             }
-            if ($guideNote) {
+            if (!empty($guideNote)) {
                 $data['guide_note'] = ucfirst($guideNote);
             }
+
             $data['guide_bio'] = simsem_extract_paragraphs($nodes);
-            // Fallback: if guide bio mentions "after booking", add note
+
+            // 4) Fallback: infer note from bio text
             if (empty($data['guide_note']) && stripos($data['guide_bio'] ?? '', 'after booking') !== false) {
                 $data['guide_note'] = 'Name shared after booking';
             }
