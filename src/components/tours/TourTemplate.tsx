@@ -2,6 +2,20 @@ import { useState, ReactNode } from "react";
 import { Helmet } from "react-helmet-async";
 import { ArrowRight, Check, X, ChevronDown, Minus } from "lucide-react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+
+/* ============ FADE-IN WRAPPER ============ */
+const FadeIn = ({ children, delay = 0, className = "" }: { children: ReactNode; delay?: number; className?: string }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 24 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-60px" }}
+    transition={{ duration: 0.6, delay, ease: [0.25, 0.1, 0.25, 1] }}
+    className={className}
+  >
+    {children}
+  </motion.div>
+);
 
 /* ============ TYPES ============ */
 
@@ -123,11 +137,14 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
             {/* LEFT */}
             <div>
               {/* Description */}
+              <FadeIn>
               <div className="text-lg lg:text-[21px] text-[#555] leading-[1.7] mb-16 max-w-xl">
                 {tour.description}
               </div>
+              </FadeIn>
 
               {/* Quick facts — minimal horizontal strip */}
+              <FadeIn delay={0.05}>
               <div className="flex flex-wrap gap-x-8 gap-y-4 mb-16 pb-16 border-b border-[#eee]">
                 {tour.details.map(d => (
                   <div key={d.label}>
@@ -136,9 +153,11 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
                   </div>
                 ))}
               </div>
+              </FadeIn>
 
               {/* Highlights */}
               {tour.highlights.length > 0 && (
+                <FadeIn>
                 <section className="mb-16">
                   <h2 className="font-display text-2xl text-[#1a1a2e] mb-6">What to Expect</h2>
                   <ul className="space-y-4">
@@ -150,10 +169,12 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
                     ))}
                   </ul>
                 </section>
+                </FadeIn>
               )}
 
               {/* Included / Not Included */}
               {(tour.included.length > 0 || tour.notIncluded.length > 0) && (
+                <FadeIn>
                 <section className="mb-16 pb-16 border-b border-[#eee]">
                   <h2 className="font-display text-2xl text-[#1a1a2e] mb-6">What's Included</h2>
                   <div className="grid md:grid-cols-2 gap-x-12 gap-y-0">
@@ -175,6 +196,7 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
                     )}
                   </div>
                 </section>
+                </FadeIn>
               )}
 
               {/* Mobile CTA */}
@@ -188,6 +210,7 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
 
               {/* Itinerary */}
               {tour.itinerary.length > 0 && (
+                <FadeIn>
                 <section className="mb-16">
                   <h2 className="font-display text-2xl text-[#1a1a2e] mb-6">Itinerary</h2>
                   {tour.itinerary.length > 1 && (
@@ -212,10 +235,12 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
                     ))}
                   </div>
                 </section>
+                </FadeIn>
               )}
 
               {/* Who & What */}
               {(tour.whoFor || tour.whatDifferent) && (
+                <FadeIn>
                 <section className="mb-16 pb-16 border-b border-[#eee]">
                   {tour.whoFor && (
                     <div className="mb-10">
@@ -239,18 +264,22 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
                     </div>
                   )}
                 </section>
+                </FadeIn>
               )}
 
               {/* Meeting Point */}
               {tour.meetingPoint && (
+                <FadeIn>
                 <section className="mb-16">
                   <h2 className="font-display text-2xl text-[#1a1a2e] mb-4">Meeting Point</h2>
                   <p className="text-[17px] text-[#555] leading-relaxed max-w-xl">{tour.meetingPoint}</p>
                 </section>
+                </FadeIn>
               )}
 
               {/* Guide */}
               {tour.guide && (
+                <FadeIn>
                 <section className="mb-16 pb-16 border-b border-[#eee]">
                   <h2 className="font-display text-2xl text-[#1a1a2e] mb-6">Your Guide</h2>
                   <div className="flex items-start gap-5">
@@ -264,10 +293,12 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
                     </div>
                   </div>
                 </section>
+                </FadeIn>
               )}
 
               {/* FAQs */}
               {tour.faqs.length > 0 && (
+                <FadeIn>
                 <section className="mb-12">
                   <h2 className="font-display text-2xl text-[#1a1a2e] mb-6">Questions & Answers</h2>
                   <div>
@@ -282,6 +313,7 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
                     ))}
                   </div>
                 </section>
+                </FadeIn>
               )}
             </div>
 
