@@ -204,15 +204,54 @@ function simsem_parse_tour_html($html) {
         $data['meta_title'] = mb_substr(trim($titleTag->item(0)->textContent), 0, 60);
     }
 
-    // Excerpt — first <p> after <h1>
+    // Excerpt, badges, and flat facts — elements between H1 and first H2
     $h1Node = $h1->length ? $h1->item(0) : null;
     if ($h1Node) {
         $sibling = $h1Node->nextSibling;
-        while ($sibling) {
-            if ($sibling->nodeName === 'p' && trim($sibling->textContent)) {
-                $data['excerpt'] = trim($sibling->textContent);
-                break;
+        $excerptFound = false;
+        while ($sibling && $sibling->nodeName !== 'h2') {
+            // First <p> = excerpt
+            if ($sibling->nodeName === 'p' && trim($sibling->textContent) && !$excerptFound) {
+                $text = trim($sibling->textContent);
+                // Skip badge lines and CTA links
+                if (stripos($text, 'Badges:') === false && !($sibling instanceof DOMElement && $sibling->getElementsByTagName('a')->length > 0 && stripos($text, 'Check Availability') !== false)) {
+                    $data['excerpt'] = $text;
+                    $excerptFound = true;
+                }
             }
+
+            // Badges line: <p><strong>Badges:</strong> ...</p>
+            if ($sibling->nodeName === 'p' && stripos($sibling->textContent, 'Badges:') !== false) {
+                $badgeText = trim(preg_replace('/^.*Badges:\s*/i', '', $sibling->textContent));
+                if ($badgeText) {
+                    $data['badge'] = $badgeText;
+                }
+            }
+
+            // Flat <ul> with quick facts (Host, Price, Pickup, Duration, etc.)
+            if ($sibling->nodeName === 'ul' && $sibling instanceof DOMElement) {
+                $lis = $sibling->getElementsByTagName('li');
+                for ($j = 0; $j < $lis->length; $j++) {
+                    $item = trim(strip_tags($lis->item($j)->textContent));
+                    if (preg_match('/(?:Guide|Host)[:\s]*(.+)/i', $item, $m)) $data['host'] = trim($m[1]);
+                    if (preg_match('/Price(?:\s*\([^)]*\))?[:\s]*(?:From\s*)?\$?([\d,.]+)/i', $item, $m)) $data['price'] = trim($m[1]);
+                    if (preg_match('/(?:Start|Pickup(?:\s*Location)?)[:\s]*(.+)/i', $item, $m)) $data['pickup'] = trim($m[1]);
+                    if (preg_match('/Duration[:\s]*(.+)/i', $item, $m)) $data['duration'] = trim($m[1]);
+                    if (preg_match('/Languages?[:\s]*(.+)/i', $item, $m)) $data['language'] = trim($m[1]);
+                    if (preg_match('/(?:Location)[:\s]*(.+)/i', $item, $m)) {
+                        $loc = trim($m[1]);
+                        $parts = array_map('trim', explode(',', $loc));
+                        // Don't overwrite country if already set
+                        if (empty($data['country']) && count($parts) > 1) {
+                            $data['country'] = end($parts);
+                        }
+                    }
+                    if (preg_match('/Country[:\s]*(.+)/i', $item, $m)) $data['country'] = trim($m[1]);
+                    if (preg_match('/Transport[:\s]*(.+)/i', $item, $m)) $data['transport'] = trim($m[1]);
+                    if (preg_match('/Group\s*Size[:\s]*(.+)/i', $item, $m)) $data['group'] = trim($m[1]);
+                }
+            }
+
             $sibling = $sibling->nextSibling;
         }
     }
@@ -311,7 +350,19 @@ function simsem_parse_tour_html($html) {
 
         // Where Does the Tour Start / Meeting Point / What to Pack
         if (stripos($h, 'Where Does') !== false || stripos($h, 'Meeting Point') !== false || stripos($h, 'What to Pack') !== false || stripos($h, 'Tour Start') !== false) {
-            $data['meeting_point'] = simsem_extract_paragraphs($nodes);
+            $text = simsem_extract_paragraphs($nodes);
+            // Append if already set (handles duplicate "Where Does the Tour Start?" sections)
+            if (!empty($data['meeting_point']) && $text) {
+                $data['meeting_point'] .= "\n\n" . $text;
+            } else if ($text) {
+                $data['meeting_point'] = $text;
+            }
+        }
+
+        // Booking Information — SKIP (auto-generated from existing fields)
+        if (stripos($h, 'Booking Information') !== false) {
+            // Skip this section — trust layer is auto-generated
+            continue;
         }
 
         // Detailed Itinerary (matches "Detailed Itinerary", "Itinerary", etc.)

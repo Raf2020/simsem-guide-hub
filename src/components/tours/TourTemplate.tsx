@@ -615,12 +615,7 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
           </section>
         )}
 
-        {/* ─── FOOTER ─── */}
-        <footer className="border-t border-[#eee] py-8 text-center">
-          <p className="text-[13px] text-[#bbb] tracking-wide">
-            © {new Date().getFullYear()} SimSem — Authentic Middle Eastern Travel
-          </p>
-        </footer>
+        {/* Footer handled by site layout — no custom footer here */}
 
         {/* ─── MOBILE STICKY BAR ─── */}
         <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white border-t border-[#e5e5e5] px-5 py-3">
