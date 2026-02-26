@@ -1,7 +1,8 @@
 <?php
 /**
- * Single Tour Template — SimSem Tours v1.3.0
- * Matches React TourTemplate exactly: contained hero, title below image, horizontal facts
+ * Single Tour Template — SimSem Tours v2.0.0
+ * SEO SERP Structure: H1 → Quick Facts → CTA#1 → Highlights → Who For → What Different →
+ * Itinerary → Included → Not Included → Meeting Point → Booking Info → Guide → FAQs → CTAs
  */
 if (!defined('ABSPATH')) exit;
 get_header();
@@ -51,7 +52,7 @@ $gallery      = array_filter(array_map('trim', explode("\n", $gallery_raw)));
 $itinerary    = json_decode($itinerary_raw, true) ?: [];
 $faqs         = json_decode($faqs_raw, true) ?: [];
 
-// Quick facts — horizontal wrap (matching React details array)
+// Quick facts
 $details = array_filter([
     ['label' => 'Host',       'value' => $host],
     ['label' => 'Duration',   'value' => $duration],
@@ -64,7 +65,7 @@ $details = array_filter([
     ['label' => 'Private',    'value' => $private_opt],
 ], fn($d) => !empty($d['value']));
 
-// Sidebar facts (subset for booking widget)
+// Sidebar facts
 $sidebar_facts = array_filter([
     ['label' => 'Duration',   'value' => $duration],
     ['label' => 'Group Size', 'value' => $group],
@@ -74,11 +75,22 @@ $sidebar_facts = array_filter([
 
 // Guide initial
 $guide_initial = $guide_name ? mb_substr(trim($guide_name), 0, 1) : 'G';
+
+// Auto-generate Booking Information trust bullets
+$booking_info = [];
+$booking_info[] = $guide_name ? 'Local host: ' . $guide_name : 'Local host';
+$booking_info[] = $guide_note ?: 'Guide name shared after booking';
+$booking_info[] = 'WhatsApp contact available';
+$booking_info[] = ($group ?: ($private_opt ?: 'Private or small group'));
+$booking_info[] = 'Direct booking — no marketplace';
+$booking_info[] = 'Revenue goes to local community';
+
+$tour_title = get_the_title();
 ?>
 
 <div class="wr-page">
 
-    <!-- ═══ BREADCRUMB (on white, above image) ═══ -->
+    <!-- ═══ BREADCRUMB ═══ -->
     <nav class="wr-breadcrumb" aria-label="Breadcrumb">
         <a href="<?php echo esc_url(get_post_type_archive_link('simsem_tour')); ?>">Tours</a>
         <span class="wr-bc-sep">›</span>
@@ -86,17 +98,16 @@ $guide_initial = $guide_name ? mb_substr(trim($guide_name), 0, 1) : 'G';
         <a href="<?php echo esc_url(get_post_type_archive_link('simsem_tour')); ?>" class="wr-bc-country"><?php echo esc_html($country); ?></a>
         <span class="wr-bc-sep">›</span>
         <?php endif; ?>
-        <span class="wr-bc-current"><?php echo esc_html($pickup ?: get_the_title()); ?></span>
+        <span class="wr-bc-current"><?php echo esc_html($pickup ?: $tour_title); ?></span>
     </nav>
 
-    <!-- ═══ HERO IMAGE (contained, rounded) ═══ -->
+    <!-- ═══ HERO IMAGE ═══ -->
     <?php if (!empty($gallery)) : ?>
     <div class="wr-hero-container">
         <div class="wr-hero">
             <img class="wr-hero-img" id="wr-hero-img"
                  src="<?php echo esc_url($gallery[0]); ?>"
-                 alt="<?php echo esc_attr(get_the_title()); ?>" />
-            <!-- Gallery nav -->
+                 alt="<?php echo esc_attr($tour_title); ?>" />
             <?php if (count($gallery) > 1) : ?>
             <div class="wr-gallery-nav">
                 <span class="wr-gallery-count" id="wr-photo-count">1/<?php echo count($gallery); ?></span>
@@ -105,15 +116,13 @@ $guide_initial = $guide_name ? mb_substr(trim($guide_name), 0, 1) : 'G';
             </div>
             <?php endif; ?>
         </div>
-
-        <!-- Thumbnail row -->
         <?php if (count($gallery) > 1) : ?>
         <div class="wr-thumb-row">
             <?php foreach ($gallery as $i => $img) : ?>
             <button class="wr-thumb <?php echo $i === 0 ? 'active' : ''; ?>"
                     onclick="wrSelectImage(this, '<?php echo esc_url($img); ?>', <?php echo $i; ?>)">
                 <img src="<?php echo esc_url($img); ?>"
-                     alt="<?php echo esc_attr(get_the_title() . ' photo ' . ($i + 1)); ?>"
+                     alt="<?php echo esc_attr($tour_title . ' photo ' . ($i + 1)); ?>"
                      loading="lazy" />
             </button>
             <?php endforeach; ?>
@@ -122,7 +131,7 @@ $guide_initial = $guide_name ? mb_substr(trim($guide_name), 0, 1) : 'G';
     </div>
     <?php endif; ?>
 
-    <!-- ═══ TITLE BLOCK (below image, on white) ═══ -->
+    <!-- ═══ 🟦 TOP: H1 + Quick Facts ═══ -->
     <div class="wr-title-block">
         <div class="wr-title-badges">
             <?php if ($country) : ?>
@@ -132,7 +141,7 @@ $guide_initial = $guide_name ? mb_substr(trim($guide_name), 0, 1) : 'G';
             <span class="wr-badge wr-badge-muted"><?php echo esc_html($badge); ?></span>
             <?php endif; ?>
         </div>
-        <h1 class="wr-title"><?php the_title(); ?></h1>
+        <h1 class="wr-title"><?php echo esc_html($tour_title); ?></h1>
         <div class="wr-title-meta">
             <?php if ($pickup) : ?><span><?php echo esc_html($pickup); ?></span><?php endif; ?>
             <?php if ($pickup && $duration) : ?><span class="wr-meta-dot"></span><?php endif; ?>
@@ -154,9 +163,9 @@ $guide_initial = $guide_name ? mb_substr(trim($guide_name), 0, 1) : 'G';
                 <div class="wr-desc"><?php echo esc_html(get_the_excerpt()); ?></div>
                 <?php endif; ?>
 
-                <!-- Quick Facts — Horizontal Wrap (matching React) -->
+                <!-- Quick Facts -->
                 <?php if (!empty($details)) : ?>
-                <div class="wr-facts-wrap">
+                <div class="wr-facts-wrap" style="margin-bottom:3rem;padding-bottom:3rem;border-bottom:1px solid #eee;">
                     <?php foreach ($details as $d) : ?>
                     <div class="wr-fact-item">
                         <div class="wr-fact-label"><?php echo esc_html($d['label']); ?></div>
@@ -166,10 +175,21 @@ $guide_initial = $guide_name ? mb_substr(trim($guide_name), 0, 1) : 'G';
                 </div>
                 <?php endif; ?>
 
-                <!-- Highlights -->
+                <!-- CTA #1 — Above the fold -->
+                <?php if ($booking_url) : ?>
+                <div style="margin-bottom:4rem;">
+                    <a href="<?php echo esc_url($booking_url); ?>" target="_blank" rel="noopener noreferrer" class="wr-cta-gold" style="display:inline-flex;align-items:center;gap:8px;padding:16px 32px;border-radius:12px;">
+                        Check availability for this <?php echo esc_html($tour_title); ?> →
+                    </a>
+                </div>
+                <?php endif; ?>
+
+                <!-- ═══ 🟨 BODY ═══ -->
+
+                <!-- Tour Highlights -->
                 <?php if (!empty($highlights)) : ?>
                 <section class="wr-section">
-                    <h2 class="wr-heading">What to Expect</h2>
+                    <h2 class="wr-heading">Tour Highlights</h2>
                     <ul class="wr-list">
                         <?php foreach ($highlights as $h) : ?>
                         <li>
@@ -181,43 +201,33 @@ $guide_initial = $guide_name ? mb_substr(trim($guide_name), 0, 1) : 'G';
                 </section>
                 <?php endif; ?>
 
-                <!-- Included / Not Included -->
-                <?php if (!empty($included) || !empty($not_included)) : ?>
-                <section class="wr-section wr-section-border">
-                    <h2 class="wr-heading">What's Included</h2>
-                    <div class="wr-incl-cols">
-                        <?php if (!empty($included)) : ?>
-                        <ul class="wr-check-list">
-                            <?php foreach ($included as $item) : ?>
-                            <li><span class="wr-icon-yes">✓</span> <?php echo esc_html($item); ?></li>
-                            <?php endforeach; ?>
-                        </ul>
-                        <?php endif; ?>
-                        <?php if (!empty($not_included)) : ?>
-                        <ul class="wr-check-list">
-                            <?php foreach ($not_included as $item) : ?>
-                            <li><span class="wr-icon-no">✗</span> <?php echo esc_html($item); ?></li>
-                            <?php endforeach; ?>
-                        </ul>
-                        <?php endif; ?>
-                    </div>
+                <!-- Who Is This Tour For? -->
+                <?php if ($who_for) : ?>
+                <section class="wr-section">
+                    <h2 class="wr-heading">Who Is This Tour For?</h2>
+                    <p class="wr-body-text"><?php echo esc_html($who_for); ?></p>
                 </section>
                 <?php endif; ?>
 
-                <!-- Mobile CTA -->
-                <?php if ($booking_url) : ?>
-                <div class="wr-mobile-cta">
-                    <a href="<?php echo esc_url($booking_url); ?>" target="_blank" rel="noopener noreferrer" class="wr-cta-dark">
-                        <?php echo esc_html($cta_text); ?> — $<?php echo esc_html($price); ?> →
-                    </a>
-                    <p class="wr-cta-note"><?php echo esc_html($cancel_note); ?></p>
-                </div>
+                <!-- What Makes This Tour Different? -->
+                <?php if ($what_diff) : ?>
+                <section class="wr-section wr-section-border">
+                    <h2 class="wr-heading">What Makes This Tour Different?</h2>
+                    <p class="wr-body-text"><?php echo esc_html($what_diff); ?></p>
+                    <?php if (!empty($diff_points)) : ?>
+                    <ul class="wr-dash-list">
+                        <?php foreach ($diff_points as $pt) : ?>
+                        <li><span class="wr-dash">—</span> <?php echo esc_html($pt); ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <?php endif; ?>
+                </section>
                 <?php endif; ?>
 
-                <!-- Itinerary -->
+                <!-- Detailed Itinerary -->
                 <?php if (!empty($itinerary)) : ?>
                 <section class="wr-section">
-                    <h2 class="wr-heading">Itinerary</h2>
+                    <h2 class="wr-heading">Detailed Itinerary</h2>
                     <?php if (count($itinerary) > 1) : ?>
                     <div class="wr-day-tabs">
                         <?php foreach ($itinerary as $idx => $day) : ?>
@@ -246,38 +256,59 @@ $guide_initial = $guide_name ? mb_substr(trim($guide_name), 0, 1) : 'G';
                 </section>
                 <?php endif; ?>
 
-                <!-- Who Is This For + What Makes It Different -->
-                <?php if ($who_for || $what_diff) : ?>
-                <section class="wr-section wr-section-border">
-                    <?php if ($who_for) : ?>
-                    <div style="margin-bottom: <?php echo $what_diff ? '64px' : '0'; ?>;">
-                        <h2 class="wr-heading">Who Is This For</h2>
-                        <p class="wr-body-text"><?php echo esc_html($who_for); ?></p>
-                    </div>
-                    <?php endif; ?>
-                    <?php if ($what_diff) : ?>
-                    <div>
-                        <h2 class="wr-heading">What Makes It Different</h2>
-                        <p class="wr-body-text"><?php echo esc_html($what_diff); ?></p>
-                        <?php if (!empty($diff_points)) : ?>
-                        <ul class="wr-dash-list">
-                            <?php foreach ($diff_points as $pt) : ?>
-                            <li><span class="wr-dash">—</span> <?php echo esc_html($pt); ?></li>
+                <!-- What's Included -->
+                <?php if (!empty($included) || !empty($not_included)) : ?>
+                <section class="wr-section">
+                    <h2 class="wr-heading">What's Included</h2>
+                    <div class="wr-incl-cols">
+                        <?php if (!empty($included)) : ?>
+                        <ul class="wr-check-list">
+                            <?php foreach ($included as $item) : ?>
+                            <li><span class="wr-icon-yes">✓</span> <?php echo esc_html($item); ?></li>
                             <?php endforeach; ?>
                         </ul>
                         <?php endif; ?>
+                        <?php if (!empty($not_included)) : ?>
+                        <div>
+                            <h3 class="wr-heading" style="font-size:22px;margin-top:1rem;">What's Not Included</h3>
+                            <ul class="wr-check-list">
+                                <?php foreach ($not_included as $item) : ?>
+                                <li><span class="wr-icon-no">✗</span> <?php echo esc_html($item); ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                        <?php endif; ?>
                     </div>
-                    <?php endif; ?>
                 </section>
                 <?php endif; ?>
 
-                <!-- Meeting Point -->
+                <!-- Where Does the Tour Start? -->
                 <?php if ($meeting_point) : ?>
-                <section class="wr-section">
-                    <h2 class="wr-heading">Meeting Point</h2>
+                <section class="wr-section wr-section-border">
+                    <h2 class="wr-heading">Where Does the Tour Start?</h2>
                     <p class="wr-body-text"><?php echo esc_html($meeting_point); ?></p>
                 </section>
                 <?php endif; ?>
+
+                <!-- Mobile CTA -->
+                <?php if ($booking_url) : ?>
+                <div class="wr-mobile-cta">
+                    <a href="<?php echo esc_url($booking_url); ?>" target="_blank" rel="noopener noreferrer" class="wr-cta-dark">
+                        <?php echo esc_html($cta_text); ?> — $<?php echo esc_html($price); ?> →
+                    </a>
+                    <p class="wr-cta-note"><?php echo esc_html($cancel_note); ?></p>
+                </div>
+                <?php endif; ?>
+
+                <!-- ═══ 🟩 TRUST LAYER: Booking Information ═══ -->
+                <section class="wr-section wr-section-border">
+                    <h2 class="wr-heading">Booking Information</h2>
+                    <ul class="wr-check-list">
+                        <?php foreach ($booking_info as $item) : ?>
+                        <li><span class="wr-icon-yes" style="color:#d4af37;">✓</span> <?php echo esc_html($item); ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </section>
 
                 <!-- Guide -->
                 <?php if ($guide_name || $guide_bio) : ?>
@@ -294,10 +325,10 @@ $guide_initial = $guide_name ? mb_substr(trim($guide_name), 0, 1) : 'G';
                 </section>
                 <?php endif; ?>
 
-                <!-- FAQs -->
+                <!-- ═══ 🟪 SERP SUPPORT: FAQs ═══ -->
                 <?php if (!empty($faqs)) : ?>
                 <section class="wr-section">
-                    <h2 class="wr-heading">Questions & Answers</h2>
+                    <h2 class="wr-heading">Frequently Asked Questions</h2>
                     <div class="wr-faq">
                         <?php foreach ($faqs as $faq) : ?>
                         <details>
@@ -321,28 +352,36 @@ $guide_initial = $guide_name ? mb_substr(trim($guide_name), 0, 1) : 'G';
                 </section>
                 <?php endif; ?>
 
+                <!-- ═══ 🟥 BOTTOM CTAs ═══ -->
+                <?php if ($booking_url) : ?>
+                <div style="margin-top:2rem;">
+                    <a href="<?php echo esc_url($booking_url); ?>" target="_blank" rel="noopener noreferrer" class="wr-cta-gold" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:16px;border-radius:12px;margin-bottom:12px;">
+                        Reserve your <?php echo esc_html($tour_title); ?> →
+                    </a>
+                    <a href="<?php echo esc_url($booking_url); ?>" target="_blank" rel="noopener noreferrer" class="wr-cta-dark" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:16px;border-radius:12px;">
+                        Book your <?php echo esc_html($tour_title); ?> →
+                    </a>
+                    <p class="wr-cta-note" style="text-align:center;margin-top:8px;"><?php echo esc_html($cancel_note); ?></p>
+                </div>
+                <?php endif; ?>
+
             </div>
 
             <!-- RIGHT COLUMN — BOOKING SIDEBAR -->
             <div class="wr-sidebar-col">
                 <div class="wr-sidebar">
-                    <!-- Tour name header -->
                     <div class="wr-sidebar-header">
-                        <h3 class="wr-sidebar-title"><?php the_title(); ?></h3>
+                        <h3 class="wr-sidebar-title"><?php echo esc_html($tour_title); ?></h3>
                         <div class="wr-sidebar-meta">
                             <span class="wr-meta-star">★ 4.9</span>
                             <span>·</span>
                             <span><?php echo esc_html($pickup ?: $country); ?></span>
                         </div>
                     </div>
-
-                    <!-- Price -->
                     <div class="wr-sidebar-price-block">
                         <p class="wr-sidebar-from">From</p>
                         <p class="wr-sidebar-price">$<?php echo esc_html($price ?: '0'); ?><span>/person</span></p>
                     </div>
-
-                    <!-- Facts -->
                     <div class="wr-sidebar-facts">
                         <?php foreach ($sidebar_facts as $f) : ?>
                         <div class="wr-sidebar-row">
@@ -351,8 +390,6 @@ $guide_initial = $guide_name ? mb_substr(trim($guide_name), 0, 1) : 'G';
                         </div>
                         <?php endforeach; ?>
                     </div>
-
-                    <!-- Inclusions -->
                     <?php if (!empty($included)) : ?>
                     <div class="wr-sidebar-incl">
                         <?php foreach (array_slice($included, 0, 5) as $item) : ?>
@@ -360,8 +397,6 @@ $guide_initial = $guide_name ? mb_substr(trim($guide_name), 0, 1) : 'G';
                         <?php endforeach; ?>
                     </div>
                     <?php endif; ?>
-
-                    <!-- CTA -->
                     <?php if ($booking_url) : ?>
                     <div class="wr-sidebar-cta">
                         <a href="<?php echo esc_url($booking_url); ?>" target="_blank" rel="noopener noreferrer" class="wr-cta-gold">
@@ -439,45 +474,18 @@ function wrUpdateSlide() {
     if (counter) counter.textContent = (wrIdx + 1) + '/' + wrGallery.length;
 }
 
-function wrSelectImage(btn, url, idx) {
-    wrIdx = idx;
-    wrPaused = true;
-    wrStopAuto();
-    wrUpdateSlide();
-}
-function wrPrevImg() {
-    wrIdx = wrIdx > 0 ? wrIdx - 1 : wrGallery.length - 1;
-    wrPaused = true;
-    wrStopAuto();
-    wrUpdateSlide();
-}
-function wrNextImg() {
-    wrIdx = wrIdx < wrGallery.length - 1 ? wrIdx + 1 : 0;
-    wrPaused = true;
-    wrStopAuto();
-    wrUpdateSlide();
-}
+function wrSelectImage(btn, url, idx) { wrIdx = idx; wrPaused = true; wrStopAuto(); wrUpdateSlide(); }
+function wrPrevImg() { wrIdx = wrIdx > 0 ? wrIdx - 1 : wrGallery.length - 1; wrPaused = true; wrStopAuto(); wrUpdateSlide(); }
+function wrNextImg() { wrIdx = wrIdx < wrGallery.length - 1 ? wrIdx + 1 : 0; wrPaused = true; wrStopAuto(); wrUpdateSlide(); }
 
-/* Autoplay */
-function wrStartAuto() {
-    wrStopAuto();
-    wrAutoTimer = setInterval(function() {
-        wrIdx = wrIdx < wrGallery.length - 1 ? wrIdx + 1 : 0;
-        wrUpdateSlide();
-    }, 4000);
-}
-function wrStopAuto() {
-    if (wrAutoTimer) { clearInterval(wrAutoTimer); wrAutoTimer = null; }
-}
+function wrStartAuto() { wrStopAuto(); wrAutoTimer = setInterval(function() { wrIdx = wrIdx < wrGallery.length - 1 ? wrIdx + 1 : 0; wrUpdateSlide(); }, 4000); }
+function wrStopAuto() { if (wrAutoTimer) { clearInterval(wrAutoTimer); wrAutoTimer = null; } }
 
-/* Pause on hover, resume on leave */
 var wrHero = document.querySelector('.wr-hero');
 if (wrHero) {
     wrHero.addEventListener('mouseenter', function() { wrPaused = true; wrStopAuto(); });
     wrHero.addEventListener('mouseleave', function() { wrPaused = false; wrStartAuto(); });
 }
-
-/* Start autoplay on load */
 if (wrGallery.length > 1) { wrStartAuto(); }
 
 function wrSwitchDay(btn, idx) {

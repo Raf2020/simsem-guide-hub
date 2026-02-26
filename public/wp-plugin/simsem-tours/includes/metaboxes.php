@@ -6,15 +6,16 @@ if (!defined('ABSPATH')) exit;
  */
 add_action('add_meta_boxes', function () {
     add_meta_box('simsem_tour_details', '🧭 Tour Details', 'simsem_tour_details_cb', 'simsem_tour', 'normal', 'high');
-    add_meta_box('simsem_tour_highlights', '🏔 What to Expect (Highlights)', 'simsem_tour_highlights_cb', 'simsem_tour', 'normal', 'high');
+    add_meta_box('simsem_tour_highlights', '🏔 Tour Highlights', 'simsem_tour_highlights_cb', 'simsem_tour', 'normal', 'high');
     add_meta_box('simsem_tour_included', '🛡 Included / Not Included', 'simsem_tour_included_cb', 'simsem_tour', 'normal', 'high');
-    add_meta_box('simsem_tour_itinerary', '📅 Itinerary', 'simsem_tour_itinerary_cb', 'simsem_tour', 'normal', 'high');
+    add_meta_box('simsem_tour_itinerary', '📅 Detailed Itinerary', 'simsem_tour_itinerary_cb', 'simsem_tour', 'normal', 'high');
     add_meta_box('simsem_tour_content', '📝 Extra Content Sections', 'simsem_tour_content_cb', 'simsem_tour', 'normal', 'high');
     add_meta_box('simsem_tour_guide', '👤 Guide Info', 'simsem_tour_guide_cb', 'simsem_tour', 'normal', 'default');
-    add_meta_box('simsem_tour_faqs', '💬 FAQs', 'simsem_tour_faqs_cb', 'simsem_tour', 'normal', 'default');
+    add_meta_box('simsem_tour_faqs', '💬 Frequently Asked Questions', 'simsem_tour_faqs_cb', 'simsem_tour', 'normal', 'default');
     add_meta_box('simsem_tour_gallery', '📷 Gallery Images', 'simsem_tour_gallery_cb', 'simsem_tour', 'normal', 'default');
     add_meta_box('simsem_tour_seo', '📋 SEO Meta', 'simsem_tour_seo_cb', 'simsem_tour', 'normal', 'default');
     add_meta_box('simsem_tour_booking', '🎫 Booking', 'simsem_tour_booking_cb', 'simsem_tour', 'side', 'high');
+    add_meta_box('simsem_seo_validation', '⚠️ SEO Validation', 'simsem_seo_validation_cb', 'simsem_tour', 'side', 'high');
 });
 
 /**
@@ -23,6 +24,51 @@ add_action('add_meta_boxes', function () {
 function simsem_get($post_id, $key, $default = '') {
     $val = get_post_meta($post_id, $key, true);
     return $val !== '' ? $val : $default;
+}
+
+/**
+ * SEO Validation meta box — shows warnings in admin
+ */
+function simsem_seo_validation_cb($post) {
+    $title   = $post->post_title;
+    $price   = simsem_get($post->ID, '_simsem_price');
+    $dur     = simsem_get($post->ID, '_simsem_duration');
+    $pickup  = simsem_get($post->ID, '_simsem_pickup');
+    $booking = simsem_get($post->ID, '_simsem_booking_url');
+    $excerpt = $post->post_excerpt;
+
+    $warnings = [];
+    if (empty($title) || mb_strlen($title) < 5) {
+        $warnings[] = '❌ H1 title too short — must contain primary keyword';
+    }
+
+    // Check price, duration, pickup in first 120 words
+    $first120 = implode(' ', array_slice(str_word_count($excerpt . ' ' . $price . ' ' . $dur . ' ' . $pickup, 1), 0, 120));
+    $first120lower = strtolower($first120);
+
+    if (empty($price)) {
+        $warnings[] = '❌ Price is missing — must appear above the fold';
+    }
+    if (empty($dur)) {
+        $warnings[] = '❌ Duration is missing — must appear above the fold';
+    }
+    if (empty($pickup)) {
+        $warnings[] = '❌ Pickup location is missing — must appear above the fold';
+    }
+    if (empty($booking)) {
+        $warnings[] = '❌ No booking URL — CTA cannot render above the fold';
+    }
+
+    if (empty($warnings)) {
+        echo '<p style="color:#00a32a;font-weight:600;">✅ All SEO validation rules pass</p>';
+    } else {
+        echo '<div style="background:#fff3cd;border:1px solid #ffc107;border-radius:4px;padding:10px;margin-bottom:8px;">';
+        foreach ($warnings as $w) {
+            echo '<p style="margin:4px 0;font-size:13px;color:#856404;">' . esc_html($w) . '</p>';
+        }
+        echo '</div>';
+        echo '<p class="description" style="margin-top:8px;">Fix these before publishing for optimal SERP ranking.</p>';
+    }
 }
 
 /**
@@ -64,7 +110,7 @@ function simsem_tour_details_cb($post) {
  */
 function simsem_tour_highlights_cb($post) {
     $highlights = simsem_get($post->ID, '_simsem_highlights', '');
-    echo '<p class="description">One highlight per line</p>';
+    echo '<p class="description">One highlight per line — operational facts only, no storytelling</p>';
     printf('<textarea name="_simsem_highlights" rows="8" style="width:100%%">%s</textarea>', esc_textarea($highlights));
 }
 
@@ -75,16 +121,16 @@ function simsem_tour_included_cb($post) {
     $included = simsem_get($post->ID, '_simsem_included', '');
     $not_included = simsem_get($post->ID, '_simsem_not_included', '');
     echo '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">';
-    echo '<div><label><strong>✓ Included</strong> (one per line)</label>';
+    echo '<div><label><strong>✓ What\'s Included</strong> (one per line)</label>';
     printf('<textarea name="_simsem_included" rows="6" style="width:100%%">%s</textarea>', esc_textarea($included));
     echo '</div>';
-    echo '<div><label><strong>✗ Not Included</strong> (one per line)</label>';
+    echo '<div><label><strong>✗ What\'s Not Included</strong> (one per line)</label>';
     printf('<textarea name="_simsem_not_included" rows="6" style="width:100%%">%s</textarea>', esc_textarea($not_included));
     echo '</div></div>';
 }
 
 /**
- * Itinerary meta box — JSON format
+ * Itinerary meta box
  */
 function simsem_tour_itinerary_cb($post) {
     $itinerary = simsem_get($post->ID, '_simsem_itinerary', '');
@@ -101,16 +147,16 @@ function simsem_tour_content_cb($post) {
     $diff_points = simsem_get($post->ID, '_simsem_diff_points', '');
     $meeting = simsem_get($post->ID, '_simsem_meeting_point', '');
 
-    echo '<label><strong>❤️ Who Is This For?</strong></label>';
+    echo '<label><strong>❤️ Who Is This Tour For?</strong> (booking anxiety resolver)</label>';
     printf('<textarea name="_simsem_who_for" rows="3" style="width:100%%">%s</textarea>', esc_textarea($who));
 
-    echo '<br/><label><strong>⭐ What Makes It Different? (paragraph)</strong></label>';
+    echo '<br/><label><strong>⭐ What Makes This Tour Different?</strong> (local operator signal)</label>';
     printf('<textarea name="_simsem_what_different" rows="3" style="width:100%%">%s</textarea>', esc_textarea($diff));
 
     echo '<br/><label><strong>⭐ Differentiator bullet points</strong> (one per line)</label>';
     printf('<textarea name="_simsem_diff_points" rows="4" style="width:100%%">%s</textarea>', esc_textarea($diff_points));
 
-    echo '<br/><label><strong>📍 Where Does the Tour Start?</strong></label>';
+    echo '<br/><label><strong>📍 Where Does the Tour Start?</strong> (reduces logistics anxiety)</label>';
     printf('<textarea name="_simsem_meeting_point" rows="3" style="width:100%%">%s</textarea>', esc_textarea($meeting));
 }
 
@@ -132,7 +178,7 @@ function simsem_tour_guide_cb($post) {
  */
 function simsem_tour_faqs_cb($post) {
     $faqs = simsem_get($post->ID, '_simsem_faqs', '');
-    echo '<p class="description">JSON format: <code>[{"q":"Question?","a":"Answer."}]</code></p>';
+    echo '<p class="description">JSON format: <code>[{"q":"Question?","a":"Answer."}]</code><br/>MUST include: cost, private availability, pickup, inclusions, experience needed</p>';
     printf('<textarea name="_simsem_faqs" rows="8" style="width:100%%;font-family:monospace;font-size:12px;">%s</textarea>', esc_textarea($faqs));
 }
 
