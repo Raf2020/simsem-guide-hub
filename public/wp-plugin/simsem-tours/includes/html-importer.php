@@ -287,8 +287,8 @@ function simsem_parse_tour_html($html) {
             $data['not_included'] = implode("\n", array_map(fn($i) => trim(preg_replace('/^[✓✗\s]+/', '', strip_tags($i))), $items));
         }
 
-        // Who Is This For
-        if (stripos($h, 'Who Is This') !== false) {
+        // Who Is This For / Family Safety & Comfort
+        if (stripos($h, 'Who Is This') !== false || stripos($h, 'Family Safety') !== false) {
             $data['who_for'] = simsem_extract_paragraphs($nodes);
         }
 
@@ -309,8 +309,8 @@ function simsem_parse_tour_html($html) {
             $data['diff_points'] = implode("\n", $points);
         }
 
-        // Meeting Point
-        if (stripos($h, 'Where Does') !== false || stripos($h, 'Meeting Point') !== false) {
+        // Meeting Point / What to Pack
+        if (stripos($h, 'Where Does') !== false || stripos($h, 'Meeting Point') !== false || stripos($h, 'What to Pack') !== false) {
             $data['meeting_point'] = simsem_extract_paragraphs($nodes);
         }
 
