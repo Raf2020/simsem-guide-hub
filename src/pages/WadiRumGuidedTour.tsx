@@ -140,7 +140,8 @@ const wadiRumGuidedTour: TourData = {
   ],
 
   relatedLinks: [
-    { label: "Book Wadi Rum in Jordan – Visitor Center to Village Tour", href: "https://mysimsem.com/experiences/unforgettable-full-day-adventure-in-wadi-rum/" },
+    { label: "2 Days Wadi Rum Overnight 4×4 Jeep Tour", href: "/tours/jordan/wadi-rum-overnight-4x4-jeep-tour", image: "https://simemmedia.b-cdn.net/experiences//tours/lLWveUbeLG/gallery/image_1768180453799_2.jpg", price: "147" },
+    { label: "Wadi Rum Tours from Aqaba with Local Bedouin Guide", href: "/tours/jordan/wadi-rum-from-aqaba", image: "https://simemmedia.b-cdn.net/experiences//tours/lLWveUbeLG/gallery/image_1768180453799_3.jpg", price: "147" },
   ],
 };
 
