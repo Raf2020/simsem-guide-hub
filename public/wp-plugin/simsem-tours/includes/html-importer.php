@@ -257,8 +257,8 @@ function simsem_parse_tour_html($html) {
             }
         }
 
-        // Highlights
-        if (stripos($h, 'What to Expect') !== false) {
+        // Tour Highlights (matches "Tour Highlights", "What to Expect", etc.)
+        if (stripos($h, 'What to Expect') !== false || stripos($h, 'Tour Highlights') !== false) {
             $items = simsem_extract_list_items($nodes);
             $data['highlights'] = implode("\n", array_map(fn($i) => trim(strip_tags($i)), $items));
         }
@@ -287,7 +287,7 @@ function simsem_parse_tour_html($html) {
             $data['not_included'] = implode("\n", array_map(fn($i) => trim(preg_replace('/^[✓✗\s]+/', '', strip_tags($i))), $items));
         }
 
-        // Who Is This For / Family Safety & Comfort
+        // Who Is This Tour For / Family Safety & Comfort
         if (stripos($h, 'Who Is This') !== false || stripos($h, 'Family Safety') !== false) {
             $data['who_for'] = simsem_extract_paragraphs($nodes);
         }
@@ -309,12 +309,12 @@ function simsem_parse_tour_html($html) {
             $data['diff_points'] = implode("\n", $points);
         }
 
-        // Meeting Point / What to Pack
-        if (stripos($h, 'Where Does') !== false || stripos($h, 'Meeting Point') !== false || stripos($h, 'What to Pack') !== false) {
+        // Where Does the Tour Start / Meeting Point / What to Pack
+        if (stripos($h, 'Where Does') !== false || stripos($h, 'Meeting Point') !== false || stripos($h, 'What to Pack') !== false || stripos($h, 'Tour Start') !== false) {
             $data['meeting_point'] = simsem_extract_paragraphs($nodes);
         }
 
-        // Itinerary
+        // Detailed Itinerary (matches "Detailed Itinerary", "Itinerary", etc.)
         if (stripos($h, 'Itinerary') !== false) {
             $itinerary = simsem_parse_itinerary_nodes($nodes);
             if (!empty($itinerary)) {
