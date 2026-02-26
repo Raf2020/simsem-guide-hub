@@ -37,7 +37,7 @@ export interface TourData {
   guide?: GuideInfo; faqs: FAQ[];
   sidebarFacts?: SidebarFact[]; sidebarInclusions?: string[];
   metaTitle: string; metaDescription: string;
-  relatedLinks?: { label: string; href: string }[];
+  relatedLinks?: { label: string; href: string; image?: string; price?: string }[];
   instagramUrl?: string;
 }
 
@@ -604,13 +604,32 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
         {tour.relatedLinks && tour.relatedLinks.length > 0 && (
           <section className="border-t border-[#eee] py-12">
             <div className="max-w-6xl mx-auto px-6 lg:px-10">
-              <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-5">You Might Also Like</h2>
-              {tour.relatedLinks.map(link => (
-                <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer" 
-                  className="block py-4 text-[16px] font-medium text-[#1a1a2e] hover:text-[#d4af37] transition border-b border-[#f0f0f0] last:border-b-0">
-                  {link.label} →
-                </a>
-              ))}
+              <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-6">You Might Also Like</h2>
+              <div className="flex gap-5 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                {tour.relatedLinks.map(link => (
+                  <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer"
+                    className="group flex-shrink-0 w-[280px] sm:w-[300px] snap-start rounded-xl overflow-hidden border border-[#eee] hover:shadow-lg transition-shadow bg-white">
+                    {link.image && (
+                      <div className="relative h-[180px] overflow-hidden">
+                        <img src={link.image} alt={link.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                        {link.price && (
+                          <span className="absolute bottom-3 left-3 bg-white/95 backdrop-blur-sm text-[#1a1a2e] text-sm font-bold px-3 py-1 rounded-full shadow-sm">
+                            From ${link.price}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    <div className="p-4">
+                      <p className="text-[15px] font-semibold text-[#1a1a2e] group-hover:text-[#d4af37] transition-colors leading-snug line-clamp-2">
+                        {link.label}
+                      </p>
+                      <span className="inline-flex items-center gap-1 mt-2 text-[13px] font-medium text-[#d4af37]">
+                        View details <ArrowRight size={14} />
+                      </span>
+                    </div>
+                  </a>
+                ))}
+              </div>
             </div>
           </section>
         )}

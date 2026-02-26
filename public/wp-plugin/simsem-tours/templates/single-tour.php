@@ -423,11 +423,34 @@ $tour_title = get_the_title();
     <section class="wr-related">
         <div class="wr-related-inner">
             <h2 class="wr-heading">You Might Also Like</h2>
-            <?php while ($related->have_posts()) : $related->the_post(); ?>
-            <a href="<?php the_permalink(); ?>" class="wr-related-link">
-                <?php the_title(); ?> →
-            </a>
-            <?php endwhile; ?>
+            <div class="wr-related-slider">
+                <?php while ($related->have_posts()) : $related->the_post();
+                    $rel_price = get_post_meta(get_the_ID(), '_simsem_price', true);
+                    $rel_thumb = get_the_post_thumbnail_url(get_the_ID(), 'medium');
+                    if (!$rel_thumb) {
+                        $rel_gallery = get_post_meta(get_the_ID(), '_simsem_gallery', true);
+                        if (!empty($rel_gallery)) {
+                            $imgs = array_filter(array_map('trim', explode("\n", $rel_gallery)));
+                            $rel_thumb = !empty($imgs) ? $imgs[0] : '';
+                        }
+                    }
+                ?>
+                <a href="<?php the_permalink(); ?>" class="wr-related-card">
+                    <?php if ($rel_thumb) : ?>
+                    <div class="wr-related-card-img">
+                        <img src="<?php echo esc_url($rel_thumb); ?>" alt="<?php the_title_attribute(); ?>" loading="lazy" />
+                        <?php if ($rel_price) : ?>
+                        <span class="wr-related-card-price">From $<?php echo esc_html($rel_price); ?></span>
+                        <?php endif; ?>
+                    </div>
+                    <?php endif; ?>
+                    <div class="wr-related-card-body">
+                        <p class="wr-related-card-title"><?php the_title(); ?></p>
+                        <span class="wr-related-card-cta">View details →</span>
+                    </div>
+                </a>
+                <?php endwhile; ?>
+            </div>
         </div>
     </section>
     <?php
