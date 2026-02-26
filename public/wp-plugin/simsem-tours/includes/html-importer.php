@@ -241,18 +241,19 @@ function simsem_parse_tour_html($html) {
             $items = simsem_extract_list_items($nodes);
             foreach ($items as $item) {
                 $item = strip_tags($item);
-                if (preg_match('/Guide[:\s]*(.+)/i', $item, $m)) $data['host'] = trim($m[1]);
-                if (preg_match('/Price[:\s]*\$?([\d,.]+)/i', $item, $m)) $data['price'] = trim($m[1]);
-                if (preg_match('/Start[:\s]*(.+)/i', $item, $m)) $data['pickup'] = trim($m[1]);
+                if (preg_match('/(?:Guide|Host)[:\s]*(.+)/i', $item, $m)) $data['host'] = trim($m[1]);
+                if (preg_match('/Price(?:\s*\([^)]*\))?[:\s]*(?:From\s*)?\$?([\d,.]+)/i', $item, $m)) $data['price'] = trim($m[1]);
+                if (preg_match('/(?:Start|Pickup(?:\s*Location)?)[:\s]*(.+)/i', $item, $m)) $data['pickup'] = trim($m[1]);
                 if (preg_match('/Duration[:\s]*(.+)/i', $item, $m)) $data['duration'] = trim($m[1]);
-                if (preg_match('/Language[:\s]*(.+)/i', $item, $m)) $data['language'] = trim($m[1]);
-                if (preg_match('/Location[:\s]*(.+)/i', $item, $m)) {
+                if (preg_match('/Languages?[:\s]*(.+)/i', $item, $m)) $data['language'] = trim($m[1]);
+                if (preg_match('/(?:Location|Country)[:\s]*(.+)/i', $item, $m)) {
                     $loc = trim($m[1]);
                     $parts = array_map('trim', explode(',', $loc));
                     $data['country'] = count($parts) > 1 ? end($parts) : $loc;
                 }
                 if (preg_match('/Transport[:\s]*(.+)/i', $item, $m)) $data['transport'] = trim($m[1]);
                 if (preg_match('/Group\s*Size[:\s]*(.+)/i', $item, $m)) $data['group'] = trim($m[1]);
+                if (preg_match('/Badge(?:\s*Text)?[:\s]*(.+)/i', $item, $m)) $data['badge'] = trim($m[1]);
             }
         }
 
@@ -268,8 +269,9 @@ function simsem_parse_tour_html($html) {
             foreach ($items as $item) {
                 $item = preg_replace('/^[📏🏜💪🔒\s]+/', '', strip_tags($item));
                 if (preg_match('/Terrain[:\s]*(.+)/i', $item, $m)) $data['terrain'] = trim($m[1]);
-                if (preg_match('/Fitness[:\s]*(.+)/i', $item, $m)) $data['fitness'] = trim($m[1]);
-                if (preg_match('/Private[:\s]*(.+)/i', $item, $m)) $data['private_opt'] = trim($m[1]);
+                if (preg_match('/Fitness(?:\s*Level)?[:\s]*(.+)/i', $item, $m)) $data['fitness'] = trim($m[1]);
+                if (preg_match('/Private(?:\s*Option)?[:\s]*(.+)/i', $item, $m)) $data['private_opt'] = trim($m[1]);
+                if (preg_match('/Badge(?:\s*Text)?[:\s]*(.+)/i', $item, $m)) $data['badge'] = trim($m[1]);
             }
         }
 
