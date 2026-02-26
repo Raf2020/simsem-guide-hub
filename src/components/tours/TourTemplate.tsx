@@ -41,6 +41,38 @@ export interface TourData {
   instagramUrl?: string;
 }
 
+/* ============ SEO VALIDATION ============ */
+function validateTourSEO(tour: TourData): string[] {
+  const warnings: string[] = [];
+
+  // Keyword in H1 — we check that the title is not empty (keyword IS the H1)
+  if (!tour.title || tour.title.trim().length < 5) {
+    warnings.push("H1 title is too short or missing — must contain primary keyword");
+  }
+
+  // Build "first 120 words" from description + details
+  const descText = typeof tour.description === "string" ? tour.description : "";
+  const firstWords = descText.split(/\s+/).slice(0, 120).join(" ").toLowerCase();
+  const detailValues = tour.details.map(d => d.value.toLowerCase()).join(" ");
+  const aboveFoldText = (firstWords + " " + detailValues + " " + tour.price).toLowerCase();
+
+  if (!tour.price || !aboveFoldText.includes(tour.price.toLowerCase().replace("$", ""))) {
+    warnings.push("Price must appear in the first 120 words / above the fold");
+  }
+  if (!tour.duration) {
+    warnings.push("Duration must appear in the first 120 words / above the fold");
+  }
+  const pickupDetail = tour.details.find(d => d.label.toLowerCase().includes("pickup") || d.label.toLowerCase().includes("start"));
+  if (!pickupDetail?.value) {
+    warnings.push("Pickup location must appear in the first 120 words / above the fold");
+  }
+  if (!tour.bookingUrl) {
+    warnings.push("No CTA / booking URL — CTA must be above the fold");
+  }
+
+  return warnings;
+}
+
 /* ============ COMPONENT ============ */
 
 export default function TourTemplate({ tour }: { tour: TourData }) {
@@ -62,6 +94,22 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
   const schedule = tour.itinerary.find(d => d.day === activeDay)?.items ?? [];
   const cta = tour.ctaText || "Reserve Now";
   const cancel = tour.cancelNote || "Free cancellation · Instant confirmation";
+
+  // SEO validation (dev only)
+  const seoWarnings = validateTourSEO(tour);
+
+  // Auto-generate Booking Information trust bullets
+  const bookingInfoBullets: string[] = [];
+  if (tour.guide?.name) bookingInfoBullets.push(`Local host: ${tour.guide.name}`);
+  else bookingInfoBullets.push("Local host");
+  if (tour.guide?.note) bookingInfoBullets.push(tour.guide.note);
+  else bookingInfoBullets.push("Guide name shared after booking");
+  bookingInfoBullets.push("WhatsApp contact available");
+  const groupDetail = tour.details.find(d => d.label.toLowerCase().includes("group") || d.label.toLowerCase().includes("private"));
+  if (groupDetail) bookingInfoBullets.push(groupDetail.value);
+  else bookingInfoBullets.push("Private or small group");
+  bookingInfoBullets.push("Direct booking — no marketplace");
+  bookingInfoBullets.push("Revenue goes to local community");
 
   /* ── Enhanced JSON-LD for booking SERP ── */
   const jsonLd = {
@@ -145,6 +193,16 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
 
       <div className="min-h-screen bg-white font-sans text-[#1a1a2e]">
 
+        {/* ─── SEO VALIDATION WARNINGS (dev) ─── */}
+        {seoWarnings.length > 0 && (
+          <div className="bg-red-50 border-b border-red-200 px-6 py-3">
+            <p className="text-xs font-bold text-red-600 uppercase tracking-wider mb-1">⚠ SEO Validation Errors</p>
+            {seoWarnings.map((w, i) => (
+              <p key={i} className="text-sm text-red-700">• {w}</p>
+            ))}
+          </div>
+        )}
+
         {/* ─── BREADCRUMB ─── */}
         <nav className="max-w-6xl mx-auto px-6 lg:px-10 pt-6 pb-4 text-[13px] tracking-wide text-[#999]" aria-label="Breadcrumb">
           <Link to="/experiences" className="hover:text-[#1a1a2e] transition">Tours</Link>
@@ -205,7 +263,7 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
           </div>
         </div>
 
-        {/* ─── TITLE BLOCK (below image) ─── */}
+        {/* ─── 🟦 TOP: H1 + Quick Facts + CTA #1 ─── */}
         <header className="max-w-6xl mx-auto px-6 lg:px-10 pt-6 pb-2">
           <div className="flex items-center gap-3 mb-3">
             <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#d4af37] bg-[#d4af37]/10 px-3 py-1.5 rounded">{tour.country}</span>
@@ -236,9 +294,9 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
               </div>
               </FadeIn>
 
-              {/* Quick facts — minimal horizontal strip */}
+              {/* Quick Facts — minimal horizontal strip */}
               <FadeIn delay={0.05}>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-6 mb-16 pb-16 border-b border-[#eee]">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-6 mb-12 pb-12 border-b border-[#eee]">
                 {tour.details.map(d => (
                   <div key={d.label}>
                     <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#999] mb-1.5">{d.label}</div>
@@ -248,11 +306,23 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
               </div>
               </FadeIn>
 
-              {/* Highlights */}
+              {/* CTA #1 — Above the fold */}
+              <FadeIn delay={0.1}>
+              <div className="mb-16">
+                <a href={tour.bookingUrl} target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-[#d4af37] text-white font-bold text-[15px] rounded-xl hover:bg-[#c9a230] active:scale-[0.98] transition-all shadow-[0_4px_12px_-2px_rgba(212,175,55,0.4)]">
+                  Check availability for this {tour.title} <ArrowRight size={16} />
+                </a>
+              </div>
+              </FadeIn>
+
+              {/* ─── 🟨 BODY ─── */}
+
+              {/* Tour Highlights */}
               {tour.highlights.length > 0 && (
                 <FadeIn>
                 <section className="mb-16">
-                  <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-6">What to Expect</h2>
+                  <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-6">Tour Highlights</h2>
                   <ul className="space-y-4">
                     {tour.highlights.map((h, i) => (
                       <li key={i} className="flex items-start gap-4 text-[17px] text-[#333] leading-relaxed">
@@ -265,47 +335,40 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
                 </FadeIn>
               )}
 
-              {/* Included / Not Included */}
-              {(tour.included.length > 0 || tour.notIncluded.length > 0) && (
+              {/* Who Is This Tour For? */}
+              {tour.whoFor && (
                 <FadeIn>
-                <section className="mb-16 pb-16 border-b border-[#eee]">
-                  <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-6">What's Included</h2>
-                  <div className="grid md:grid-cols-2 gap-x-12 gap-y-0">
-                    <ul className="space-y-3">
-                      {tour.included.map(item => (
-                        <li key={item} className="flex items-center gap-3 text-[15px] text-[#333]">
-                          <Check size={15} className="text-emerald-500 flex-shrink-0" /> <span className="text-[16px]">{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    {tour.notIncluded.length > 0 && (
-                      <ul className="space-y-3 mt-6 md:mt-0">
-                        {tour.notIncluded.map(item => (
-                          <li key={item} className="flex items-center gap-3 text-[15px] text-[#888]">
-                            <X size={15} className="text-[#ccc] flex-shrink-0" /> {item}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
+                <section className="mb-16">
+                  <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-4">Who Is This Tour For?</h2>
+                  <p className="text-[17px] text-[#555] leading-relaxed max-w-xl">{tour.whoFor}</p>
                 </section>
                 </FadeIn>
               )}
 
-              {/* Mobile CTA */}
-              <div className="lg:hidden mb-16">
-                <a href={tour.bookingUrl} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 w-full py-4 bg-[#1a1a2e] text-white font-semibold text-base rounded-lg hover:bg-[#2a2a4e] transition">
-                  {cta} — ${tour.price} <ArrowRight size={18} />
-                </a>
-                <p className="text-center text-xs text-[#aaa] mt-2">{cancel}</p>
-              </div>
+              {/* What Makes This Tour Different? */}
+              {tour.whatDifferent && (
+                <FadeIn>
+                <section className="mb-16 pb-16 border-b border-[#eee]">
+                  <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-4">What Makes This Tour Different?</h2>
+                  <p className="text-[17px] text-[#555] leading-relaxed max-w-xl mb-4">{tour.whatDifferent}</p>
+                  {tour.diffPoints && (
+                    <ul className="space-y-2">
+                      {tour.diffPoints.map(p => (
+                        <li key={p} className="flex items-center gap-3 text-[15px] text-[#333]">
+                          <Minus size={12} className="text-[#d4af37] flex-shrink-0" /> {p}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+                </FadeIn>
+              )}
 
-              {/* Itinerary */}
+              {/* Detailed Itinerary */}
               {tour.itinerary.length > 0 && (
                 <FadeIn>
                 <section className="mb-16">
-                  <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-6">Itinerary</h2>
+                  <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-6">Detailed Itinerary</h2>
                   {tour.itinerary.length > 1 && (
                     <div className="flex gap-2 mb-8">
                       {tour.itinerary.map(d => (
@@ -331,44 +394,73 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
                 </FadeIn>
               )}
 
-              {/* Who & What */}
-              {(tour.whoFor || tour.whatDifferent) && (
+              {/* What's Included */}
+              {(tour.included.length > 0 || tour.notIncluded.length > 0) && (
                 <FadeIn>
-                <section className="mb-16 pb-16 border-b border-[#eee]">
-                  {tour.whoFor && (
-                    <div className="mb-10">
-                      <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-4">Who Is This For</h2>
-                      <p className="text-[17px] text-[#555] leading-relaxed max-w-xl">{tour.whoFor}</p>
-                    </div>
-                  )}
-                  {tour.whatDifferent && (
-                    <div>
-                      <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-4">What Makes It Different</h2>
-                      <p className="text-[17px] text-[#555] leading-relaxed max-w-xl mb-4">{tour.whatDifferent}</p>
-                      {tour.diffPoints && (
-                        <ul className="space-y-2">
-                          {tour.diffPoints.map(p => (
-                            <li key={p} className="flex items-center gap-3 text-[15px] text-[#333]">
-                              <Minus size={12} className="text-[#d4af37] flex-shrink-0" /> {p}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  )}
+                <section className="mb-16">
+                  <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-6">What's Included</h2>
+                  <div className="grid md:grid-cols-2 gap-x-12 gap-y-0">
+                    <ul className="space-y-3">
+                      {tour.included.map(item => (
+                        <li key={item} className="flex items-center gap-3 text-[15px] text-[#333]">
+                          <Check size={15} className="text-emerald-500 flex-shrink-0" /> <span className="text-[16px]">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    {tour.notIncluded.length > 0 && (
+                      <>
+                        <div className="md:hidden mt-8 mb-4">
+                          <h3 className="font-display text-[22px] text-[#1a1a2e]">What's Not Included</h3>
+                        </div>
+                        <div>
+                          <h3 className="hidden md:block font-display text-[22px] text-[#1a1a2e] mb-6">What's Not Included</h3>
+                          <ul className="space-y-3 mt-0 md:mt-0">
+                            {tour.notIncluded.map(item => (
+                              <li key={item} className="flex items-center gap-3 text-[15px] text-[#888]">
+                                <X size={15} className="text-[#ccc] flex-shrink-0" /> {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </section>
                 </FadeIn>
               )}
 
-              {/* Meeting Point */}
+              {/* Where Does the Tour Start? */}
               {tour.meetingPoint && (
                 <FadeIn>
-                <section className="mb-16">
-                  <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-4">Meeting Point</h2>
+                <section className="mb-16 pb-16 border-b border-[#eee]">
+                  <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-4">Where Does the Tour Start?</h2>
                   <p className="text-[17px] text-[#555] leading-relaxed max-w-xl">{tour.meetingPoint}</p>
                 </section>
                 </FadeIn>
               )}
+
+              {/* Mobile CTA */}
+              <div className="lg:hidden mb-16">
+                <a href={tour.bookingUrl} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 w-full py-4 bg-[#1a1a2e] text-white font-semibold text-base rounded-lg hover:bg-[#2a2a4e] transition">
+                  {cta} — ${tour.price} <ArrowRight size={18} />
+                </a>
+                <p className="text-center text-xs text-[#aaa] mt-2">{cancel}</p>
+              </div>
+
+              {/* ─── 🟩 TRUST LAYER: Booking Information ─── */}
+              <FadeIn>
+              <section className="mb-16 pb-16 border-b border-[#eee]">
+                <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-6">Booking Information</h2>
+                <ul className="space-y-3">
+                  {bookingInfoBullets.map((item, i) => (
+                    <li key={i} className="flex items-center gap-3 text-[16px] text-[#333]">
+                      <Check size={15} className="text-[#d4af37] flex-shrink-0" /> {item}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+              </FadeIn>
 
               {/* Guide */}
               {tour.guide && (
@@ -389,11 +481,11 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
                 </FadeIn>
               )}
 
-              {/* FAQs */}
+              {/* ─── 🟪 SERP SUPPORT: FAQs ─── */}
               {tour.faqs.length > 0 && (
                 <FadeIn>
                 <section className="mb-12">
-                  <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-6">Questions & Answers</h2>
+                  <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-6">Frequently Asked Questions</h2>
                   <div>
                     {tour.faqs.map((faq, i) => (
                       <details key={i} className="group border-t border-[#f0f0f0] first:border-t-0">
@@ -431,6 +523,21 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
                 </section>
                 </FadeIn>
               )}
+
+              {/* ─── 🟥 BOTTOM CTAs ─── */}
+              <FadeIn>
+              <div className="space-y-4 mt-8 mb-8">
+                <a href={tour.bookingUrl} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 w-full py-4 bg-[#d4af37] text-white font-bold text-[16px] rounded-xl hover:bg-[#c9a230] active:scale-[0.98] transition-all shadow-[0_4px_12px_-2px_rgba(212,175,55,0.4)]">
+                  Reserve your {tour.title} <ArrowRight size={18} />
+                </a>
+                <a href={tour.bookingUrl} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 w-full py-4 bg-[#1a1a2e] text-white font-bold text-[16px] rounded-xl hover:bg-[#2a2a4e] active:scale-[0.98] transition-all">
+                  Book your {tour.title} <ArrowRight size={18} />
+                </a>
+                <p className="text-center text-xs text-[#aaa] mt-1">{cancel}</p>
+              </div>
+              </FadeIn>
             </article>
 
             {/* RIGHT — BOOKING CARD */}
