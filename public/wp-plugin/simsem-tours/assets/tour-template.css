@@ -383,6 +383,13 @@
 }
 
 /* ── SECTIONS ── */
+/* ── CTA #1 WRAPPER ── */
+.wr-cta1-wrap {
+    margin-bottom: 64px !important;
+    padding-bottom: 48px !important;
+    border-bottom: 1px solid #eee !important;
+}
+
 .wr-section { margin-bottom: 64px !important; }
 .wr-section-border {
     padding-bottom: 64px !important;
@@ -436,7 +443,8 @@
 /* ── MOBILE CTA ── */
 .wr-mobile-cta { display: none !important; }
 
-.wr-cta-dark {
+.wr-cta-dark,
+.wr-page a.wr-cta-dark {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -451,7 +459,8 @@
     text-decoration: none !important;
     transition: background 0.2s;
 }
-.wr-cta-dark:hover { background: #2a2a4e !important; color: #fff !important; }
+.wr-cta-dark:hover,
+.wr-page a.wr-cta-dark:hover { background: #2a2a4e !important; color: #fff !important; }
 
 .wr-cta-note {
     text-align: center !important;

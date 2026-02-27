@@ -178,7 +178,7 @@ $tour_title = get_the_title();
 
                 <!-- CTA #1 — Above the fold -->
                 <?php if ($booking_url) : ?>
-                <div style="margin-bottom:4rem;">
+                <div class="wr-cta1-wrap">
                     <a href="<?php echo esc_url($booking_url); ?>" target="_blank" rel="noopener noreferrer" class="wr-cta-gold" style="display:inline-flex;align-items:center;gap:8px;padding:16px 32px;border-radius:12px;">
                         Check availability for this <?php echo esc_html($tour_title); ?> →
                     </a>
