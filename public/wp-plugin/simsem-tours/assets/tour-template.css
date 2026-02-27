@@ -829,9 +829,12 @@
     height: 180px !important;
     overflow: hidden !important;
 }
+.wr-page .wr-related-card-img img,
 .wr-related-card-img img {
     width: 100% !important;
     height: 100% !important;
+    max-height: 180px !important;
+    min-height: 180px !important;
     object-fit: cover !important;
     transition: transform 0.5s !important;
 }
