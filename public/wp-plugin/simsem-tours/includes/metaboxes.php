@@ -147,7 +147,12 @@ function simsem_tour_content_cb($post) {
     $diff_points = simsem_get($post->ID, '_simsem_diff_points', '');
     $meeting = simsem_get($post->ID, '_simsem_meeting_point', '');
 
-    echo '<label><strong>❤️ Who Is This Tour For?</strong> (booking anxiety resolver)</label>';
+    $about = simsem_get($post->ID, '_simsem_about', '');
+
+    echo '<label><strong>📖 About This Experience</strong> (rich intro paragraph)</label>';
+    printf('<textarea name="_simsem_about" rows="4" style="width:100%%">%s</textarea>', esc_textarea($about));
+
+    echo '<br/><label><strong>❤️ Who Is This Tour For?</strong> (booking anxiety resolver)</label>';
     printf('<textarea name="_simsem_who_for" rows="3" style="width:100%%">%s</textarea>', esc_textarea($who));
 
     echo '<br/><label><strong>⭐ What Makes This Tour Different?</strong> (local operator signal)</label>';
@@ -234,7 +239,7 @@ add_action('save_post_simsem_tour', function ($post_id) {
     ];
 
     $textarea_fields = [
-        '_simsem_highlights', '_simsem_included', '_simsem_not_included',
+        '_simsem_about', '_simsem_highlights', '_simsem_included', '_simsem_not_included',
         '_simsem_itinerary', '_simsem_who_for', '_simsem_what_different',
         '_simsem_diff_points', '_simsem_meeting_point', '_simsem_guide_bio',
         '_simsem_faqs', '_simsem_gallery', '_simsem_meta_desc',

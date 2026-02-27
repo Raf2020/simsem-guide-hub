@@ -31,6 +31,7 @@ $highlights_raw   = get_post_meta($id, '_simsem_highlights', true);
 $included_raw     = get_post_meta($id, '_simsem_included', true);
 $not_included_raw = get_post_meta($id, '_simsem_not_included', true);
 $itinerary_raw    = get_post_meta($id, '_simsem_itinerary', true);
+$about            = get_post_meta($id, '_simsem_about', true);
 $who_for          = get_post_meta($id, '_simsem_who_for', true);
 $what_diff        = get_post_meta($id, '_simsem_what_different', true);
 $diff_points_raw  = get_post_meta($id, '_simsem_diff_points', true);
@@ -185,6 +186,14 @@ $tour_title = get_the_title();
                 <?php endif; ?>
 
                 <!-- ═══ 🟨 BODY ═══ -->
+
+                <!-- About This Experience -->
+                <?php if ($about) : ?>
+                <section class="wr-section">
+                    <h2 class="wr-heading">About This Experience</h2>
+                    <p class="wr-body-text"><?php echo esc_html($about); ?></p>
+                </section>
+                <?php endif; ?>
 
                 <!-- Tour Highlights -->
                 <?php if (!empty($highlights)) : ?>
