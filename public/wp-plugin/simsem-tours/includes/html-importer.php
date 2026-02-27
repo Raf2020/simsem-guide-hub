@@ -328,7 +328,19 @@ function simsem_parse_tour_html($html) {
 
         // Who Is This Tour For / Family Safety & Comfort
         if (stripos($h, 'Who Is This') !== false || stripos($h, 'Family Safety') !== false) {
-            $data['who_for'] = simsem_extract_paragraphs($nodes);
+            $paras = [];
+            foreach ($nodes as $n) {
+                if ($n->nodeName === 'p' && trim($n->textContent)) {
+                    $paras[] = trim($n->textContent);
+                }
+                if ($n instanceof DOMElement && ($n->nodeName === 'ul' || $n->nodeName === 'ol')) {
+                    $lis = $n->getElementsByTagName('li');
+                    for ($j = 0; $j < $lis->length; $j++) {
+                        $paras[] = '• ' . trim($lis->item($j)->textContent);
+                    }
+                }
+            }
+            $data['who_for'] = implode("\n", $paras);
         }
 
         // What Makes This Tour Different
@@ -359,9 +371,8 @@ function simsem_parse_tour_html($html) {
             }
         }
 
-        // Booking Information — SKIP (auto-generated from existing fields)
-        if (stripos($h, 'Booking Information') !== false) {
-            // Skip this section — trust layer is auto-generated
+        // Booking Information / Trust & Booking — SKIP (auto-generated from existing fields)
+        if (stripos($h, 'Booking Information') !== false || stripos($h, 'Trust') !== false) {
             continue;
         }
 
