@@ -112,6 +112,7 @@ function simsem_html_import_cb($post) {
                     setField('_simsem_booking_url', d.booking_url);
 
                     // Textarea fields
+                    setField('_simsem_about', d.about);
                     setField('_simsem_highlights', d.highlights);
                     setField('_simsem_included', d.included);
                     setField('_simsem_not_included', d.not_included);
