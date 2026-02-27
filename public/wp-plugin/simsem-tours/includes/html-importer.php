@@ -296,6 +296,11 @@ function simsem_parse_tour_html($html) {
             }
         }
 
+        // About This Experience
+        if (stripos($h, 'About This Experience') !== false || stripos($h, 'About This') !== false) {
+            $data['about'] = simsem_extract_paragraphs($nodes);
+        }
+
         // Tour Highlights (matches "Tour Highlights", "What to Expect", etc.)
         if (stripos($h, 'What to Expect') !== false || stripos($h, 'Tour Highlights') !== false) {
             $items = simsem_extract_list_items($nodes);
