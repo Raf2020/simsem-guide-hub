@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PaymentsTable } from "@/components/payments/PaymentsTable";
 import { FinanceReports } from "@/components/payments/FinanceReports";
+import { BookingAnalytics } from "@/components/payments/BookingAnalytics";
 import { paymentRequests as initialPayments, PaymentRequest } from "@/data/mockData";
-import { Search, DollarSign, Clock, CheckCircle, BarChart3 } from "lucide-react";
+import { Search, DollarSign, Clock, CheckCircle, BarChart3, TrendingUp } from "lucide-react";
 
 export default function Payments() {
   const [payments, setPayments] = useState<PaymentRequest[]>(initialPayments);
@@ -134,6 +135,10 @@ export default function Payments() {
                 <BarChart3 className="h-4 w-4" />
                 Reports
               </TabsTrigger>
+              <TabsTrigger value="analytics" className="gap-1">
+                <TrendingUp className="h-4 w-4" />
+                Analytics
+              </TabsTrigger>
             </TabsList>
             <TabsContent value="all" className="mt-4">
               <PaymentsTable
@@ -155,6 +160,9 @@ export default function Payments() {
             </TabsContent>
             <TabsContent value="reports" className="mt-4">
               <FinanceReports payments={payments} />
+            </TabsContent>
+            <TabsContent value="analytics" className="mt-4">
+              <BookingAnalytics payments={payments} />
             </TabsContent>
           </Tabs>
         </div>
