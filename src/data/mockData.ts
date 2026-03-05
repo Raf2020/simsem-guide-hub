@@ -236,6 +236,7 @@ export interface PaymentRequest {
   id: string;
   amount: number;
   country: string;
+  travellerCountry: string; // Origin country of the traveller (e.g., "United States")
   email: string;
   invoiceId: string;
   invoiceUrl?: string;
@@ -259,6 +260,7 @@ export const paymentRequests: PaymentRequest[] = [
     id: 'MtWIsuokWj',
     amount: 170.00,
     country: 'Egypt',
+    travellerCountry: 'United States',
     email: 'hassan.luxortourguide@gmail.com',
     invoiceId: 'INV1769464981795',
     invoiceUrl: 'https://simemmedia.b-cdn.net/invoices/P4RrshMtjX/INV1769464981795.pdf',
@@ -273,12 +275,13 @@ export const paymentRequests: PaymentRequest[] = [
     payerPhone: '+201062217720',
     createdAt: '01/26/2026 22:03:11',
     paidAt: '01/27/2026 09:27:10',
-    commissionRate: 0.10, // Custom tour - 10%
+    commissionRate: 0.10,
   },
   {
     id: 'ol9RJ6SR4A',
     amount: 70.00,
     country: 'Egypt',
+    travellerCountry: 'France',
     email: 'abanop.photographer@gmail.com',
     invoiceId: 'INV1768920926745',
     invoiceUrl: 'https://simemmedia.b-cdn.net/invoices/BWA81qgARf/INV1768920926745.pdf',
@@ -293,12 +296,13 @@ export const paymentRequests: PaymentRequest[] = [
     payerPhone: '+201001752498',
     createdAt: '01/20/2026 14:55:27',
     paidAt: '01/26/2026 09:38:38',
-    commissionRate: 0.08, // Custom tour - 8%
+    commissionRate: 0.08,
   },
   {
     id: 'PND001',
     amount: 120.00,
     country: 'Jordan',
+    travellerCountry: 'United Kingdom',
     email: 'firas.guide@gmail.com',
     invoiceId: 'INV1769500001',
     isPaid: false,
@@ -311,12 +315,13 @@ export const paymentRequests: PaymentRequest[] = [
     payerId: '2zha1o6cgl',
     payerPhone: '+962791234567',
     createdAt: '01/27/2026 10:00:00',
-    commissionRate: 0.15, // Getaway - 15%
+    commissionRate: 0.15,
   },
   {
     id: 'PND002',
     amount: 95.00,
     country: 'Egypt',
+    travellerCountry: 'Germany',
     email: 'sameh.guide@gmail.com',
     invoiceId: 'INV1769500002',
     isPaid: false,
@@ -329,13 +334,14 @@ export const paymentRequests: PaymentRequest[] = [
     payerId: 'p7C5x0LVjl',
     payerPhone: '+201098765432',
     createdAt: '01/28/2026 08:30:00',
-    commissionRate: 0.10, // Custom tour - 10%
+    commissionRate: 0.10,
   },
   // December 2025 - Lower promotional rates (5-8%)
   {
     id: 'DEC001',
     amount: 250.00,
     country: 'Jordan',
+    travellerCountry: 'United States',
     email: 'firas.guide@gmail.com',
     invoiceId: 'INV1767500001',
     invoiceUrl: 'https://simemmedia.b-cdn.net/invoices/2zha1o6cgl/INV1767500001.pdf',
@@ -350,12 +356,13 @@ export const paymentRequests: PaymentRequest[] = [
     payerPhone: '+962791234567',
     createdAt: '12/15/2025 14:30:00',
     paidAt: '12/18/2025 10:00:00',
-    commissionRate: 0.05, // Holiday promo - 5%
+    commissionRate: 0.05,
   },
   {
     id: 'DEC002',
     amount: 180.00,
     country: 'Egypt',
+    travellerCountry: 'Italy',
     email: 'hassan.luxortourguide@gmail.com',
     invoiceId: 'INV1767500002',
     isPaid: true,
@@ -369,12 +376,13 @@ export const paymentRequests: PaymentRequest[] = [
     payerPhone: '+201155443322',
     createdAt: '12/20/2025 09:00:00',
     paidAt: '12/22/2025 11:30:00',
-    commissionRate: 0.05, // Holiday promo - 5%
+    commissionRate: 0.05,
   },
   {
     id: 'DEC003',
     amount: 90.00,
     country: 'Egypt',
+    travellerCountry: 'United Kingdom',
     email: 'sameh.guide@gmail.com',
     invoiceId: 'INV1767500003',
     invoiceUrl: 'https://simemmedia.b-cdn.net/invoices/p7C5x0LVjl/INV1767500003.pdf',
@@ -389,13 +397,14 @@ export const paymentRequests: PaymentRequest[] = [
     payerPhone: '+201098765432',
     createdAt: '12/28/2025 18:00:00',
     paidAt: '12/30/2025 09:00:00',
-    commissionRate: 0.08, // Custom tour - 8%
+    commissionRate: 0.08,
   },
   // November 2025 - Standard rates (10-12%)
   {
     id: 'NOV001',
     amount: 85.00,
     country: 'Egypt',
+    travellerCountry: 'Spain',
     email: 'hassan.luxortourguide@gmail.com',
     invoiceId: 'INV1741589641889',
     isPaid: true,
@@ -409,12 +418,13 @@ export const paymentRequests: PaymentRequest[] = [
     payerPhone: '+201062217720',
     createdAt: '11/10/2025 07:00:41',
     paidAt: '11/12/2025 09:39:03',
-    commissionRate: 0.10, // Standard - 10%
+    commissionRate: 0.10,
   },
   {
     id: 'NOV002',
     amount: 140.00,
     country: 'Jordan',
+    travellerCountry: 'France',
     email: 'layla.guide@gmail.com',
     invoiceId: 'INV1765500001',
     invoiceUrl: 'https://simemmedia.b-cdn.net/invoices/hI5jK6lM7n/INV1765500001.pdf',
@@ -429,13 +439,14 @@ export const paymentRequests: PaymentRequest[] = [
     payerPhone: '+962799887766',
     createdAt: '11/22/2025 11:00:00',
     paidAt: '11/25/2025 14:00:00',
-    commissionRate: 0.12, // Getaway - 12%
+    commissionRate: 0.12,
   },
   // February 2026 - Pending payments with mixed rates
   {
     id: 'FEB001',
     amount: 200.00,
     country: 'Egypt',
+    travellerCountry: 'Australia',
     email: 'abanop.photographer@gmail.com',
     invoiceId: 'INV1770500001',
     isPaid: false,
@@ -448,12 +459,13 @@ export const paymentRequests: PaymentRequest[] = [
     payerId: 'gfDfszVhLz',
     payerPhone: '+201001752498',
     createdAt: '02/05/2026 10:00:00',
-    commissionRate: 0.10, // Custom tour - 10%
+    commissionRate: 0.10,
   },
   {
     id: 'FEB002',
     amount: 320.00,
     country: 'Jordan',
+    travellerCountry: 'United States',
     email: 'firas.guide@gmail.com',
     invoiceId: 'INV1770500002',
     isPaid: false,
@@ -466,7 +478,7 @@ export const paymentRequests: PaymentRequest[] = [
     payerId: '2zha1o6cgl',
     payerPhone: '+962791234567',
     createdAt: '02/08/2026 15:30:00',
-    commissionRate: 0.15, // Getaway - 15%
+    commissionRate: 0.15,
   },
 ];
 
