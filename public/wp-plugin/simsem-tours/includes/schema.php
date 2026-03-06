@@ -69,9 +69,10 @@ add_action('wp_head', function () {
         ];
     }
 
-    // Duration (ISO 8601)
+    // Duration (ISO 8601) — extract first number only (e.g. "2 days, 1 night" → 2)
     if ($duration) {
-        $days = preg_replace('/[^0-9]/', '', $duration) ?: '1';
+        preg_match('/(\d+)/', $duration, $m);
+        $days = !empty($m[1]) ? $m[1] : '1';
         $schema['duration'] = 'P' . $days . 'D';
     }
 
@@ -101,17 +102,20 @@ add_action('wp_head', function () {
 
     echo '<script type="application/ld+json">' . wp_json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . '</script>' . "\n";
 
-    // BreadcrumbList schema
+    // BreadcrumbList schema — use hardcoded /tours/ base to avoid %tour_country% placeholder
+    $tours_url = home_url('/tours/');
     $breadcrumb = [
         '@context'        => 'https://schema.org',
         '@type'           => 'BreadcrumbList',
         'itemListElement' => [
             ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => home_url('/')],
-            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Tours', 'item' => get_post_type_archive_link('simsem_tour')],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Tours', 'item' => $tours_url],
         ],
     ];
     if ($country) {
-        $breadcrumb['itemListElement'][] = ['@type' => 'ListItem', 'position' => 3, 'name' => $country, 'item' => get_post_type_archive_link('simsem_tour')];
+        $terms = get_the_terms($id, 'tour_destination');
+        $country_slug = ($terms && !is_wp_error($terms)) ? $terms[0]->slug : sanitize_title($country);
+        $breadcrumb['itemListElement'][] = ['@type' => 'ListItem', 'position' => 3, 'name' => $country, 'item' => home_url('/destination/' . $country_slug . '/')];
         $breadcrumb['itemListElement'][] = ['@type' => 'ListItem', 'position' => 4, 'name' => get_the_title(), 'item' => get_permalink()];
     } else {
         $breadcrumb['itemListElement'][] = ['@type' => 'ListItem', 'position' => 3, 'name' => get_the_title(), 'item' => get_permalink()];
@@ -137,9 +141,13 @@ add_action('wp_head', function () {
 
 /**
  * Output OG + Twitter meta tags
+ * Skip if AIOSEO (or another SEO plugin) is active to avoid duplicate meta tags.
  */
 add_action('wp_head', function () {
     if (!is_singular('simsem_tour')) return;
+    // Skip if AIOSEO or Yoast is handling meta tags
+    if (defined('AIOSEO_VERSION') || defined('WPSEO_VERSION')) return;
+
     global $post;
     $id = $post->ID;
     $meta_title = get_post_meta($id, '_simsem_meta_title', true) ?: get_the_title();
@@ -164,9 +172,10 @@ add_action('wp_head', function () {
 }, 1);
 
 /**
- * Override meta title
+ * Override meta title — skip if SEO plugin is active
  */
 add_filter('document_title_parts', function ($title) {
+    if (defined('AIOSEO_VERSION') || defined('WPSEO_VERSION')) return $title;
     if (is_singular('simsem_tour')) {
         global $post;
         $meta_title = get_post_meta($post->ID, '_simsem_meta_title', true);
@@ -178,9 +187,10 @@ add_filter('document_title_parts', function ($title) {
 });
 
 /**
- * Output meta description
+ * Output meta description — skip if SEO plugin is active
  */
 add_action('wp_head', function () {
+    if (defined('AIOSEO_VERSION') || defined('WPSEO_VERSION')) return;
     if (!is_singular('simsem_tour')) return;
     global $post;
     $meta_desc = get_post_meta($post->ID, '_simsem_meta_desc', true);
