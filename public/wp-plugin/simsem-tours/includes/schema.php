@@ -22,7 +22,7 @@ add_action('wp_head', function () {
     $itinerary  = json_decode(get_post_meta($id, '_simsem_itinerary', true), true) ?: [];
     $booking_url = get_post_meta($id, '_simsem_booking_url', true);
 
-    // TouristTrip schema
+    // TouristTrip schema (aggregateRating moved to provider — Google doesn't support it on TouristTrip)
     $schema = [
         '@context'    => 'https://schema.org',
         '@type'       => 'TouristTrip',
@@ -47,12 +47,12 @@ add_action('wp_head', function () {
                 'https://www.facebook.com/mysimsem',
                 'https://www.youtube.com/@mysimsem',
             ],
-        ],
-        'aggregateRating' => [
-            '@type'       => 'AggregateRating',
-            'ratingValue' => '4.9',
-            'bestRating'  => '5',
-            'ratingCount' => '127',
+            'aggregateRating' => [
+                '@type'       => 'AggregateRating',
+                'ratingValue' => '4.9',
+                'bestRating'  => '5',
+                'ratingCount' => '127',
+            ],
         ],
     ];
 
