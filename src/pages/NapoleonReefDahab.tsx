@@ -21,13 +21,13 @@ const tour: TourData = {
   cancelNote: "Free cancellation · Instant confirmation",
 
   metaTitle: "Napoleon Reef Dahab: 4 Hours Tour in Dahab from $36.75",
-  metaDescription: "Napoleon Reef Dahab snorkeling adventure! Enjoy a private 4-hour tour from Dahab by car for just $36.75. See pristine corals with Sea The Soul Of Sinai.",
+  metaDescription: "Napoleon Reef Dahab snorkeling tour! Experience 4 thrilling hours in Egypt's Red Sea. Private car pickup from Dahab, just $36.75. Book your Napoleon Reef Dahab tour now!",
 
-  gallery: gallery.map((src, i) => ({ src, alt: `Napoleon Reef Dahab snorkeling photo ${i + 1}` })),
+  gallery: gallery.map((src, i) => ({ src, alt: `Napoleon Reef Dahab tour photo ${i + 1}` })),
 
   description: (
     <p>
-      Book now — <strong className="text-[#1a1a2e]">$36.75</strong> for 4 Hours with Sea The Soul Of Sinai. Pick-up from and drop-off to your accommodation (in Dahab) + Snorkelling equipment included. Pick up from accommodation in Dahab, Snorkelling and relaxation at Napoleon Reef, Golden hour sunset.
+      This napoleon reef dahab tour takes you from Dahab and guides you through the Red Sea to Napoleon Reef. Over 4 Hours, you'll snorkel among marine life and witness a stunning golden hour sunset, all while your Sea The Soul Of Sinai shares insights into the coastal landscape. This experience is designed for direct booking, ensuring clear logistics and no middleman. You'll know exactly what's included before you arrive, making your booking process seamless and transparent. Unlike large group tours, this intimate experience focuses on natural beauty and tranquility, a perfect choice for those ready to secure their Dahab adventure with confidence.
     </p>
   ),
 
@@ -49,7 +49,7 @@ const tour: TourData = {
 
   whoFor: "Ready to go? $36.75 gets you Pick-up from and drop-off to your accommodation (in Dahab), Snorkelling equipment (mask, fins & life jacket), Bottled water & fresh fruit. Book direct on Simsem — instant confirmation, WhatsApp contact with Sea The Soul Of Sinai, and everything locked in before you arrive.\n\n• From $36.75 per person\n• Private Car included\n• 4 Hours — fully guided\n• Instant booking confirmation",
 
-  whatDifferent: "No OTA fees, no middleman. You book direct on Simsem, Sea The Soul Of Sinai gets 100% of the revenue. $36.75 covers private car, guide, and Pick-up from and drop-off to your accommodation (in Dahab) + Snorkelling equipment. After booking, Sea contacts you on WhatsApp with the exact meeting pin and timing.",
+  whatDifferent: "No OTA fees, no middleman. You book direct on Simsem, Sea The Soul Of Sinai gets 100% of the revenue. $36.75 covers private car, guide, and Pick-up from and drop-off to your accommodation (in Dahab) + Snorkelling equipment (mask, fins & life jacket). After booking, Sea contacts you on WhatsApp with the exact meeting pin and timing.",
   diffPoints: [
     "Sea The Soul Of Sinai — local, not a franchise guide",
     "Direct booking (no OTA commission)",

@@ -666,3 +666,46 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
     </>
   );
 }
+
+/* ============ REVIEW SLIDER ============ */
+function ReviewSlider({ reviews }: { reviews: TourReview[] }) {
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    if (reviews.length <= 1) return;
+    const timer = setInterval(() => setActive(p => (p + 1) % reviews.length), 2000);
+    return () => clearInterval(timer);
+  }, [reviews.length]);
+
+  return (
+    <div className="relative overflow-hidden min-h-[140px]">
+      <AnimatePresence mode="wait">
+        <motion.blockquote
+          key={active}
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -40 }}
+          transition={{ duration: 0.4 }}
+          className="bg-[#fafafa] rounded-xl p-6 border-l-[3px] border-[#d4af37]"
+        >
+          <div className="text-[#d4af37] text-base tracking-wider mb-3">
+            {"★".repeat(reviews[active].rating || 5)}
+          </div>
+          <p className="text-[16px] text-[#333] leading-[1.7] italic mb-3">"{reviews[active].text}"</p>
+          <footer className="flex items-center gap-3 text-sm">
+            <span className="font-semibold text-[#1a1a2e]">{reviews[active].author}</span>
+            {reviews[active].date && <span className="text-[#999]">{reviews[active].date}</span>}
+          </footer>
+        </motion.blockquote>
+      </AnimatePresence>
+      {reviews.length > 1 && (
+        <div className="flex justify-center gap-2 mt-4">
+          {reviews.map((_, i) => (
+            <button key={i} onClick={() => setActive(i)}
+              className={`w-2 h-2 rounded-full transition-all ${i === active ? "bg-[#d4af37] w-6" : "bg-[#ddd]"}`} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

@@ -27,7 +27,7 @@ const tour: TourData = {
 
   description: (
     <p>
-      Zero prep needed. Show up at Dahab, and Sea The Soul Of Sinai handles every detail. Pick up from accommodation in Dahab, Snorkelling and relaxation at Napoleon Reef, Golden hour sunset. From <strong className="text-[#1a1a2e]">$36.75</strong> per person from Dahab.
+      Gentle waves lap the shoreline, a soft invitation to the Red Sea's clear waters. This Dahab Red Sea tour takes you from your Dahab accommodation for a relaxing 4-hour journey. You'll ease into golden hour snorkelling at Napoleon Reef, perfect for those new to underwater exploration. With Sea The Soul Of Sinai as your guide, you'll feel completely at home, ensuring a carefree experience. Unlike tours that rush, this trip offers a peaceful pace, designed for anyone to enjoy the stunning marine life and the beauty of a sunset over Red Sea Dahab. We handle all the details, so you can simply float and unwind.
     </p>
   ),
 
