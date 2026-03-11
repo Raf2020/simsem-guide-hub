@@ -352,7 +352,7 @@ $tour_title = get_the_title();
                             </div>
                             <p class="wr-review-text">"<?php echo esc_html($review['text']); ?>"</p>
                             <footer class="wr-review-footer">
-                                <span class="wr-review-author"><?php echo esc_html($review['author'] ?? ''); ?></span>
+                                <span class="wr-review-author"><?php echo esc_html(isset($review['author']) ? $review['author'] : ''); ?></span>
                                 <?php if (!empty($review['date'])) : ?>
                                 <span class="wr-review-date"><?php echo esc_html($review['date']); ?></span>
                                 <?php endif; ?>

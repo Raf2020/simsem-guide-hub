@@ -432,8 +432,8 @@ function simsem_parse_tour_html($html) {
                         $authorPart = trim(preg_replace('/★+/', '', $authorPart));
                         // Split author and date
                         $parts = array_map('trim', preg_split('/\s{2,}/', $authorPart, 2));
-                        $review['author'] = $parts[0] ?? '';
-                        $review['date'] = $parts[1] ?? '';
+                        $review['author'] = isset($parts[0]) ? $parts[0] : '';
+                        $review['date'] = isset($parts[1]) ? $parts[1] : '';
                     } else {
                         // Fallback: full text as review
                         if (preg_match('/—\s*(.+)/su', $text, $m2)) {
