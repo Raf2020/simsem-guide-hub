@@ -24,6 +24,7 @@ export interface TourDetail { icon: ReactNode; label: string; value: string; }
 export interface ScheduleItem { time: string; title: string; desc: string; }
 export interface DaySchedule { day: number; items: ScheduleItem[]; }
 export interface FAQ { q: string; a: string; }
+export interface TourReview { text: string; author: string; rating?: number; date?: string; }
 export interface TourChip { icon: string; text: string; }
 export interface GuideInfo { name: string; note?: string; bio: string; initial?: string; }
 export interface SidebarFact { icon: ReactNode; label: string; value: string; }
@@ -34,7 +35,7 @@ export interface TourData {
   ctaText?: string; cancelNote?: string; details: TourDetail[]; highlights: string[];
   included: string[]; notIncluded: string[]; chips?: TourChip[]; itinerary: DaySchedule[];
   whoFor?: string; whatDifferent?: string; diffPoints?: string[]; meetingPoint?: string;
-  guide?: GuideInfo; faqs: FAQ[];
+  guide?: GuideInfo; faqs: FAQ[]; reviews?: TourReview[];
   sidebarFacts?: SidebarFact[]; sidebarInclusions?: string[];
   metaTitle: string; metaDescription: string;
   relatedLinks?: { label: string; href: string; image?: string; price?: string }[];
@@ -476,6 +477,29 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
                       {tour.guide.note && <p className="text-[13px] text-[#d4af37] font-medium mt-0.5">{tour.guide.note}</p>}
                       <p className="text-[15px] text-[#666] leading-relaxed mt-2">{tour.guide.bio}</p>
                     </div>
+                  </div>
+                </section>
+                </FadeIn>
+              )}
+
+              {/* ─── ⭐ REVIEWS: What Travelers Are Saying ─── */}
+              {tour.reviews && tour.reviews.length > 0 && (
+                <FadeIn>
+                <section className="mb-16 pb-16 border-b border-[#eee]">
+                  <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-6">What Travelers Are Saying</h2>
+                  <div className="space-y-6">
+                    {tour.reviews.map((review, i) => (
+                      <blockquote key={i} className="bg-[#fafafa] rounded-xl p-6 border-l-[3px] border-[#d4af37]">
+                        <div className="text-[#d4af37] text-base tracking-wider mb-3">
+                          {"★".repeat(review.rating || 5)}
+                        </div>
+                        <p className="text-[16px] text-[#333] leading-[1.7] italic mb-3">"{review.text}"</p>
+                        <footer className="flex items-center gap-3 text-sm">
+                          <span className="font-semibold text-[#1a1a2e]">{review.author}</span>
+                          {review.date && <span className="text-[#999]">{review.date}</span>}
+                        </footer>
+                      </blockquote>
+                    ))}
                   </div>
                 </section>
                 </FadeIn>
