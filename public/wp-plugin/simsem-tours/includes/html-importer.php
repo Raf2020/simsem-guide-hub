@@ -110,6 +110,7 @@ function simsem_html_import_cb($post) {
                     setField('_simsem_country', d.country);
                     setField('_simsem_badge', d.badge);
                     setField('_simsem_booking_url', d.booking_url);
+                    setField('_simsem_cta_text', d.cta_text);
 
                     // Textarea fields
                     setField('_simsem_about', d.about);
@@ -327,14 +328,14 @@ function simsem_parse_tour_html($html) {
             }
         }
 
-        // What's Included
-        if (stripos($h, "What's Included") !== false || stripos($h, 'What is Included') !== false) {
+        // What's Included (but NOT "What's Not Included")
+        if ((stripos($h, "What's Included") !== false || stripos($h, 'What is Included') !== false) && stripos($h, 'Not') === false) {
             $items = simsem_extract_list_items($nodes);
             $data['included'] = implode("\n", array_map(fn($i) => trim(preg_replace('/^[✓✗\s]+/', '', strip_tags($i))), $items));
         }
 
-        // Not Included
-        if (stripos($h, 'Not Included') !== false && stripos($h, "What's") === false) {
+        // What's Not Included
+        if (stripos($h, 'Not Included') !== false) {
             $items = simsem_extract_list_items($nodes);
             $data['not_included'] = implode("\n", array_map(fn($i) => trim(preg_replace('/^[✓✗\s]+/', '', strip_tags($i))), $items));
         }
@@ -552,17 +553,32 @@ function simsem_parse_tour_html($html) {
         $data['instagram_url'] = $igLinks->item(0)->nodeValue;
     }
 
-    // Booking URL
-    $ctaLinks = $xpath->query('//a[contains(@class,"seo-cta")]/@href');
+    // Booking URL + CTA text
+    $ctaLinks = $xpath->query('//a[contains(@class,"seo-cta")]');
     if ($ctaLinks->length) {
-        $data['booking_url'] = $ctaLinks->item($ctaLinks->length - 1)->nodeValue;
+        $lastCta = $ctaLinks->item($ctaLinks->length - 1);
+        $data['booking_url'] = $lastCta->getAttribute('href');
+        // First CTA text (the inline one) is more descriptive
+        $firstCtaText = trim($ctaLinks->item(0)->textContent);
+        $firstCtaText = preg_replace('/\s*→\s*$/', '', $firstCtaText);
+        if (!empty($firstCtaText)) {
+            $data['cta_text'] = $firstCtaText;
+        }
     }
     if (empty($data['booking_url'])) {
         $allLinks = $xpath->query('//a');
         for ($i = 0; $i < $allLinks->length; $i++) {
             $text = strtolower($allLinks->item($i)->textContent);
             if (strpos($text, 'book') !== false) {
-                $data['booking_url'] = $allLinks->item($i)->getAttribute('href');
+                $href = $allLinks->item($i)->getAttribute('href');
+                if (!empty($href) && strpos($href, 'http') === 0) {
+                    $data['booking_url'] = $href;
+                    if (empty($data['cta_text'])) {
+                        $ctaLabel = trim($allLinks->item($i)->textContent);
+                        $ctaLabel = preg_replace('/\s*→\s*$/', '', $ctaLabel);
+                        if (!empty($ctaLabel)) $data['cta_text'] = $ctaLabel;
+                    }
+                }
             }
         }
     }
