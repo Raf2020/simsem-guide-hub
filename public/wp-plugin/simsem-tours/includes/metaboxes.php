@@ -189,6 +189,15 @@ function simsem_tour_faqs_cb($post) {
 }
 
 /**
+ * Traveler Reviews
+ */
+function simsem_tour_reviews_cb($post) {
+    $reviews = simsem_get($post->ID, '_simsem_reviews', '');
+    echo '<p class="description">JSON format: <code>[{"text":"Review text","author":"Name","rating":5,"date":"Aug 2023"}]</code></p>';
+    printf('<textarea name="_simsem_reviews" rows="8" style="width:100%%;font-family:monospace;font-size:12px;">%s</textarea>', esc_textarea($reviews));
+}
+
+/**
  * Gallery
  */
 function simsem_tour_gallery_cb($post) {
