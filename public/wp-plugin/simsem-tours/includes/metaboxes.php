@@ -12,6 +12,7 @@ add_action('add_meta_boxes', function () {
     add_meta_box('simsem_tour_content', '📝 Extra Content Sections', 'simsem_tour_content_cb', 'simsem_tour', 'normal', 'high');
     add_meta_box('simsem_tour_guide', '👤 Guide Info', 'simsem_tour_guide_cb', 'simsem_tour', 'normal', 'default');
     add_meta_box('simsem_tour_faqs', '💬 Frequently Asked Questions', 'simsem_tour_faqs_cb', 'simsem_tour', 'normal', 'default');
+    add_meta_box('simsem_tour_reviews', '⭐ Traveler Reviews', 'simsem_tour_reviews_cb', 'simsem_tour', 'normal', 'default');
     add_meta_box('simsem_tour_gallery', '📷 Gallery Images', 'simsem_tour_gallery_cb', 'simsem_tour', 'normal', 'default');
     add_meta_box('simsem_tour_seo', '📋 SEO Meta', 'simsem_tour_seo_cb', 'simsem_tour', 'normal', 'default');
     add_meta_box('simsem_tour_booking', '🎫 Booking', 'simsem_tour_booking_cb', 'simsem_tour', 'side', 'high');
