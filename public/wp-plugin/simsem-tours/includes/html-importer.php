@@ -331,7 +331,7 @@ function simsem_parse_tour_html($html) {
         // What's Included (but NOT "What's Not Included")
         if ((stripos($h, "What's Included") !== false || stripos($h, 'What is Included') !== false) && stripos($h, 'Not') === false) {
             $items = simsem_extract_list_items($nodes);
-            $data['included'] = implode("\n", array_map(fn($i) => trim(preg_replace('/^[✓✗\s]+/', '', strip_tags($i))), $items));
+            $data['included'] = implode("\n", array_map(function($i) { return trim(preg_replace('/^[✓✗\s]+/', '', strip_tags($i))); }, $items));
         }
 
         // What's Not Included
