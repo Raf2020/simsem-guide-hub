@@ -40,8 +40,8 @@ $guide_name       = get_post_meta($id, '_simsem_guide_name', true);
 $guide_note       = get_post_meta($id, '_simsem_guide_note', true);
 $guide_bio        = get_post_meta($id, '_simsem_guide_bio', true);
 $faqs_raw         = get_post_meta($id, '_simsem_faqs', true);
+$reviews_raw      = get_post_meta($id, '_simsem_reviews', true);
 $gallery_raw      = get_post_meta($id, '_simsem_gallery', true);
-$instagram_url    = get_post_meta($id, '_simsem_instagram_url', true);
 $meta_desc        = get_post_meta($id, '_simsem_meta_desc', true);
 
 // Parse fields
@@ -52,6 +52,8 @@ $diff_points  = array_filter(array_map('trim', explode("\n", $diff_points_raw)))
 $gallery      = array_filter(array_map('trim', explode("\n", $gallery_raw)));
 $itinerary    = json_decode($itinerary_raw, true) ?: [];
 $faqs         = json_decode($faqs_raw, true) ?: [];
+$reviews      = json_decode($reviews_raw, true) ?: [];
+$instagram_url = get_post_meta($id, '_simsem_instagram_url', true);
 
 // Quick facts
 $details = array_filter([
@@ -330,6 +332,29 @@ $tour_title = get_the_title();
                             <?php if ($guide_note) : ?><p class="wr-guide-note"><?php echo esc_html($guide_note); ?></p><?php endif; ?>
                             <?php if ($guide_bio) : ?><p class="wr-guide-bio"><?php echo esc_html($guide_bio); ?></p><?php endif; ?>
                         </div>
+                    </div>
+                </section>
+                <?php endif; ?>
+
+                <!-- ═══ 🟨 REVIEWS: What Travelers Are Saying ═══ -->
+                <?php if (!empty($reviews)) : ?>
+                <section class="wr-section wr-section-border">
+                    <h2 class="wr-heading">What Travelers Are Saying</h2>
+                    <div class="wr-reviews">
+                        <?php foreach ($reviews as $review) : ?>
+                        <blockquote class="wr-review">
+                            <div class="wr-review-stars">
+                                <?php for ($s = 0; $s < ($review['rating'] ?? 5); $s++) : ?>★<?php endfor; ?>
+                            </div>
+                            <p class="wr-review-text">"<?php echo esc_html($review['text']); ?>"</p>
+                            <footer class="wr-review-footer">
+                                <span class="wr-review-author"><?php echo esc_html($review['author'] ?? ''); ?></span>
+                                <?php if (!empty($review['date'])) : ?>
+                                <span class="wr-review-date"><?php echo esc_html($review['date']); ?></span>
+                                <?php endif; ?>
+                            </footer>
+                        </blockquote>
+                        <?php endforeach; ?>
                     </div>
                 </section>
                 <?php endif; ?>

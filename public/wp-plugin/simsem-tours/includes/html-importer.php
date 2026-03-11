@@ -126,6 +126,7 @@ function simsem_html_import_cb($post) {
                     // JSON fields
                     setField('_simsem_itinerary', d.itinerary);
                     setField('_simsem_faqs', d.faqs);
+                    setField('_simsem_reviews', d.reviews);
 
                     // Gallery
                     setField('_simsem_gallery', d.gallery);
@@ -276,8 +277,14 @@ function simsem_parse_tour_html($html) {
         $h = $sec['heading'];
         $nodes = $sec['nodes'];
 
-        // Tour Overview
+        // Tour Overview — extract paragraph text into "about", and also check for list-based details
         if (stripos($h, 'Tour Overview') !== false) {
+            // Extract paragraph content as "about"
+            $aboutText = simsem_extract_paragraphs($nodes);
+            if ($aboutText && empty($data['about'])) {
+                $data['about'] = $aboutText;
+            }
+            // Also check for list items (legacy format with details in UL)
             $items = simsem_extract_list_items($nodes);
             foreach ($items as $item) {
                 $item = strip_tags($item);
@@ -349,7 +356,31 @@ function simsem_parse_tour_html($html) {
             $data['who_for'] = implode("\n", $paras);
         }
 
-        // What Makes This Tour Different
+        // Things to Know — extract "What Makes This Tour Different?" from h3 sub-heading
+        if (stripos($h, 'Things to Know') !== false) {
+            $paras = [];
+            $points = [];
+            $inDifferent = false;
+            foreach ($nodes as $n) {
+                if ($n->nodeName === 'h3' && stripos($n->textContent, 'What Makes') !== false) {
+                    $inDifferent = true;
+                    continue;
+                }
+                if ($inDifferent) {
+                    if ($n->nodeName === 'p') $paras[] = trim($n->textContent);
+                    if ($n instanceof DOMElement && ($n->nodeName === 'ul' || $n->nodeName === 'ol')) {
+                        $lis = $n->getElementsByTagName('li');
+                        for ($j = 0; $j < $lis->length; $j++) {
+                            $points[] = trim($lis->item($j)->textContent);
+                        }
+                    }
+                }
+            }
+            if (!empty($paras)) $data['what_different'] = implode("\n\n", $paras);
+            if (!empty($points)) $data['diff_points'] = implode("\n", $points);
+        }
+
+        // What Makes This Tour Different (standalone h2)
         if (stripos($h, 'What Makes') !== false) {
             $paras = [];
             $points = [];
@@ -377,9 +408,46 @@ function simsem_parse_tour_html($html) {
             }
         }
 
-        // Booking Information / Trust & Booking — SKIP (auto-generated from existing fields)
-        if (stripos($h, 'Booking Information') !== false || stripos($h, 'Trust') !== false) {
+        // Booking Information / Trust & Booking / Booking Summary — SKIP (auto-generated)
+        if (stripos($h, 'Booking Information') !== false || stripos($h, 'Trust') !== false || stripos($h, 'Booking Summary') !== false) {
             continue;
+        }
+
+        // What Travelers Are Saying — extract reviews from blockquotes
+        if (stripos($h, 'What Travelers') !== false || stripos($h, 'Traveler') !== false || stripos($h, 'Reviews') !== false) {
+            $reviews = [];
+            foreach ($nodes as $n) {
+                if ($n->nodeName === 'blockquote') {
+                    $text = trim($n->textContent);
+                    // Parse: "review text" — Name ★★★★★ Date
+                    $review = ['text' => '', 'author' => '', 'rating' => 5, 'date' => ''];
+                    if (preg_match('/["""](.+?)["""].*?—\s*(.+)/su', $text, $m)) {
+                        $review['text'] = trim($m[1]);
+                        $authorPart = trim($m[2]);
+                        // Extract stars count
+                        $starCount = substr_count($authorPart, '★');
+                        if ($starCount > 0) $review['rating'] = $starCount;
+                        // Remove stars
+                        $authorPart = trim(preg_replace('/★+/', '', $authorPart));
+                        // Split author and date
+                        $parts = array_map('trim', preg_split('/\s{2,}/', $authorPart, 2));
+                        $review['author'] = $parts[0] ?? '';
+                        $review['date'] = $parts[1] ?? '';
+                    } else {
+                        // Fallback: full text as review
+                        if (preg_match('/—\s*(.+)/su', $text, $m2)) {
+                            $review['text'] = trim(preg_replace('/—.*$/su', '', $text));
+                            $review['author'] = trim($m2[1]);
+                        } else {
+                            $review['text'] = $text;
+                        }
+                    }
+                    if (!empty($review['text'])) $reviews[] = $review;
+                }
+            }
+            if (!empty($reviews)) {
+                $data['reviews'] = json_encode($reviews, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            }
         }
 
         // Detailed Itinerary (matches "Detailed Itinerary", "Itinerary", etc.)
@@ -459,8 +527,8 @@ function simsem_parse_tour_html($html) {
             }
         }
 
-        // Image URLs
-        if (stripos($h, 'Image URL') !== false) {
+        // Image URLs / Media URLs
+        if (stripos($h, 'Image URL') !== false || stripos($h, 'Media URL') !== false) {
             $urls = [];
             foreach ($nodes as $n) {
                 if (!($n instanceof DOMElement)) continue;

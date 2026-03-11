@@ -12,6 +12,7 @@ add_action('add_meta_boxes', function () {
     add_meta_box('simsem_tour_content', '📝 Extra Content Sections', 'simsem_tour_content_cb', 'simsem_tour', 'normal', 'high');
     add_meta_box('simsem_tour_guide', '👤 Guide Info', 'simsem_tour_guide_cb', 'simsem_tour', 'normal', 'default');
     add_meta_box('simsem_tour_faqs', '💬 Frequently Asked Questions', 'simsem_tour_faqs_cb', 'simsem_tour', 'normal', 'default');
+    add_meta_box('simsem_tour_reviews', '⭐ Traveler Reviews', 'simsem_tour_reviews_cb', 'simsem_tour', 'normal', 'default');
     add_meta_box('simsem_tour_gallery', '📷 Gallery Images', 'simsem_tour_gallery_cb', 'simsem_tour', 'normal', 'default');
     add_meta_box('simsem_tour_seo', '📋 SEO Meta', 'simsem_tour_seo_cb', 'simsem_tour', 'normal', 'default');
     add_meta_box('simsem_tour_booking', '🎫 Booking', 'simsem_tour_booking_cb', 'simsem_tour', 'side', 'high');
@@ -188,6 +189,15 @@ function simsem_tour_faqs_cb($post) {
 }
 
 /**
+ * Traveler Reviews
+ */
+function simsem_tour_reviews_cb($post) {
+    $reviews = simsem_get($post->ID, '_simsem_reviews', '');
+    echo '<p class="description">JSON format: <code>[{"text":"Review text","author":"Name","rating":5,"date":"Aug 2023"}]</code></p>';
+    printf('<textarea name="_simsem_reviews" rows="8" style="width:100%%;font-family:monospace;font-size:12px;">%s</textarea>', esc_textarea($reviews));
+}
+
+/**
  * Gallery
  */
 function simsem_tour_gallery_cb($post) {
@@ -242,7 +252,7 @@ add_action('save_post_simsem_tour', function ($post_id) {
         '_simsem_about', '_simsem_highlights', '_simsem_included', '_simsem_not_included',
         '_simsem_itinerary', '_simsem_who_for', '_simsem_what_different',
         '_simsem_diff_points', '_simsem_meeting_point', '_simsem_guide_bio',
-        '_simsem_faqs', '_simsem_gallery', '_simsem_meta_desc',
+        '_simsem_faqs', '_simsem_reviews', '_simsem_gallery', '_simsem_meta_desc',
     ];
 
     $url_fields = ['_simsem_booking_url', '_simsem_instagram_url'];
