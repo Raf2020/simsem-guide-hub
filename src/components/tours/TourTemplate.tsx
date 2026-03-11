@@ -487,20 +487,7 @@ export default function TourTemplate({ tour }: { tour: TourData }) {
                 <FadeIn>
                 <section className="mb-16 pb-16 border-b border-[#eee]">
                   <h2 className="font-display text-[28px] sm:text-[32px] text-[#1a1a2e] mb-6">What Travelers Are Saying</h2>
-                  <div className="space-y-6">
-                    {tour.reviews.map((review, i) => (
-                      <blockquote key={i} className="bg-[#fafafa] rounded-xl p-6 border-l-[3px] border-[#d4af37]">
-                        <div className="text-[#d4af37] text-base tracking-wider mb-3">
-                          {"★".repeat(review.rating || 5)}
-                        </div>
-                        <p className="text-[16px] text-[#333] leading-[1.7] italic mb-3">"{review.text}"</p>
-                        <footer className="flex items-center gap-3 text-sm">
-                          <span className="font-semibold text-[#1a1a2e]">{review.author}</span>
-                          {review.date && <span className="text-[#999]">{review.date}</span>}
-                        </footer>
-                      </blockquote>
-                    ))}
-                  </div>
+                  <ReviewSlider reviews={tour.reviews} />
                 </section>
                 </FadeIn>
               )}
