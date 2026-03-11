@@ -82,7 +82,7 @@ add_action('wp_head', function () {
             '@type'           => 'ItemList',
             'numberOfItems'   => count($itinerary),
             'itemListElement' => array_map(function ($day, $i) {
-                $titles = array_map(fn($it) => $it['title'] ?? '', $day['items'] ?? []);
+                $titles = array_map(function($it) { return isset($it['title']) ? $it['title'] : ''; }, isset($day['items']) ? $day['items'] : []);
                 return [
                     '@type'       => 'ListItem',
                     'position'    => $i + 1,
