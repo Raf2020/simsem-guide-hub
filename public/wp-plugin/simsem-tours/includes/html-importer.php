@@ -552,17 +552,32 @@ function simsem_parse_tour_html($html) {
         $data['instagram_url'] = $igLinks->item(0)->nodeValue;
     }
 
-    // Booking URL
-    $ctaLinks = $xpath->query('//a[contains(@class,"seo-cta")]/@href');
+    // Booking URL + CTA text
+    $ctaLinks = $xpath->query('//a[contains(@class,"seo-cta")]');
     if ($ctaLinks->length) {
-        $data['booking_url'] = $ctaLinks->item($ctaLinks->length - 1)->nodeValue;
+        $lastCta = $ctaLinks->item($ctaLinks->length - 1);
+        $data['booking_url'] = $lastCta->getAttribute('href');
+        // First CTA text (the inline one) is more descriptive
+        $firstCtaText = trim($ctaLinks->item(0)->textContent);
+        $firstCtaText = preg_replace('/\s*→\s*$/', '', $firstCtaText);
+        if (!empty($firstCtaText)) {
+            $data['cta_text'] = $firstCtaText;
+        }
     }
     if (empty($data['booking_url'])) {
         $allLinks = $xpath->query('//a');
         for ($i = 0; $i < $allLinks->length; $i++) {
             $text = strtolower($allLinks->item($i)->textContent);
             if (strpos($text, 'book') !== false) {
-                $data['booking_url'] = $allLinks->item($i)->getAttribute('href');
+                $href = $allLinks->item($i)->getAttribute('href');
+                if (!empty($href) && strpos($href, 'http') === 0) {
+                    $data['booking_url'] = $href;
+                    if (empty($data['cta_text'])) {
+                        $ctaLabel = trim($allLinks->item($i)->textContent);
+                        $ctaLabel = preg_replace('/\s*→\s*$/', '', $ctaLabel);
+                        if (!empty($ctaLabel)) $data['cta_text'] = $ctaLabel;
+                    }
+                }
             }
         }
     }
