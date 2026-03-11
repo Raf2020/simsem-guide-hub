@@ -11,6 +11,9 @@ import Experiences from "./pages/Experiences";
 import WadiRumTour from "./pages/WadiRumTour";
 import WadiRumGuidedTour from "./pages/WadiRumGuidedTour";
 import WadiRumFromAqaba from "./pages/WadiRumFromAqaba";
+import DahabRedSea from "./pages/DahabRedSea";
+import NapoleonReefDahab from "./pages/NapoleonReefDahab";
+import RedSeaRelaxDahab from "./pages/RedSeaRelaxDahab";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +31,9 @@ const App = () => (
             <Route path="/tours/jordan/wadi-rum-overnight-4x4-jeep-tour" element={<WadiRumTour />} />
             <Route path="/tours/jordan/wadi-rum-guided-tour" element={<WadiRumGuidedTour />} />
             <Route path="/tours/jordan/wadi-rum-tours-from-aqaba" element={<WadiRumFromAqaba />} />
+            <Route path="/tours/egypt/dahab-red-sea" element={<DahabRedSea />} />
+            <Route path="/tours/egypt/napoleon-reef-dahab" element={<NapoleonReefDahab />} />
+            <Route path="/tours/egypt/red-sea-relax-dahab" element={<RedSeaRelaxDahab />} />
             {/* Legacy redirect */}
             <Route path="/experiences/wadi-rum-overnight-jeep-tour" element={<WadiRumTour />} />
             <Route path="/reviews" element={<Reviews />} />
