@@ -27,7 +27,7 @@ const tour: TourData = {
 
   description: (
     <p>
-      4 Hours door-to-door from Dahab. Sea The Soul Of Sinai handles the route. Pick up from accommodation in Dahab, Snorkelling and relaxation at Napoleon Reef, Golden hour sunset. From <strong className="text-[#1a1a2e]">$36.75</strong> per person from Dahab.
+      As the warm afternoon sun glints off the Red Sea, a private car awaits your arrival in Dahab. This 4-hour golden hour scuba diving and snorkeling tour from Dahab is designed for those seeking seamless travel and exceptional sea experiences. Sea The Soul Of Sinai ensures relaxed logistics, handling pickup directly from your accommodation in Dahab. You'll cruise on calm waters to Napoleon Reef, where marine life and clear visibility await. As golden hour approaches, the tranquil setting provides a perfect opportunity to truly unwind and appreciate the stunning scenery, ensuring a peaceful Dahab relax among the Red Sea's beauty. There are no complicated transfers or schedules, just pure relaxation and moments.
     </p>
   ),
 
