@@ -126,6 +126,7 @@ function simsem_html_import_cb($post) {
                     // JSON fields
                     setField('_simsem_itinerary', d.itinerary);
                     setField('_simsem_faqs', d.faqs);
+                    setField('_simsem_reviews', d.reviews);
 
                     // Gallery
                     setField('_simsem_gallery', d.gallery);
