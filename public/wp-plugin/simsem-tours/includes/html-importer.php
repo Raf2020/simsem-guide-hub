@@ -110,6 +110,7 @@ function simsem_html_import_cb($post) {
                     setField('_simsem_country', d.country);
                     setField('_simsem_badge', d.badge);
                     setField('_simsem_booking_url', d.booking_url);
+                    setField('_simsem_cta_text', d.cta_text);
 
                     // Textarea fields
                     setField('_simsem_about', d.about);
