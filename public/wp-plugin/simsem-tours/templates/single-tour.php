@@ -52,6 +52,8 @@ $diff_points  = array_filter(array_map('trim', explode("\n", $diff_points_raw)))
 $gallery      = array_filter(array_map('trim', explode("\n", $gallery_raw)));
 $itinerary    = json_decode($itinerary_raw, true) ?: [];
 $faqs         = json_decode($faqs_raw, true) ?: [];
+$reviews      = json_decode($reviews_raw, true) ?: [];
+$instagram_url = get_post_meta($id, '_simsem_instagram_url', true);
 
 // Quick facts
 $details = array_filter([
