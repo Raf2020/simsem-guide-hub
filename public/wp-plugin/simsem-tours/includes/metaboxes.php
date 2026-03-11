@@ -252,7 +252,7 @@ add_action('save_post_simsem_tour', function ($post_id) {
         '_simsem_about', '_simsem_highlights', '_simsem_included', '_simsem_not_included',
         '_simsem_itinerary', '_simsem_who_for', '_simsem_what_different',
         '_simsem_diff_points', '_simsem_meeting_point', '_simsem_guide_bio',
-        '_simsem_faqs', '_simsem_gallery', '_simsem_meta_desc',
+        '_simsem_faqs', '_simsem_reviews', '_simsem_gallery', '_simsem_meta_desc',
     ];
 
     $url_fields = ['_simsem_booking_url', '_simsem_instagram_url'];
