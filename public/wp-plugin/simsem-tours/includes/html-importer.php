@@ -167,7 +167,7 @@ add_action('wp_ajax_simsem_parse_html', function () {
         wp_send_json_error('Permission denied');
     }
 
-    $html = wp_unslash($_POST['html'] ?? '');
+    $html = wp_unslash(isset($_POST['html']) ? $_POST['html'] : '');
     if (empty($html)) {
         wp_send_json_error('No HTML provided');
     }
@@ -432,8 +432,8 @@ function simsem_parse_tour_html($html) {
                         $authorPart = trim(preg_replace('/★+/', '', $authorPart));
                         // Split author and date
                         $parts = array_map('trim', preg_split('/\s{2,}/', $authorPart, 2));
-                        $review['author'] = $parts[0] ?? '';
-                        $review['date'] = $parts[1] ?? '';
+                        $review['author'] = isset($parts[0]) ? $parts[0] : '';
+                        $review['date'] = isset($parts[1]) ? $parts[1] : '';
                     } else {
                         // Fallback: full text as review
                         if (preg_match('/—\s*(.+)/su', $text, $m2)) {

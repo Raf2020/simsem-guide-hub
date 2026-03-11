@@ -348,11 +348,11 @@ $tour_title = get_the_title();
                         <?php foreach ($reviews as $review) : ?>
                         <blockquote class="wr-review">
                             <div class="wr-review-stars">
-                                <?php for ($s = 0; $s < ($review['rating'] ?? 5); $s++) : ?>★<?php endfor; ?>
+                                <?php for ($s = 0; $s < (isset($review['rating']) ? $review['rating'] : 5); $s++) : ?>★<?php endfor; ?>
                             </div>
                             <p class="wr-review-text">"<?php echo esc_html($review['text']); ?>"</p>
                             <footer class="wr-review-footer">
-                                <span class="wr-review-author"><?php echo esc_html($review['author'] ?? ''); ?></span>
+                                <span class="wr-review-author"><?php echo esc_html(isset($review['author']) ? $review['author'] : ''); ?></span>
                                 <?php if (!empty($review['date'])) : ?>
                                 <span class="wr-review-date"><?php echo esc_html($review['date']); ?></span>
                                 <?php endif; ?>
