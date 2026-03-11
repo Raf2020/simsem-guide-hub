@@ -40,8 +40,8 @@ $guide_name       = get_post_meta($id, '_simsem_guide_name', true);
 $guide_note       = get_post_meta($id, '_simsem_guide_note', true);
 $guide_bio        = get_post_meta($id, '_simsem_guide_bio', true);
 $faqs_raw         = get_post_meta($id, '_simsem_faqs', true);
+$reviews_raw      = get_post_meta($id, '_simsem_reviews', true);
 $gallery_raw      = get_post_meta($id, '_simsem_gallery', true);
-$instagram_url    = get_post_meta($id, '_simsem_instagram_url', true);
 $meta_desc        = get_post_meta($id, '_simsem_meta_desc', true);
 
 // Parse fields
