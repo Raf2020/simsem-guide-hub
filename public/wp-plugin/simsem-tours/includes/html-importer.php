@@ -167,7 +167,7 @@ add_action('wp_ajax_simsem_parse_html', function () {
         wp_send_json_error('Permission denied');
     }
 
-    $html = wp_unslash($_POST['html'] ?? '');
+    $html = wp_unslash(isset($_POST['html']) ? $_POST['html'] : '');
     if (empty($html)) {
         wp_send_json_error('No HTML provided');
     }

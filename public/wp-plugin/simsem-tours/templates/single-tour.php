@@ -348,7 +348,7 @@ $tour_title = get_the_title();
                         <?php foreach ($reviews as $review) : ?>
                         <blockquote class="wr-review">
                             <div class="wr-review-stars">
-                                <?php for ($s = 0; $s < ($review['rating'] ?? 5); $s++) : ?>★<?php endfor; ?>
+                                <?php for ($s = 0; $s < (isset($review['rating']) ? $review['rating'] : 5); $s++) : ?>★<?php endfor; ?>
                             </div>
                             <p class="wr-review-text">"<?php echo esc_html($review['text']); ?>"</p>
                             <footer class="wr-review-footer">
