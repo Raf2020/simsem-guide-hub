@@ -337,7 +337,7 @@ function simsem_parse_tour_html($html) {
         // What's Not Included
         if (stripos($h, 'Not Included') !== false) {
             $items = simsem_extract_list_items($nodes);
-            $data['not_included'] = implode("\n", array_map(fn($i) => trim(preg_replace('/^[✓✗\s]+/', '', strip_tags($i))), $items));
+            $data['not_included'] = implode("\n", array_map(function($i) { return trim(preg_replace('/^[✓✗\s]+/', '', strip_tags($i))); }, $items));
         }
 
         // Who Is This Tour For / Family Safety & Comfort
