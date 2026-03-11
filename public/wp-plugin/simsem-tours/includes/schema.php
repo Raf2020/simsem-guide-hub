@@ -82,11 +82,11 @@ add_action('wp_head', function () {
             '@type'           => 'ItemList',
             'numberOfItems'   => count($itinerary),
             'itemListElement' => array_map(function ($day, $i) {
-                $titles = array_map(fn($it) => $it['title'] ?? '', $day['items'] ?? []);
+                $titles = array_map(function($it) { return isset($it['title']) ? $it['title'] : ''; }, isset($day['items']) ? $day['items'] : []);
                 return [
                     '@type'       => 'ListItem',
                     'position'    => $i + 1,
-                    'name'        => 'Day ' . ($day['day'] ?? ($i + 1)),
+                    'name'        => 'Day ' . (isset($day['day']) ? $day['day'] : ($i + 1)),
                     'description' => implode(', ', array_filter($titles)),
                 ];
             }, $itinerary, array_keys($itinerary)),
@@ -129,11 +129,13 @@ add_action('wp_head', function () {
         $faq_schema = [
             '@context'   => 'https://schema.org',
             '@type'      => 'FAQPage',
-            'mainEntity' => array_map(fn($faq) => [
-                '@type' => 'Question',
-                'name'  => $faq['q'],
-                'acceptedAnswer' => ['@type' => 'Answer', 'text' => $faq['a']],
-            ], $faqs),
+            'mainEntity' => array_map(function($faq) {
+                return [
+                    '@type' => 'Question',
+                    'name'  => $faq['q'],
+                    'acceptedAnswer' => ['@type' => 'Answer', 'text' => $faq['a']],
+                ];
+            }, $faqs),
         ];
         echo '<script type="application/ld+json">' . wp_json_encode($faq_schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . '</script>' . "\n";
     }
