@@ -129,11 +129,13 @@ add_action('wp_head', function () {
         $faq_schema = [
             '@context'   => 'https://schema.org',
             '@type'      => 'FAQPage',
-            'mainEntity' => array_map(fn($faq) => [
-                '@type' => 'Question',
-                'name'  => $faq['q'],
-                'acceptedAnswer' => ['@type' => 'Answer', 'text' => $faq['a']],
-            ], $faqs),
+            'mainEntity' => array_map(function($faq) {
+                return [
+                    '@type' => 'Question',
+                    'name'  => $faq['q'],
+                    'acceptedAnswer' => ['@type' => 'Answer', 'text' => $faq['a']],
+                ];
+            }, $faqs),
         ];
         echo '<script type="application/ld+json">' . wp_json_encode($faq_schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . '</script>' . "\n";
     }
