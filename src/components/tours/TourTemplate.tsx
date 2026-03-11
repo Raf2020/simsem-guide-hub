@@ -24,6 +24,7 @@ export interface TourDetail { icon: ReactNode; label: string; value: string; }
 export interface ScheduleItem { time: string; title: string; desc: string; }
 export interface DaySchedule { day: number; items: ScheduleItem[]; }
 export interface FAQ { q: string; a: string; }
+export interface TourReview { text: string; author: string; rating?: number; date?: string; }
 export interface TourChip { icon: string; text: string; }
 export interface GuideInfo { name: string; note?: string; bio: string; initial?: string; }
 export interface SidebarFact { icon: ReactNode; label: string; value: string; }
