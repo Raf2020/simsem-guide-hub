@@ -87,6 +87,7 @@ add_action('wp_head', function () {
                     '@type'       => 'ListItem',
                     'position'    => $i + 1,
                     'name'        => 'Day ' . (isset($day['day']) ? $day['day'] : ($i + 1)),
+                    'description' => implode(', ', array_filter($titles)),
                 ];
             }, $itinerary, array_keys($itinerary)),
         ];
