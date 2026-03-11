@@ -313,7 +313,7 @@ function simsem_parse_tour_html($html) {
         // Tour Highlights (matches "Tour Highlights", "What to Expect", etc.)
         if (stripos($h, 'What to Expect') !== false || stripos($h, 'Tour Highlights') !== false) {
             $items = simsem_extract_list_items($nodes);
-            $data['highlights'] = implode("\n", array_map(fn($i) => trim(strip_tags($i)), $items));
+            $data['highlights'] = implode("\n", array_map(function($i) { return trim(strip_tags($i)); }, $items));
         }
 
         // Tour Details
