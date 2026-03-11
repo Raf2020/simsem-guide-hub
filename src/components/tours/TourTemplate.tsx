@@ -35,7 +35,7 @@ export interface TourData {
   ctaText?: string; cancelNote?: string; details: TourDetail[]; highlights: string[];
   included: string[]; notIncluded: string[]; chips?: TourChip[]; itinerary: DaySchedule[];
   whoFor?: string; whatDifferent?: string; diffPoints?: string[]; meetingPoint?: string;
-  guide?: GuideInfo; faqs: FAQ[];
+  guide?: GuideInfo; faqs: FAQ[]; reviews?: TourReview[];
   sidebarFacts?: SidebarFact[]; sidebarInclusions?: string[];
   metaTitle: string; metaDescription: string;
   relatedLinks?: { label: string; href: string; image?: string; price?: string }[];
