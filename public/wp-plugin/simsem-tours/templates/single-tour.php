@@ -66,7 +66,9 @@ $details = array_filter([
     ['label' => 'Terrain',    'value' => $terrain],
     ['label' => 'Fitness',    'value' => $fitness],
     ['label' => 'Private',    'value' => $private_opt],
-], fn($d) => !empty($d['value']));
+], function($d) {
+    return !empty($d['value']);
+});
 
 // Sidebar facts
 $sidebar_facts = array_filter([
@@ -74,7 +76,9 @@ $sidebar_facts = array_filter([
     ['label' => 'Group Size', 'value' => $group],
     ['label' => 'Start',      'value' => $pickup],
     ['label' => 'Languages',  'value' => $language],
-], fn($d) => !empty($d['value']));
+], function($d) {
+    return !empty($d['value']);
+});
 
 // Guide initial
 $guide_initial = $guide_name ? mb_substr(trim($guide_name), 0, 1) : 'G';
