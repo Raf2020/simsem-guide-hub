@@ -325,6 +325,39 @@ export function LocationSearchBar({
               })}
             </div>
           )}
+
+          {/* Activities / Tours */}
+          {grouped.activities.length > 0 && (
+            <div className={(grouped.countries.length > 0 || grouped.destinations.length > 0 || grouped.places.length > 0) ? "border-t border-border/30" : ""}>
+              <p className="px-4 pt-3 pb-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-[0.15em] flex items-center gap-1.5">
+                <Compass size={11} /> Activities & Tours
+              </p>
+              {grouped.activities.map((r, i) => {
+                const globalIdx = grouped.countries.length + grouped.destinations.length + grouped.places.length + i;
+                return (
+                  <button
+                    key={`tour-${r.id}`}
+                    onClick={() => handleSelect(r)}
+                    className={`w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors ${
+                      activeIndex === globalIdx
+                        ? "bg-primary/10 text-foreground"
+                        : "hover:bg-muted/50 text-foreground"
+                    }`}
+                  >
+                    <Compass size={14} className="text-primary shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <span className="text-sm font-semibold line-clamp-1">{r.name}</span>
+                      <span className="text-[11px] text-muted-foreground ml-1.5 capitalize">· {r.tourType}</span>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span className="text-xs font-semibold text-primary">${r.tourPrice}</span>
+                      <span className="text-[10px] text-muted-foreground ml-1">{r.tourDuration}</span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
 
