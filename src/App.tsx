@@ -38,6 +38,8 @@ const App = () => (
             <Route path="/tours/egypt/red-sea-relax-dahab" element={<RedSeaRelaxDahab />} />
             {/* Legacy redirect */}
             <Route path="/experiences/wadi-rum-overnight-jeep-tour" element={<WadiRumTour />} />
+            <Route path="/guide-dashboard" element={<GuideDashboard />} />
+            <Route path="/browse" element={<TravelerBrowse />} />
             <Route path="/reviews" element={<Reviews />} />
             <Route path="/payments" element={<Payments />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
