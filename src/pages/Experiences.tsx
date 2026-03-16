@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef } from "react";
 import {
   MapPin, Clock, Star, Search, SlidersHorizontal, X, ArrowLeft,
-  ChevronRight, ChevronDown, ArrowRight, Globe2, Filter
+  ChevronRight, ChevronDown, ArrowRight, Globe2, Filter, Compass, Shield
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
