@@ -637,10 +637,6 @@ const ExperiencesPage = () => {
           if (selectedTypes.size > 0) {
             result = result.filter((t) => selectedTypes.has(t.tour_type));
           }
-          if (searchQuery) {
-            const q = searchQuery.toLowerCase();
-            result = result.filter((t) => t.title.toLowerCase().includes(q));
-          }
           return result;
         })();
 
