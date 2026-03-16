@@ -506,6 +506,14 @@ const ExperiencesPage = () => {
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display text-white leading-tight mb-4 max-w-xl">
                   Authentic Tours with Local Guides in Egypt, Jordan & the Arab World
                 </h1>
+                {/* Hero location search */}
+                <LocationSearchBar
+                  onSelectCountry={goToCountry}
+                  onSelectDestination={goToDestination}
+                  placeholder="Where do you want to go? Try Petra, Cairo, Wadi Rum..."
+                  variant="hero"
+                  className="max-w-lg"
+                />
               </div>
             </div>
           </div>
@@ -557,15 +565,14 @@ const ExperiencesPage = () => {
             </p>
           </div>
 
-          {/* Search */}
+          {/* Sticky search bar */}
           <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-md px-4 py-3 border-b border-border/30">
-            <div className="relative max-w-6xl mx-auto">
-              <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              <Input
+            <div className="max-w-6xl mx-auto">
+              <LocationSearchBar
+                onSelectCountry={goToCountry}
+                onSelectDestination={goToDestination}
                 placeholder="Where do you want to go?"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 h-11 rounded-xl border-border/50 bg-muted/50 text-sm"
+                variant="inline"
               />
             </div>
           </div>
