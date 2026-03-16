@@ -365,7 +365,7 @@ export function LocationSearchBar({
       {open && query.trim() && flatResults.length === 0 && (
         <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border/60 rounded-xl shadow-2xl p-6 text-center z-50">
           <MapPin size={24} className="mx-auto text-muted-foreground/40 mb-2" />
-          <p className="text-sm text-muted-foreground">No locations found for "{query}"</p>
+          <p className="text-sm text-muted-foreground">No results found for "{query}"</p>
         </div>
       )}
     </div>
