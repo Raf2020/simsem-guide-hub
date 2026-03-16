@@ -153,7 +153,7 @@ export function LocationSearchBar({
   const isHero = variant === "hero";
 
   return (
-    <div ref={containerRef} className={`relative ${className}`}>
+    <div ref={containerRef} className={`relative z-50 ${className}`}>
       <div className="relative">
         <Search
           size={isHero ? 20 : 16}
