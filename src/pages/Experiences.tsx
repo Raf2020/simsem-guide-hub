@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef } from "react";
 import {
   MapPin, Clock, Star, Search, SlidersHorizontal, X, ArrowLeft,
-  ChevronRight, ChevronDown, ArrowRight, Globe2, Filter
+  ChevronRight, ChevronDown, ArrowRight, Globe2, Filter, Compass, Shield
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -423,21 +423,48 @@ const ExperiencesPage = () => {
               }
             />
 
-            {/* Country hero banner */}
-            <div className="relative h-36 sm:h-44 overflow-hidden">
+            {/* Country hero banner — OTA style */}
+            <div className="relative h-56 sm:h-72 lg:h-80 overflow-hidden">
               <img
                 src={activeCountry.heroImage}
-                alt={activeCountry.name}
+                alt={`${activeCountry.name} tours`}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 to-transparent" />
-              <div className="absolute bottom-4 left-4 right-4">
-                <h2 className="text-xl font-bold text-primary-foreground flex items-center gap-2">
-                  {activeCountry.flag} {activeCountry.name}
-                </h2>
-                <p className="text-xs text-primary-foreground/70 mt-0.5 line-clamp-1">
-                  {countryDestinations.length} destinations · {countryTours.length} tours
-                </p>
+              <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/30 to-foreground/5" />
+              
+              {/* Hero content */}
+              <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-8">
+                <div className="max-w-6xl mx-auto">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-2xl">{activeCountry.flag}</span>
+                    <span className="text-primary-foreground/60 text-xs font-medium uppercase tracking-widest">Explore</span>
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary-foreground mb-2 font-serif">
+                    Tours in {activeCountry.name}
+                  </h2>
+                  <p className="text-primary-foreground/75 text-xs sm:text-sm leading-relaxed max-w-2xl line-clamp-2 mb-3">
+                    {activeCountry.description.split('.')[0]}.
+                  </p>
+                  {/* Trust signals — E-E-A-T */}
+                  <div className="flex flex-wrap items-center gap-3 sm:gap-5">
+                    <div className="flex items-center gap-1.5 text-primary-foreground/80 text-xs">
+                      <MapPin size={13} className="text-accent" />
+                      <span>{countryDestinations.length} destinations</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-primary-foreground/80 text-xs">
+                      <Compass size={13} className="text-accent" />
+                      <span>{countryTours.length} guided tours</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-primary-foreground/80 text-xs">
+                      {[1,2,3,4,5].map(s => <Star key={s} size={11} className="fill-accent text-accent" />)}
+                      <span className="ml-1">Top rated</span>
+                    </div>
+                    <div className="hidden sm:flex items-center gap-1.5 text-primary-foreground/80 text-xs">
+                      <Shield size={13} className="text-accent" />
+                      <span>Local verified guides</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -474,30 +501,38 @@ const ExperiencesPage = () => {
               </div>
             )}
 
-            <main className="flex-1 px-4 pt-4 pb-8 max-w-6xl mx-auto w-full">
-              {/* Destination cards row (quick browse) — hidden when place filters active */}
+            <main className="flex-1 px-4 pt-6 pb-8 max-w-6xl mx-auto w-full">
+              {/* Destination cards row (quick browse) */}
               {selectedPlaces.size === 0 && !searchQuery && (
-                <div className="mb-6">
+                <div className="mb-8">
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Browse by destination</p>
                   <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
-                    {countryDestinations.map((place) => (
-                      <button
-                        key={place.id}
-                        onClick={() => goToDestination(activeCountry.code, place.id)}
-                        className="shrink-0 w-36 rounded-xl overflow-hidden border border-border/40 bg-card shadow-sm active:scale-[0.97] transition-transform"
-                      >
-                        <div className="aspect-[4/3] overflow-hidden relative">
-                          <img
-                            src={destinationImages[place.id] || "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=300&h=200&fit=crop"}
-                            alt={place.name}
-                            className="w-full h-full object-cover"
-                            loading="lazy"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-foreground/50 to-transparent" />
-                          <span className="absolute bottom-1.5 left-2 text-primary-foreground text-xs font-semibold drop-shadow-md">{place.name}</span>
-                        </div>
-                      </button>
-                    ))}
+                    {countryDestinations.map((place) => {
+                      const destTourCount = getToursForDestination(place.id).length;
+                      return (
+                        <button
+                          key={place.id}
+                          onClick={() => goToDestination(activeCountry.code, place.id)}
+                          className="group shrink-0 w-40 sm:w-44 rounded-xl overflow-hidden border border-border/40 bg-card shadow-sm active:scale-[0.97] transition-all hover:shadow-md"
+                        >
+                          <div className="aspect-[4/3] overflow-hidden relative">
+                            <img
+                              src={destinationImages[place.id] || "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=300&fit=crop"}
+                              alt={`${place.name} tours`}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              loading="lazy"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/10 to-transparent" />
+                            <span className="absolute bottom-2 left-2.5 text-primary-foreground text-sm font-semibold drop-shadow-md">{place.name}</span>
+                            {destTourCount > 0 && (
+                              <span className="absolute top-2 right-2 bg-card/85 backdrop-blur-sm text-foreground text-[10px] font-medium px-1.5 py-0.5 rounded-full">
+                                {destTourCount} tours
+                              </span>
+                            )}
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}

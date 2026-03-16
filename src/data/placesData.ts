@@ -33,7 +33,7 @@ export const countriesAPI: CountryInfo[] = [
     code: "EG",
     name: "Egypt",
     flag: "🇪🇬",
-    heroImage: "https://images.unsplash.com/photo-1568322445389-f64c5bb0e4e4?w=1400&q=80",
+    heroImage: "https://images.unsplash.com/photo-1539650116574-75c0c6d33ca9?w=1400&q=80",
     description: "Discover Egypt tours with local guides and explore the best places to visit in Egypt. Visit the Pyramids of Giza, Luxor, Aswan, and Dahab with guided cultural tours, desert trips, and Nile experiences. Browse and book authentic Egypt tours and travel experiences with trusted local experts.",
   },
   {
