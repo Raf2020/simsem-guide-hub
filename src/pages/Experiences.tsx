@@ -483,7 +483,7 @@ const ExperiencesPage = () => {
       {view.level === "countries" && (
         <>
           {/* Simsem hero */}
-          <div className="relative h-[340px] sm:h-[420px] overflow-hidden">
+          <div className="relative h-[340px] sm:h-[420px]">
             <img
               src="https://images.unsplash.com/photo-1547234935-80c7145ec969?w=1600&q=80"
               alt="Authentic tours in the Arab world"
