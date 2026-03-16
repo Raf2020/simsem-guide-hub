@@ -412,7 +412,7 @@ const ExperiencesPage = () => {
     // Preserve category ordering
     const allOrdered = selectedCategory
       ? experienceCategories.find(c => c.id === selectedCategory)?.tourTypes || []
-      : experienceCategories.flatMap(c => c.tourTypes);
+      : [...new Set(experienceCategories.flatMap(c => c.tourTypes))];
     return allOrdered.filter((t) => existingTypes.has(t));
   }, [view, activeDestinationId, selectedCategory]);
 
