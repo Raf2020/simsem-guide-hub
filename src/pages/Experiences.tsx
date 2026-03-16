@@ -40,19 +40,19 @@ function getCityCountForCountry(countryCode: string): number {
   return getTopLevelPlacesByCountry(countryCode).length;
 }
 
-// ─── Native-style header ───
+// ─── Simsem-style header ───
 function AppHeader({ title, onBack, rightContent }: { title: string; onBack?: () => void; rightContent?: React.ReactNode }) {
   return (
-    <header className="sticky top-0 z-50 bg-primary/95 backdrop-blur-md border-b border-primary-foreground/10 safe-top">
+    <header className="sticky top-0 z-50 bg-[hsl(var(--foreground))] border-b border-white/10 safe-top">
       <div className="flex items-center h-14 px-4 max-w-6xl mx-auto">
         {onBack ? (
-          <button onClick={onBack} className="w-10 h-10 -ml-2 flex items-center justify-center rounded-full active:bg-primary-foreground/10 transition-colors">
-            <ArrowLeft size={22} className="text-primary-foreground" />
+          <button onClick={onBack} className="w-10 h-10 -ml-2 flex items-center justify-center rounded-full active:bg-white/10 transition-colors">
+            <ArrowLeft size={22} className="text-white" />
           </button>
         ) : (
-          <span className="text-2xl font-script text-accent">Simsem</span>
+          <span className="text-2xl font-script text-[hsl(var(--accent))]">Simsem</span>
         )}
-        <h1 className="flex-1 text-center text-base font-semibold text-primary-foreground truncate px-2">
+        <h1 className="flex-1 text-center text-base font-semibold text-white truncate px-2">
           {title}
         </h1>
         <div className="w-10 flex items-center justify-center">
@@ -63,43 +63,52 @@ function AppHeader({ title, onBack, rightContent }: { title: string; onBack?: ()
   );
 }
 
-// ─── Tour card (compact mobile) ───
+// ─── Tour card (Simsem OTA style) ───
 function TourCard({ tour }: { tour: GuideTour }) {
   const mainPlace = getPlaceById(tour.main_place_id);
+  const catInfo = experienceCategories.find(c => c.id === tour.category);
   return (
-    <div className="bg-card rounded-2xl overflow-hidden shadow-sm border border-border/40 active:scale-[0.98] transition-transform duration-150 cursor-pointer">
-      <div className="aspect-[16/9] bg-muted relative overflow-hidden">
+    <div className="bg-card rounded-xl overflow-hidden shadow-sm border border-border/30 hover:shadow-lg transition-all duration-300 cursor-pointer group">
+      <div className="aspect-[4/3] bg-muted relative overflow-hidden">
         <img
           src={destinationImages[tour.main_place_id] || "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600&h=400&fit=crop"}
           alt={tour.title}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
         />
-        <div className="absolute top-2.5 left-2.5">
-          <span className="bg-card/90 backdrop-blur-md text-foreground text-[11px] font-medium px-2.5 py-1 rounded-full">{tour.tour_type}</span>
+        <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 via-transparent to-transparent" />
+        {/* Tour type badge */}
+        <div className="absolute top-3 left-3">
+          <span className="bg-card/90 backdrop-blur-md text-foreground text-[11px] font-medium px-2.5 py-1 rounded-full shadow-sm">{tour.tour_type}</span>
         </div>
-        <div className="absolute bottom-2.5 right-2.5">
-          <span className="bg-card/90 backdrop-blur-md text-foreground font-bold text-sm px-3 py-1 rounded-full">
+        {/* Price badge */}
+        <div className="absolute bottom-3 right-3">
+          <span className="bg-card/95 backdrop-blur-md text-foreground font-bold text-sm px-3 py-1.5 rounded-lg shadow-md">
             ${tour.price}
           </span>
         </div>
       </div>
-      <div className="p-3.5">
-        <h3 className="text-[15px] font-semibold text-foreground mb-1 line-clamp-2 leading-snug">{tour.title}</h3>
-        <div className="flex items-center gap-1.5 text-[13px] text-muted-foreground mb-1.5">
-          <MapPin size={12} className="text-primary shrink-0" />
-          <span className="truncate">{mainPlace?.name}</span>
+      <div className="p-4">
+        {/* Meta row */}
+        <div className="flex items-center gap-3 text-[11px] text-muted-foreground mb-2">
+          <span className="flex items-center gap-1">
+            <MapPin size={10} className="text-destructive" />
+            {mainPlace?.name}
+          </span>
+          <span className="flex items-center gap-1"><Clock size={10} /> {tour.duration}</span>
+          {catInfo && <span className="flex items-center gap-1">{catInfo.icon}</span>}
         </div>
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span className="flex items-center gap-1"><Clock size={11} /> {tour.duration}</span>
-          <span className="flex items-center gap-0.5 text-accent"><Star size={11} fill="currentColor" /> 4.8</span>
+        <h3 className="text-sm font-bold text-foreground mb-2 line-clamp-2 leading-snug group-hover:text-primary transition-colors">{tour.title}</h3>
+        <div className="flex items-center justify-between">
+          <span className="text-destructive font-bold text-sm">From ${tour.price} <span className="text-[10px] font-normal text-muted-foreground">/person</span></span>
+          <span className="flex items-center gap-0.5 text-[11px] text-accent"><Star size={11} fill="currentColor" /> 4.8</span>
         </div>
         {tour.places.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-2 pt-2 border-t border-border/40">
+          <div className="flex flex-wrap gap-1 mt-2.5 pt-2.5 border-t border-border/30">
             {tour.places.slice(0, 2).map((pid) => {
               const p = getPlaceById(pid);
               return p ? (
-                <span key={pid} className="text-[10px] bg-secondary text-secondary-foreground px-2 py-0.5 rounded-full">{p.name}</span>
+                <span key={pid} className="text-[10px] bg-muted text-muted-foreground px-2 py-0.5 rounded-full">{p.name}</span>
               ) : null;
             })}
             {tour.places.length > 2 && (
@@ -467,60 +476,129 @@ const ExperiencesPage = () => {
       {/* ═══════ LEVEL 1: Countries ═══════ */}
       {view.level === "countries" && (
         <>
-          <AppHeader title="Experiences" />
+          {/* Simsem hero */}
+          <div className="relative h-[340px] sm:h-[420px] overflow-hidden">
+            <img
+              src="https://images.unsplash.com/photo-1547234935-80c7145ec969?w=1600&q=80"
+              alt="Authentic tours in the Arab world"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--foreground))]/90 via-[hsl(var(--foreground))]/40 to-[hsl(var(--foreground))]/10" />
+            
+            {/* Hero nav */}
+            <div className="absolute top-0 left-0 right-0 z-10">
+              <div className="flex items-center justify-between px-5 sm:px-8 py-4 max-w-6xl mx-auto">
+                <span className="text-3xl font-script text-[hsl(var(--accent))]">Simsem</span>
+                <div className="hidden sm:flex items-center gap-6 text-sm text-white/80">
+                  <span className="hover:text-white cursor-pointer transition-colors">About Us</span>
+                  <span className="text-white font-semibold border-b-2 border-[hsl(var(--accent))] pb-0.5">Experiences</span>
+                  <span className="hover:text-white cursor-pointer transition-colors">Travel Guide</span>
+                  <span className="hover:text-white cursor-pointer transition-colors">Contact Us</span>
+                </div>
+              </div>
+            </div>
 
-          {/* Search bar */}
-          <div className="sticky top-14 z-40 bg-background/95 backdrop-blur-md px-4 py-3 border-b border-border/30">
+            {/* Hero content */}
+            <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10">
+              <div className="max-w-6xl mx-auto">
+                <span className="text-[hsl(var(--accent))] text-xs font-bold uppercase tracking-[0.2em] mb-2 block">Experiences</span>
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display text-white leading-tight mb-4 max-w-xl">
+                  Authentic Tours with Local Guides in Egypt, Jordan & the Arab World
+                </h1>
+              </div>
+            </div>
+          </div>
+
+          {/* Intro text */}
+          <div className="px-5 sm:px-8 py-8 max-w-4xl mx-auto text-center">
+            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+              Find top-rated tours in Egypt and Jordan, including Cairo cultural tours, Petra excursions, Wadi Rum desert experiences, food tours, and immersive local activities. Book authentic experiences led by trusted local guides across the Arab world.
+            </p>
+          </div>
+
+          {/* Featured Experiences */}
+          <div className="px-5 sm:px-8 pb-10 max-w-6xl mx-auto w-full">
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-[0.15em] mb-5">Featured Experiences</p>
+            <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+              {mockGuideTours.slice(0, 6).map((tour) => {
+                const mainPlace = getPlaceById(tour.main_place_id);
+                return (
+                  <div key={tour.id} className="shrink-0 w-56 sm:w-64 cursor-pointer group">
+                    <div className="aspect-[4/3] rounded-xl overflow-hidden mb-3 relative">
+                      <img
+                        src={destinationImages[tour.main_place_id] || "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=300&fit=crop"}
+                        alt={tour.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                      />
+                    </div>
+                    <div className="flex items-center gap-2 text-[11px] text-muted-foreground mb-1.5">
+                      <span className="flex items-center gap-0.5"><MapPin size={10} className="text-destructive" /> {mainPlace?.name}</span>
+                      <span className="flex items-center gap-0.5"><Clock size={10} /> {tour.duration}</span>
+                      <span className="flex items-center gap-0.5"><Star size={10} className="text-[hsl(var(--accent))]" fill="currentColor" /> 4.8</span>
+                    </div>
+                    <h3 className="text-sm font-bold text-foreground line-clamp-2 leading-snug mb-1.5 group-hover:text-primary transition-colors">{tour.title}</h3>
+                    <span className="text-destructive font-bold text-sm">From ${tour.price} <span className="text-[10px] font-normal text-muted-foreground">/person</span></span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* "What We Offer" section */}
+          <div className="text-center px-5 py-8 border-t border-border/30">
+            <span className="text-[hsl(var(--accent))] text-xs font-bold uppercase tracking-[0.2em] block mb-2">What We Offer</span>
+            <h2 className="text-2xl sm:text-3xl font-display text-foreground mb-3">
+              Explore Experiences Across Egypt, Jordan & Beyond
+            </h2>
+            <p className="text-sm text-muted-foreground max-w-xl mx-auto leading-relaxed">
+              Choose from cultural tours, adventure experiences, local dining events, desert expeditions, and immersive activities led by verified guides across the Arab world.
+            </p>
+          </div>
+
+          {/* Search */}
+          <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-md px-4 py-3 border-b border-border/30">
             <div className="relative max-w-6xl mx-auto">
               <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Where do you want to go?"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 h-11 rounded-2xl border-border/50 bg-muted/50 text-sm"
+                className="pl-10 h-11 rounded-xl border-border/50 bg-muted/50 text-sm"
               />
             </div>
           </div>
 
-          <main className="flex-1 px-4 pt-4 pb-8 max-w-6xl mx-auto w-full">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-4">Countries</p>
-
-            <div className="space-y-3">
+          <main className="flex-1 px-5 sm:px-8 pt-6 pb-12 max-w-6xl mx-auto w-full">
+            <div className="space-y-4">
               {countriesAPI
                 .filter((c) => c.name.toLowerCase().includes(searchQuery.toLowerCase()))
                 .map((country) => {
                   const cityCount = getCityCountForCountry(country.code);
+                  const tourCount = getToursForCountry(country.code).length;
                   return (
                     <button
                       key={country.code}
                       onClick={() => goToCountry(country.code)}
-                      className="group w-full text-left rounded-2xl overflow-hidden relative min-h-[140px] sm:min-h-[160px] flex items-center active:scale-[0.98] transition-transform duration-150"
+                      className="group w-full text-left rounded-2xl overflow-hidden relative"
                     >
-                      <div
-                        className="absolute inset-0 bg-cover bg-center"
-                        style={{ backgroundImage: `url('${country.heroImage}')` }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-r from-foreground/75 via-foreground/50 to-foreground/25" />
-
-                      <div className="relative z-10 flex items-center justify-between w-full px-5 sm:px-8 py-6">
+                      {/* Dark banner (Simsem style) */}
+                      <div className="bg-[hsl(var(--foreground))] rounded-2xl p-5 sm:p-6 flex items-center justify-between gap-4">
                         <div className="flex items-start gap-3 flex-1 min-w-0">
                           <span className="text-2xl mt-0.5 shrink-0">{country.flag}</span>
                           <div className="min-w-0">
-                            <h2 className="text-xl sm:text-2xl font-bold text-primary-foreground mb-1">
+                            <h3 className="text-lg sm:text-xl font-display text-white mb-1.5">
                               Tours in {country.name}
-                            </h2>
-                            <p className="text-primary-foreground/70 text-xs sm:text-sm leading-relaxed line-clamp-2 sm:line-clamp-3 max-w-xl">
+                            </h3>
+                            <p className="text-white/55 text-xs sm:text-sm leading-relaxed line-clamp-2 max-w-xl">
                               {country.description}
                             </p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2 shrink-0 ml-3">
-                          <span className="hidden sm:flex items-center gap-1 text-primary-foreground/60 text-xs whitespace-nowrap">
-                            <Globe2 size={12} />
-                            {cityCount} cities
-                          </span>
-                          <div className="w-8 h-8 rounded-full bg-primary-foreground/15 flex items-center justify-center">
-                            <ChevronDown size={16} className="text-primary-foreground/80" />
+                        <div className="flex items-center gap-3 shrink-0">
+                          <span className="hidden sm:block text-white/50 text-xs">{cityCount} cities</span>
+                          <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-[hsl(var(--accent))]/20 transition-colors">
+                            <ChevronRight size={16} className="text-white/70 group-hover:text-[hsl(var(--accent))] transition-colors" />
                           </div>
                         </div>
                       </div>
@@ -568,11 +646,11 @@ const ExperiencesPage = () => {
               rightContent={
                 <button
                   onClick={() => setFilterOpen(true)}
-                  className="relative w-10 h-10 flex items-center justify-center rounded-full active:bg-primary-foreground/10 transition-colors"
+                  className="relative w-10 h-10 flex items-center justify-center rounded-full active:bg-white/10 transition-colors"
                 >
-                  <Filter size={20} className="text-primary-foreground" />
+                  <Filter size={20} className="text-white" />
                   {activeFilterCount > 0 && (
-                    <span className="absolute top-1 right-1 w-4 h-4 bg-accent text-accent-foreground text-[10px] font-bold rounded-full flex items-center justify-center">
+                    <span className="absolute top-1 right-1 w-4 h-4 bg-[hsl(var(--accent))] text-[hsl(var(--foreground))] text-[10px] font-bold rounded-full flex items-center justify-center">
                       {activeFilterCount}
                     </span>
                   )}
@@ -580,44 +658,44 @@ const ExperiencesPage = () => {
               }
             />
 
-            {/* Country hero banner — OTA style */}
-            <div className="relative h-56 sm:h-72 lg:h-80 overflow-hidden">
+            {/* Country hero banner — Simsem style */}
+            <div className="relative h-48 sm:h-64 lg:h-72 overflow-hidden">
               <img
                 src={activeCountry.heroImage}
                 alt={`${activeCountry.name} tours`}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/30 to-foreground/5" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--foreground))]/85 via-[hsl(var(--foreground))]/35 to-[hsl(var(--foreground))]/10" />
               
               {/* Hero content */}
               <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-8">
                 <div className="max-w-6xl mx-auto">
-                  <div className="flex items-center gap-2 mb-1">
+                  <div className="flex items-center gap-2 mb-2">
                     <span className="text-2xl">{activeCountry.flag}</span>
-                    <span className="text-primary-foreground/60 text-xs font-medium uppercase tracking-widest">Explore</span>
+                    <span className="text-[hsl(var(--accent))] text-xs font-bold uppercase tracking-[0.15em]">Explore</span>
                   </div>
-                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary-foreground mb-2 font-serif">
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-display text-white mb-2.5">
                     Tours in {activeCountry.name}
                   </h2>
-                  <p className="text-primary-foreground/75 text-xs sm:text-sm leading-relaxed max-w-2xl line-clamp-2 mb-3">
+                  <p className="text-white/60 text-xs sm:text-sm leading-relaxed max-w-2xl line-clamp-2 mb-3">
                     {activeCountry.description.split('.')[0]}.
                   </p>
                   {/* Trust signals — E-E-A-T */}
                   <div className="flex flex-wrap items-center gap-3 sm:gap-5">
-                    <div className="flex items-center gap-1.5 text-primary-foreground/80 text-xs">
-                      <MapPin size={13} className="text-accent" />
+                    <div className="flex items-center gap-1.5 text-white/70 text-xs">
+                      <MapPin size={12} className="text-[hsl(var(--accent))]" />
                       <span>{countryDestinations.length} destinations</span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-primary-foreground/80 text-xs">
-                      <Compass size={13} className="text-accent" />
+                    <div className="flex items-center gap-1.5 text-white/70 text-xs">
+                      <Compass size={12} className="text-[hsl(var(--accent))]" />
                       <span>{countryTours.length} guided tours</span>
                     </div>
-                    <div className="flex items-center gap-1 text-primary-foreground/80 text-xs">
-                      {[1,2,3,4,5].map(s => <Star key={s} size={11} className="fill-accent text-accent" />)}
+                    <div className="flex items-center gap-1 text-white/70 text-xs">
+                      {[1,2,3,4,5].map(s => <Star key={s} size={10} className="fill-[hsl(var(--accent))] text-[hsl(var(--accent))]" />)}
                       <span className="ml-1">Top rated</span>
                     </div>
-                    <div className="hidden sm:flex items-center gap-1.5 text-primary-foreground/80 text-xs">
-                      <Shield size={13} className="text-accent" />
+                    <div className="hidden sm:flex items-center gap-1.5 text-white/70 text-xs">
+                      <Shield size={12} className="text-[hsl(var(--accent))]" />
                       <span>Local verified guides</span>
                     </div>
                   </div>
@@ -633,7 +711,7 @@ const ExperiencesPage = () => {
                   placeholder={`Search tours in ${activeCountry.name}...`}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 h-10 rounded-2xl border-border/50 bg-muted/50 text-sm"
+                  className="pl-10 h-10 rounded-xl border-border/50 bg-muted/50 text-sm"
                 />
               </div>
             </div>
@@ -778,11 +856,11 @@ const ExperiencesPage = () => {
             rightContent={
               <button
                 onClick={() => setFilterOpen(true)}
-                className="relative w-10 h-10 flex items-center justify-center rounded-full active:bg-primary-foreground/10 transition-colors"
+                className="relative w-10 h-10 flex items-center justify-center rounded-full active:bg-white/10 transition-colors"
               >
-                <Filter size={20} className="text-primary-foreground" />
+                <Filter size={20} className="text-white" />
                 {activeFilterCount > 0 && (
-                  <span className="absolute top-1 right-1 w-4 h-4 bg-accent text-accent-foreground text-[10px] font-bold rounded-full flex items-center justify-center">
+                  <span className="absolute top-1 right-1 w-4 h-4 bg-[hsl(var(--accent))] text-[hsl(var(--foreground))] text-[10px] font-bold rounded-full flex items-center justify-center">
                     {activeFilterCount}
                   </span>
                 )}
@@ -791,16 +869,17 @@ const ExperiencesPage = () => {
           />
 
           {/* Destination hero */}
-          <div className="relative h-32 sm:h-40 overflow-hidden">
+          <div className="relative h-36 sm:h-44 overflow-hidden">
             <img
               src={destinationImages[activeDestination.id] || activeCountry.heroImage}
               alt={activeDestination.name}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 to-transparent" />
-            <div className="absolute bottom-3 left-4 right-4">
-              <h2 className="text-lg font-bold text-primary-foreground">{activeDestination.name}</h2>
-              <p className="text-xs text-primary-foreground/70">
+            <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--foreground))]/80 via-[hsl(var(--foreground))]/30 to-transparent" />
+            <div className="absolute bottom-4 left-5 right-5">
+              <span className="text-[hsl(var(--accent))] text-[10px] font-bold uppercase tracking-[0.15em] block mb-1">Explore</span>
+              <h2 className="text-xl sm:text-2xl font-display text-white">{activeDestination.name}</h2>
+              <p className="text-xs text-white/60 mt-0.5">
                 {tours.length} {tours.length === 1 ? "tour" : "tours"}
                 {activeFilterCount > 0 && " · filtered"}
               </p>
