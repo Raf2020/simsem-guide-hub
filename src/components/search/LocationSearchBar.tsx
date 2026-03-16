@@ -78,6 +78,7 @@ export function LocationSearchBar({
   placeholder = "Search a country, city, or attraction...",
   className = "",
   variant = "inline",
+  countryFilter,
 }: LocationSearchBarProps) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
