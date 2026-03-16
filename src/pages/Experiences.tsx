@@ -699,14 +699,11 @@ const ExperiencesPage = () => {
                   </div>
                   <div>
                     <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Tour Type</h3>
-                    <div className="space-y-0.5">
-                      {(availableTourTypes as readonly string[]).map((type) => (
-                        <label key={type} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground cursor-pointer py-1 transition-colors">
-                          <input type="checkbox" checked={selectedTypes.has(type)} onChange={() => toggleType(type)} className="rounded border-border text-primary focus:ring-primary" />
-                          <span className="text-[13px]">{type}</span>
-                        </label>
-                      ))}
-                    </div>
+                    <GroupedTourTypeFilter
+                      availableTypes={availableTourTypes as readonly string[]}
+                      selectedTypes={selectedTypes}
+                      toggleType={toggleType}
+                    />
                   </div>
                   {activeFilterCount > 0 && (
                     <Button variant="outline" size="sm" className="w-full" onClick={clearFilters}>
