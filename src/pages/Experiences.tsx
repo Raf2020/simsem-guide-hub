@@ -40,19 +40,19 @@ function getCityCountForCountry(countryCode: string): number {
   return getTopLevelPlacesByCountry(countryCode).length;
 }
 
-// ─── Native-style header ───
+// ─── Simsem-style header ───
 function AppHeader({ title, onBack, rightContent }: { title: string; onBack?: () => void; rightContent?: React.ReactNode }) {
   return (
-    <header className="sticky top-0 z-50 bg-primary/95 backdrop-blur-md border-b border-primary-foreground/10 safe-top">
+    <header className="sticky top-0 z-50 bg-[hsl(var(--foreground))] border-b border-white/10 safe-top">
       <div className="flex items-center h-14 px-4 max-w-6xl mx-auto">
         {onBack ? (
-          <button onClick={onBack} className="w-10 h-10 -ml-2 flex items-center justify-center rounded-full active:bg-primary-foreground/10 transition-colors">
-            <ArrowLeft size={22} className="text-primary-foreground" />
+          <button onClick={onBack} className="w-10 h-10 -ml-2 flex items-center justify-center rounded-full active:bg-white/10 transition-colors">
+            <ArrowLeft size={22} className="text-white" />
           </button>
         ) : (
-          <span className="text-2xl font-script text-accent">Simsem</span>
+          <span className="text-2xl font-script text-[hsl(var(--accent))]">Simsem</span>
         )}
-        <h1 className="flex-1 text-center text-base font-semibold text-primary-foreground truncate px-2">
+        <h1 className="flex-1 text-center text-base font-semibold text-white truncate px-2">
           {title}
         </h1>
         <div className="w-10 flex items-center justify-center">
