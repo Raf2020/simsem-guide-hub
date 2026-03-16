@@ -69,6 +69,7 @@ interface LocationSearchBarProps {
   placeholder?: string;
   className?: string;
   variant?: "hero" | "inline";
+  countryFilter?: string; // restrict results to this country code
 }
 
 export function LocationSearchBar({
