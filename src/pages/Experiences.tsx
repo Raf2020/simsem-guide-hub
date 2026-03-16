@@ -4,6 +4,7 @@ import {
   ChevronRight, ChevronDown, ArrowRight, Globe2, Filter, Compass, Shield
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { LocationSearchBar } from "@/components/search/LocationSearchBar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
