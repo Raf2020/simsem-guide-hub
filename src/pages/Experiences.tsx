@@ -186,12 +186,14 @@ function GroupedTourTypeFilter({
     });
   };
 
-  // Only show categories that have at least one available type
+  // Only show categories that have at least one available type, dedup across categories
+  const seen = new Set<string>();
   const visibleCategories = experienceCategories
-    .map((cat) => ({
-      ...cat,
-      types: cat.tourTypes.filter((t) => availableTypes.includes(t)),
-    }))
+    .map((cat) => {
+      const types = cat.tourTypes.filter((t) => availableTypes.includes(t) && !seen.has(t));
+      types.forEach((t) => seen.add(t));
+      return { ...cat, types };
+    })
     .filter((cat) => cat.types.length > 0);
 
   if (mode === "pill") {
