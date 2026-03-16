@@ -69,19 +69,23 @@ function buildSearchIndex(): LocationSearchResult[] {
 interface LocationSearchBarProps {
   onSelectCountry: (countryCode: string) => void;
   onSelectDestination: (countryCode: string, destinationId: string) => void;
+  onSelectTour?: (tourId: string) => void;
   placeholder?: string;
   className?: string;
   variant?: "hero" | "inline";
-  countryFilter?: string; // restrict results to this country code
+  countryFilter?: string;
+  tours?: GuideTour[];
 }
 
 export function LocationSearchBar({
   onSelectCountry,
   onSelectDestination,
+  onSelectTour,
   placeholder = "Search a country, city, or attraction...",
   className = "",
   variant = "inline",
   countryFilter,
+  tours = [],
 }: LocationSearchBarProps) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
