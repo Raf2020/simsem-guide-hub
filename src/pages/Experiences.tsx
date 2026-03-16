@@ -377,68 +377,200 @@ const ExperiencesPage = () => {
         </>
       )}
 
-      {/* ═══════ LEVEL 2: Destinations ═══════ */}
-      {view.level === "country" && activeCountry && (
-        <>
-          <AppHeader title={activeCountry.name} onBack={goBack} />
+      {/* ═══════ LEVEL 2: Country with filters ═══════ */}
+      {view.level === "country" && activeCountry && (() => {
+        const countryDestinations = getTopLevelPlacesByCountry(activeCountry.code);
+        const countryTours = (() => {
+          let result = getToursForCountry(activeCountry.code);
+          if (selectedPlaces.size > 0) {
+            result = result.filter((t) => {
+              // Check if tour's main destination or any of its places match selected destinations
+              for (const selectedId of selectedPlaces) {
+                const descendants = getDescendants(selectedId);
+                const allIds = new Set([selectedId, ...descendants.map(d => d.id)]);
+                if (allIds.has(t.main_place_id) || t.places.some(p => allIds.has(p))) return true;
+              }
+              return false;
+            });
+          }
+          if (selectedTypes.size > 0) {
+            result = result.filter((t) => selectedTypes.has(t.tour_type));
+          }
+          if (searchQuery) {
+            const q = searchQuery.toLowerCase();
+            result = result.filter((t) => t.title.toLowerCase().includes(q));
+          }
+          return result;
+        })();
 
-          {/* Country hero banner */}
-          <div className="relative h-36 sm:h-44 overflow-hidden">
-            <img
-              src={activeCountry.heroImage}
-              alt={activeCountry.name}
-              className="w-full h-full object-cover"
+        return (
+          <>
+            <AppHeader
+              title={activeCountry.name}
+              onBack={goBack}
+              rightContent={
+                <button
+                  onClick={() => setFilterOpen(true)}
+                  className="relative w-10 h-10 flex items-center justify-center rounded-full active:bg-primary-foreground/10 transition-colors"
+                >
+                  <Filter size={20} className="text-primary-foreground" />
+                  {activeFilterCount > 0 && (
+                    <span className="absolute top-1 right-1 w-4 h-4 bg-accent text-accent-foreground text-[10px] font-bold rounded-full flex items-center justify-center">
+                      {activeFilterCount}
+                    </span>
+                  )}
+                </button>
+              }
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 to-transparent" />
-            <div className="absolute bottom-4 left-4 right-4">
-              <h2 className="text-xl font-bold text-primary-foreground flex items-center gap-2">
-                {activeCountry.flag} {activeCountry.name}
-              </h2>
-              <p className="text-xs text-primary-foreground/70 mt-0.5 line-clamp-1">
-                {getCityCountForCountry(activeCountry.code)} destinations to explore
-              </p>
-            </div>
-          </div>
 
-          {/* Search */}
-          <div className="sticky top-14 z-40 bg-background/95 backdrop-blur-md px-4 py-3 border-b border-border/30">
-            <div className="relative max-w-6xl mx-auto">
-              <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder={`Search in ${activeCountry.name}...`}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 h-10 rounded-2xl border-border/50 bg-muted/50 text-sm"
+            {/* Country hero banner */}
+            <div className="relative h-36 sm:h-44 overflow-hidden">
+              <img
+                src={activeCountry.heroImage}
+                alt={activeCountry.name}
+                className="w-full h-full object-cover"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4">
+                <h2 className="text-xl font-bold text-primary-foreground flex items-center gap-2">
+                  {activeCountry.flag} {activeCountry.name}
+                </h2>
+                <p className="text-xs text-primary-foreground/70 mt-0.5 line-clamp-1">
+                  {countryDestinations.length} destinations · {countryTours.length} tours
+                </p>
+              </div>
             </div>
-          </div>
 
-          <main className="flex-1 px-4 pt-4 pb-8 max-w-6xl mx-auto w-full">
-            {(() => {
-              const destinations = getTopLevelPlacesByCountry(activeCountry.code)
-                .filter((p) => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
-              return destinations.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {destinations.map((place) => (
-                    <DestinationCard
-                      key={place.id}
-                      place={place}
-                      tourCount={getToursForDestination(place.id).length}
-                      countryName={activeCountry.name}
-                      onClick={() => goToDestination(activeCountry.code, place.id)}
-                    />
-                  ))}
+            {/* Search */}
+            <div className="sticky top-14 z-40 bg-background/95 backdrop-blur-md px-4 py-3 border-b border-border/30">
+              <div className="relative max-w-6xl mx-auto">
+                <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder={`Search tours in ${activeCountry.name}...`}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 h-10 rounded-2xl border-border/50 bg-muted/50 text-sm"
+                />
+              </div>
+            </div>
+
+            {/* Active filters (horizontal scroll) */}
+            {activeFilterCount > 0 && (
+              <div className="flex gap-1.5 px-4 py-2.5 overflow-x-auto no-scrollbar border-b border-border/30">
+                {Array.from(selectedPlaces).map((pid) => {
+                  const p = getPlaceById(pid);
+                  return p ? (
+                    <button key={pid} onClick={() => togglePlace(pid)} className="inline-flex items-center gap-1 bg-primary text-primary-foreground text-xs px-2.5 py-1 rounded-full whitespace-nowrap shrink-0">
+                      {p.name} <X size={10} />
+                    </button>
+                  ) : null;
+                })}
+                {Array.from(selectedTypes).map((type) => (
+                  <button key={type} onClick={() => toggleType(type)} className="inline-flex items-center gap-1 bg-accent text-accent-foreground text-xs px-2.5 py-1 rounded-full whitespace-nowrap shrink-0">
+                    {type} <X size={10} />
+                  </button>
+                ))}
+                <button onClick={clearFilters} className="text-xs text-destructive font-medium px-2 whitespace-nowrap shrink-0">Clear</button>
+              </div>
+            )}
+
+            <main className="flex-1 px-4 pt-4 pb-8 max-w-6xl mx-auto w-full">
+              {/* Destination cards row (quick browse) — hidden when place filters active */}
+              {selectedPlaces.size === 0 && !searchQuery && (
+                <div className="mb-6">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Browse by destination</p>
+                  <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+                    {countryDestinations.map((place) => (
+                      <button
+                        key={place.id}
+                        onClick={() => goToDestination(activeCountry.code, place.id)}
+                        className="shrink-0 w-36 rounded-xl overflow-hidden border border-border/40 bg-card shadow-sm active:scale-[0.97] transition-transform"
+                      >
+                        <div className="aspect-[4/3] overflow-hidden relative">
+                          <img
+                            src={destinationImages[place.id] || "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=300&h=200&fit=crop"}
+                            alt={place.name}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-foreground/50 to-transparent" />
+                          <span className="absolute bottom-1.5 left-2 text-primary-foreground text-xs font-semibold drop-shadow-md">{place.name}</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              ) : (
-                <div className="text-center py-16">
-                  <MapPin size={40} className="mx-auto text-muted-foreground/30 mb-2" />
-                  <p className="text-muted-foreground text-sm">No destinations match "{searchQuery}"</p>
+              )}
+
+              {/* Desktop sidebar + grid */}
+              <div className="flex gap-6">
+                {/* Desktop sidebar */}
+                <aside className="w-52 shrink-0 hidden lg:block space-y-5">
+                  <div>
+                    <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Destinations</h3>
+                    <div className="space-y-0.5 max-h-[280px] overflow-y-auto">
+                      {countryDestinations.map((p) => (
+                        <label key={p.id} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground cursor-pointer py-1 transition-colors">
+                          <input type="checkbox" checked={selectedPlaces.has(p.id)} onChange={() => togglePlace(p.id)} className="rounded border-border text-primary focus:ring-primary" />
+                          <span className="truncate text-[13px]">{p.name}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Tour Type</h3>
+                    <div className="space-y-0.5">
+                      {tourTypes.map((type) => (
+                        <label key={type} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground cursor-pointer py-1 transition-colors">
+                          <input type="checkbox" checked={selectedTypes.has(type)} onChange={() => toggleType(type)} className="rounded border-border text-primary focus:ring-primary" />
+                          <span className="text-[13px]">{type}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  {activeFilterCount > 0 && (
+                    <Button variant="outline" size="sm" className="w-full" onClick={clearFilters}>
+                      <X size={14} className="mr-1" /> Clear filters
+                    </Button>
+                  )}
+                </aside>
+
+                {/* Tours grid */}
+                <div className="flex-1">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">
+                    {countryTours.length} {countryTours.length === 1 ? "tour" : "tours"} in {activeCountry.name}
+                    {activeFilterCount > 0 && " · filtered"}
+                  </p>
+                  {countryTours.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                      {countryTours.map((tour) => <TourCard key={tour.id} tour={tour} />)}
+                    </div>
+                  ) : (
+                    <div className="text-center py-20">
+                      <MapPin size={40} className="mx-auto text-muted-foreground/30 mb-2" />
+                      <p className="text-muted-foreground">No tours match your filters</p>
+                      <button onClick={clearFilters} className="text-sm text-primary font-medium mt-2">Clear filters</button>
+                    </div>
+                  )}
                 </div>
-              );
-            })()}
-          </main>
-        </>
-      )}
+              </div>
+            </main>
+
+            {/* Mobile filter bottom sheet */}
+            <FilterSheet
+              open={filterOpen}
+              onClose={() => setFilterOpen(false)}
+              allPlaces={countryDestinations}
+              selectedPlaces={selectedPlaces}
+              selectedTypes={selectedTypes}
+              togglePlace={togglePlace}
+              toggleType={toggleType}
+              clearFilters={clearFilters}
+              activeCount={activeFilterCount}
+            />
+          </>
+        );
+      })()}
 
       {/* ═══════ LEVEL 3: Tours ═══════ */}
       {view.level === "destination" && activeCountry && activeDestination && (
