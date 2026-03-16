@@ -118,6 +118,7 @@ function CreateTourForm({ onClose, onSave }: { onClose: () => void; onSave: (tou
       price: parseFloat(price),
       duration,
       tour_type: tourType,
+      category: getCategoryForTourType(tourType),
       description,
       status: "draft",
       created_at: new Date().toISOString().split("T")[0],
