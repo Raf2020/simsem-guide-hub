@@ -156,8 +156,15 @@ export function LocationSearchBar({
   const handleSelect = (result: LocationSearchResult) => {
     if (result.type === "country") {
       onSelectCountry(result.countryCode);
+    } else if (result.type === "activity") {
+      // For tours, navigate to the destination they belong to
+      if (onSelectTour) {
+        onSelectTour(result.id);
+      } else {
+        const destId = result.parentDestinationId || "";
+        if (destId) onSelectDestination(result.countryCode, destId);
+      }
     } else {
-      // For both destinations and child places, navigate to the top-level destination
       const destId = result.parentDestinationId || result.id;
       onSelectDestination(result.countryCode, destId);
     }
