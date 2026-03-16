@@ -719,6 +719,7 @@ const ExperiencesPage = () => {
                   placeholder={`Search tours in ${activeCountry.name}...`}
                   variant="inline"
                   countryFilter={activeCountry.code}
+                  tours={mockGuideTours}
                 />
               </div>
             </div>
