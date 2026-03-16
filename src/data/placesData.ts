@@ -413,13 +413,10 @@ export function getCountryByCode(code: string): CountryInfo | undefined {
   return countriesAPI.find((c) => c.code === code);
 }
 
-// Tour types for filtering
-export const tourTypes = [
-  "Jeep Tour", "Hiking", "Food Tour", "Cultural", "Diving",
-  "Snorkeling", "Camping", "City Walk", "Private Tour", "Day Trip",
-] as const;
+// Tour types: collect all unique types from categories
+export const tourTypes: string[] = experienceCategories.flatMap((c) => c.tourTypes);
 
-export type TourType = (typeof tourTypes)[number];
+export type TourType = string;
 
 // ─── Destination images ───
 export const destinationImages: Record<string, string> = {
