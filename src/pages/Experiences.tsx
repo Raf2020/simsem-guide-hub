@@ -746,7 +746,7 @@ const ExperiencesPage = () => {
 
             <main className="flex-1 px-4 pt-6 pb-8 max-w-6xl mx-auto w-full">
               {/* Destination cards row (quick browse) */}
-              {selectedPlaces.size === 0 && !searchQuery && (
+              {selectedPlaces.size === 0 && (
                 <div className="mb-8">
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Browse by destination</p>
                   <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
