@@ -93,8 +93,9 @@ export function LocationSearchBar({
     const q = query.toLowerCase().trim();
     return searchIndex
       .filter((r) => r.name.toLowerCase().includes(q))
+      .filter((r) => !countryFilter || r.countryCode === countryFilter)
       .slice(0, 12);
-  }, [query, searchIndex]);
+  }, [query, searchIndex, countryFilter]);
 
   // Group results
   const grouped = useMemo(() => {
