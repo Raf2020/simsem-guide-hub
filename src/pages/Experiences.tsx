@@ -247,6 +247,38 @@ function FilterSheet({
   );
 }
 
+// ─── Category Tabs ───
+function CategoryTabs({ selected, onSelect }: { selected: ExperienceCategory | null; onSelect: (cat: ExperienceCategory | null) => void }) {
+  return (
+    <div className="flex gap-2 overflow-x-auto no-scrollbar py-1">
+      <button
+        onClick={() => onSelect(null)}
+        className={`shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium border transition-all duration-200 ${
+          selected === null
+            ? "bg-primary text-primary-foreground border-primary shadow-sm"
+            : "bg-card text-muted-foreground border-border/60 hover:border-border hover:text-foreground"
+        }`}
+      >
+        All
+      </button>
+      {experienceCategories.map((cat) => (
+        <button
+          key={cat.id}
+          onClick={() => onSelect(selected === cat.id ? null : cat.id)}
+          className={`shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium border transition-all duration-200 ${
+            selected === cat.id
+              ? "bg-primary text-primary-foreground border-primary shadow-sm"
+              : "bg-card text-muted-foreground border-border/60 hover:border-border hover:text-foreground"
+          }`}
+        >
+          <span>{cat.icon}</span>
+          {cat.name}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 // ─── Main page ───
 
 type View =
