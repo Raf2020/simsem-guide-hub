@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect, useMemo } from "react";
-import { Search, MapPin, Globe2, Landmark, X } from "lucide-react";
+import { Search, MapPin, Globe2, Landmark, X, Compass } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   placesData, countriesAPI, getTopLevelPlacesByCountry, getDescendants,
-  type Place, type CountryInfo,
+  type Place, type CountryInfo, type GuideTour,
 } from "@/data/placesData";
 
 export interface LocationSearchResult {
