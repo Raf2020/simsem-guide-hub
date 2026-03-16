@@ -718,6 +718,7 @@ const ExperiencesPage = () => {
                   onSelectDestination={goToDestination}
                   placeholder={`Search tours in ${activeCountry.name}...`}
                   variant="inline"
+                  countryFilter={activeCountry.code}
                 />
               </div>
             </div>

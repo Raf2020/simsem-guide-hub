@@ -69,6 +69,7 @@ interface LocationSearchBarProps {
   placeholder?: string;
   className?: string;
   variant?: "hero" | "inline";
+  countryFilter?: string; // restrict results to this country code
 }
 
 export function LocationSearchBar({
@@ -77,6 +78,7 @@ export function LocationSearchBar({
   placeholder = "Search a country, city, or attraction...",
   className = "",
   variant = "inline",
+  countryFilter,
 }: LocationSearchBarProps) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -91,8 +93,9 @@ export function LocationSearchBar({
     const q = query.toLowerCase().trim();
     return searchIndex
       .filter((r) => r.name.toLowerCase().includes(q))
+      .filter((r) => !countryFilter || r.countryCode === countryFilter)
       .slice(0, 12);
-  }, [query, searchIndex]);
+  }, [query, searchIndex, countryFilter]);
 
   // Group results
   const grouped = useMemo(() => {
