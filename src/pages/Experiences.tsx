@@ -63,43 +63,52 @@ function AppHeader({ title, onBack, rightContent }: { title: string; onBack?: ()
   );
 }
 
-// ─── Tour card (compact mobile) ───
+// ─── Tour card (Simsem OTA style) ───
 function TourCard({ tour }: { tour: GuideTour }) {
   const mainPlace = getPlaceById(tour.main_place_id);
+  const catInfo = experienceCategories.find(c => c.id === tour.category);
   return (
-    <div className="bg-card rounded-2xl overflow-hidden shadow-sm border border-border/40 active:scale-[0.98] transition-transform duration-150 cursor-pointer">
-      <div className="aspect-[16/9] bg-muted relative overflow-hidden">
+    <div className="bg-card rounded-xl overflow-hidden shadow-sm border border-border/30 hover:shadow-lg transition-all duration-300 cursor-pointer group">
+      <div className="aspect-[4/3] bg-muted relative overflow-hidden">
         <img
           src={destinationImages[tour.main_place_id] || "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600&h=400&fit=crop"}
           alt={tour.title}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
         />
-        <div className="absolute top-2.5 left-2.5">
-          <span className="bg-card/90 backdrop-blur-md text-foreground text-[11px] font-medium px-2.5 py-1 rounded-full">{tour.tour_type}</span>
+        <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 via-transparent to-transparent" />
+        {/* Tour type badge */}
+        <div className="absolute top-3 left-3">
+          <span className="bg-card/90 backdrop-blur-md text-foreground text-[11px] font-medium px-2.5 py-1 rounded-full shadow-sm">{tour.tour_type}</span>
         </div>
-        <div className="absolute bottom-2.5 right-2.5">
-          <span className="bg-card/90 backdrop-blur-md text-foreground font-bold text-sm px-3 py-1 rounded-full">
+        {/* Price badge */}
+        <div className="absolute bottom-3 right-3">
+          <span className="bg-card/95 backdrop-blur-md text-foreground font-bold text-sm px-3 py-1.5 rounded-lg shadow-md">
             ${tour.price}
           </span>
         </div>
       </div>
-      <div className="p-3.5">
-        <h3 className="text-[15px] font-semibold text-foreground mb-1 line-clamp-2 leading-snug">{tour.title}</h3>
-        <div className="flex items-center gap-1.5 text-[13px] text-muted-foreground mb-1.5">
-          <MapPin size={12} className="text-primary shrink-0" />
-          <span className="truncate">{mainPlace?.name}</span>
+      <div className="p-4">
+        {/* Meta row */}
+        <div className="flex items-center gap-3 text-[11px] text-muted-foreground mb-2">
+          <span className="flex items-center gap-1">
+            <MapPin size={10} className="text-destructive" />
+            {mainPlace?.name}
+          </span>
+          <span className="flex items-center gap-1"><Clock size={10} /> {tour.duration}</span>
+          {catInfo && <span className="flex items-center gap-1">{catInfo.icon}</span>}
         </div>
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span className="flex items-center gap-1"><Clock size={11} /> {tour.duration}</span>
-          <span className="flex items-center gap-0.5 text-accent"><Star size={11} fill="currentColor" /> 4.8</span>
+        <h3 className="text-sm font-bold text-foreground mb-2 line-clamp-2 leading-snug group-hover:text-primary transition-colors">{tour.title}</h3>
+        <div className="flex items-center justify-between">
+          <span className="text-destructive font-bold text-sm">From ${tour.price} <span className="text-[10px] font-normal text-muted-foreground">/person</span></span>
+          <span className="flex items-center gap-0.5 text-[11px] text-accent"><Star size={11} fill="currentColor" /> 4.8</span>
         </div>
         {tour.places.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-2 pt-2 border-t border-border/40">
+          <div className="flex flex-wrap gap-1 mt-2.5 pt-2.5 border-t border-border/30">
             {tour.places.slice(0, 2).map((pid) => {
               const p = getPlaceById(pid);
               return p ? (
-                <span key={pid} className="text-[10px] bg-secondary text-secondary-foreground px-2 py-0.5 rounded-full">{p.name}</span>
+                <span key={pid} className="text-[10px] bg-muted text-muted-foreground px-2 py-0.5 rounded-full">{p.name}</span>
               ) : null;
             })}
             {tour.places.length > 2 && (
