@@ -1,20 +1,23 @@
 import { useState, useRef, useEffect, useMemo } from "react";
-import { Search, MapPin, Globe2, Landmark, X } from "lucide-react";
+import { Search, MapPin, Globe2, Landmark, X, Compass } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   placesData, countriesAPI, getTopLevelPlacesByCountry, getDescendants,
-  type Place, type CountryInfo,
+  type Place, type CountryInfo, type GuideTour,
 } from "@/data/placesData";
 
 export interface LocationSearchResult {
-  type: "country" | "destination" | "place";
+  type: "country" | "destination" | "place" | "activity";
   id: string;
   name: string;
   countryCode: string;
   countryName: string;
-  parentDestinationId?: string; // for child places, the top-level ancestor
+  parentDestinationId?: string;
   parentDestinationName?: string;
   placeType?: string;
+  tourType?: string;
+  tourPrice?: number;
+  tourDuration?: string;
 }
 
 function getTopLevelAncestor(place: Place): Place {
@@ -66,19 +69,23 @@ function buildSearchIndex(): LocationSearchResult[] {
 interface LocationSearchBarProps {
   onSelectCountry: (countryCode: string) => void;
   onSelectDestination: (countryCode: string, destinationId: string) => void;
+  onSelectTour?: (tourId: string) => void;
   placeholder?: string;
   className?: string;
   variant?: "hero" | "inline";
-  countryFilter?: string; // restrict results to this country code
+  countryFilter?: string;
+  tours?: GuideTour[];
 }
 
 export function LocationSearchBar({
   onSelectCountry,
   onSelectDestination,
+  onSelectTour,
   placeholder = "Search a country, city, or attraction...",
   className = "",
   variant = "inline",
   countryFilter,
+  tours = [],
 }: LocationSearchBarProps) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -88,27 +95,51 @@ export function LocationSearchBar({
 
   const searchIndex = useMemo(() => buildSearchIndex(), []);
 
+  // Build tour search entries
+  const tourIndex = useMemo(() => {
+    return tours.filter(t => t.status === "published").map((tour): LocationSearchResult => {
+      const place = placesData.find(p => p.id === tour.main_place_id);
+      const country = countriesAPI.find(c => c.code === place?.country);
+      const ancestor = place ? getTopLevelAncestor(place) : null;
+      return {
+        type: "activity",
+        id: tour.id,
+        name: tour.title,
+        countryCode: place?.country || "",
+        countryName: country?.name || "",
+        parentDestinationId: ancestor?.id,
+        parentDestinationName: ancestor?.name,
+        tourType: tour.tour_type,
+        tourPrice: tour.price,
+        tourDuration: tour.duration,
+      };
+    });
+  }, [tours]);
+
   const results = useMemo(() => {
     if (!query.trim()) return [];
     const q = query.toLowerCase().trim();
-    return searchIndex
+    const allItems = [...searchIndex, ...tourIndex];
+    return allItems
       .filter((r) => r.name.toLowerCase().includes(q))
       .filter((r) => !countryFilter || r.countryCode === countryFilter)
-      .slice(0, 12);
-  }, [query, searchIndex, countryFilter]);
+      .slice(0, 15);
+  }, [query, searchIndex, tourIndex, countryFilter]);
 
   // Group results
   const grouped = useMemo(() => {
     const countries = results.filter((r) => r.type === "country");
     const destinations = results.filter((r) => r.type === "destination");
     const places = results.filter((r) => r.type === "place");
-    return { countries, destinations, places };
+    const activities = results.filter((r) => r.type === "activity");
+    return { countries, destinations, places, activities };
   }, [results]);
 
   const flatResults = useMemo(() => [
     ...grouped.countries,
     ...grouped.destinations,
     ...grouped.places,
+    ...grouped.activities,
   ], [grouped]);
 
   // Close on outside click
@@ -125,8 +156,15 @@ export function LocationSearchBar({
   const handleSelect = (result: LocationSearchResult) => {
     if (result.type === "country") {
       onSelectCountry(result.countryCode);
+    } else if (result.type === "activity") {
+      // For tours, navigate to the destination they belong to
+      if (onSelectTour) {
+        onSelectTour(result.id);
+      } else {
+        const destId = result.parentDestinationId || "";
+        if (destId) onSelectDestination(result.countryCode, destId);
+      }
     } else {
-      // For both destinations and child places, navigate to the top-level destination
       const destId = result.parentDestinationId || result.id;
       onSelectDestination(result.countryCode, destId);
     }
@@ -287,6 +325,39 @@ export function LocationSearchBar({
               })}
             </div>
           )}
+
+          {/* Activities / Tours */}
+          {grouped.activities.length > 0 && (
+            <div className={(grouped.countries.length > 0 || grouped.destinations.length > 0 || grouped.places.length > 0) ? "border-t border-border/30" : ""}>
+              <p className="px-4 pt-3 pb-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-[0.15em] flex items-center gap-1.5">
+                <Compass size={11} /> Activities & Tours
+              </p>
+              {grouped.activities.map((r, i) => {
+                const globalIdx = grouped.countries.length + grouped.destinations.length + grouped.places.length + i;
+                return (
+                  <button
+                    key={`tour-${r.id}`}
+                    onClick={() => handleSelect(r)}
+                    className={`w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors ${
+                      activeIndex === globalIdx
+                        ? "bg-primary/10 text-foreground"
+                        : "hover:bg-muted/50 text-foreground"
+                    }`}
+                  >
+                    <Compass size={14} className="text-primary shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <span className="text-sm font-semibold line-clamp-1">{r.name}</span>
+                      <span className="text-[11px] text-muted-foreground ml-1.5 capitalize">· {r.tourType}</span>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span className="text-xs font-semibold text-primary">${r.tourPrice}</span>
+                      <span className="text-[10px] text-muted-foreground ml-1">{r.tourDuration}</span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
 
@@ -294,7 +365,7 @@ export function LocationSearchBar({
       {open && query.trim() && flatResults.length === 0 && (
         <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border/60 rounded-xl shadow-2xl p-6 text-center z-50">
           <MapPin size={24} className="mx-auto text-muted-foreground/40 mb-2" />
-          <p className="text-sm text-muted-foreground">No locations found for "{query}"</p>
+          <p className="text-sm text-muted-foreground">No results found for "{query}"</p>
         </div>
       )}
     </div>
