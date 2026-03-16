@@ -31,21 +31,53 @@ export const experienceCategories: CategoryInfo[] = [
     name: "Getaway",
     icon: "🏕️",
     description: "Multi-day escapes with hikes, desert camps, and scenic explorations",
-    tourTypes: ["Jeep Tour", "Hiking", "Camping", "Snorkeling", "Diving", "Day Trip"],
+    tourTypes: [
+      "Jeep Tour", "Desert Safari", "Dune Bashing", "Hiking", "Trekking", "Wadi Hiking",
+      "Nature Walk", "Camping", "Desert Camping", "Glamping", "Stargazing", "Sunrise Tour",
+      "Sunset Tour", "Hot Air Balloon", "Horse Riding", "Camel Riding", "ATV Tour",
+      "Buggy Tour", "Cycling Tour", "Mountain Biking", "Kayaking", "Canoeing", "Rafting",
+      "Boat Tour", "Sailing", "Yacht Trip", "Snorkeling", "Scuba Diving", "Freediving",
+      "Surfing", "Kitesurfing", "Paddleboarding", "Wildlife Safari", "Birdwatching Tour",
+      "National Park Tour", "Oasis Tour", "Island Hopping", "Waterfall Tour",
+      "Canyon Adventure", "Rock Climbing", "Caving Experience", "Ski Experience",
+      "Snow Adventure", "Day Trip", "Road Trip", "Multi Day Adventure",
+      "Private Getaway", "Beach Escape",
+    ],
   },
   {
     id: "local-living",
     name: "Local Living",
     icon: "🏠",
     description: "Immersive encounters with local culture, history, and daily life",
-    tourTypes: ["Cultural", "City Walk", "Private Tour"],
+    tourTypes: [
+      "City Walk", "Cultural Tour", "Historical Tour", "Heritage Tour", "Local Market Tour",
+      "Souq Tour", "Street Food Tour", "Food Tasting", "Cooking Class", "Coffee Experience",
+      "Tea Experience", "Village Experience", "Bedouin Experience", "Nomad Experience",
+      "Farm Visit", "Artisan Workshop", "Craft Workshop", "Photography Walk",
+      "Architecture Tour", "Museum Tour", "Gallery Tour", "Religious Heritage Tour",
+      "Community Experience", "Local Family Experience", "Festival Experience",
+      "Storytelling Tour", "Music Experience", "Dance Experience", "Night City Walk",
+      "Shopping Experience", "Fashion & Design Tour", "Wellness Experience",
+      "Hammam Experience", "Perfume Workshop", "Calligraphy Workshop",
+      "Language & Cultural Exchange", "Volunteer Experience",
+    ],
   },
   {
     id: "dining",
     name: "Dining",
     icon: "🍽️",
     description: "Savor authentic flavors with locals over traditional dishes",
-    tourTypes: ["Food Tour"],
+    tourTypes: [
+      "Local Dinner Experience", "Home Dining Experience", "Chef's Table",
+      "Traditional Breakfast", "Traditional Lunch", "Traditional Dinner",
+      "Food Tasting Tour", "Street Food Experience", "Wine Tasting", "Beer Tasting",
+      "Cocktail Experience", "Tea Tasting", "Coffee Tasting", "Dessert Experience",
+      "Rooftop Dinner", "Farm to Table Dining", "Bedouin Dinner", "Desert Dinner",
+      "Seafood Experience", "BBQ Experience", "Picnic Experience", "Cooking Class",
+      "Baking Experience", "Market to Table Experience", "Brunch Experience",
+      "Fine Dining Experience", "Sunset Dinner Cruise", "Iftar Experience",
+      "Ramadan Night Experience",
+    ],
   },
 ];
 
@@ -54,6 +86,12 @@ export function getCategoryForTourType(tourType: string): ExperienceCategory {
     if (cat.tourTypes.includes(tourType)) return cat.id;
   }
   return "getaway";
+}
+
+// Get all tour types as a flat array
+export function getTourTypesForCategory(categoryId: ExperienceCategory): string[] {
+  const cat = experienceCategories.find((c) => c.id === categoryId);
+  return cat ? cat.tourTypes : [];
 }
 
 export interface GuideTour {
@@ -375,13 +413,10 @@ export function getCountryByCode(code: string): CountryInfo | undefined {
   return countriesAPI.find((c) => c.code === code);
 }
 
-// Tour types for filtering
-export const tourTypes = [
-  "Jeep Tour", "Hiking", "Food Tour", "Cultural", "Diving",
-  "Snorkeling", "Camping", "City Walk", "Private Tour", "Day Trip",
-] as const;
+// Tour types: collect all unique types from categories
+export const tourTypes: string[] = experienceCategories.flatMap((c) => c.tourTypes);
 
-export type TourType = (typeof tourTypes)[number];
+export type TourType = string;
 
 // ─── Destination images ───
 export const destinationImages: Record<string, string> = {
