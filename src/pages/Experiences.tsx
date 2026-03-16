@@ -17,7 +17,7 @@ import {
 
 const FALLBACK_IMG = "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&h=600&fit=crop";
 function getTourImage(tour: GuideTour): string {
-  return destinationImages[tour.main_place_id] || tourTypeImages[tour.tour_type] || FALLBACK_IMG;
+  return tour.image || destinationImages[tour.main_place_id] || tourTypeImages[tour.tour_type] || FALLBACK_IMG;
 }
 
 function getToursForDestination(destinationId: string): GuideTour[] {
