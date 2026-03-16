@@ -4,6 +4,7 @@ import {
   ChevronRight, ChevronDown, ArrowRight, Globe2, Filter, Compass, Shield
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { LocationSearchBar } from "@/components/search/LocationSearchBar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -505,6 +506,14 @@ const ExperiencesPage = () => {
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display text-white leading-tight mb-4 max-w-xl">
                   Authentic Tours with Local Guides in Egypt, Jordan & the Arab World
                 </h1>
+                {/* Hero location search */}
+                <LocationSearchBar
+                  onSelectCountry={goToCountry}
+                  onSelectDestination={goToDestination}
+                  placeholder="Where do you want to go? Try Petra, Cairo, Wadi Rum..."
+                  variant="hero"
+                  className="max-w-lg"
+                />
               </div>
             </div>
           </div>
@@ -556,24 +565,21 @@ const ExperiencesPage = () => {
             </p>
           </div>
 
-          {/* Search */}
+          {/* Sticky search bar */}
           <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-md px-4 py-3 border-b border-border/30">
-            <div className="relative max-w-6xl mx-auto">
-              <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              <Input
+            <div className="max-w-6xl mx-auto">
+              <LocationSearchBar
+                onSelectCountry={goToCountry}
+                onSelectDestination={goToDestination}
                 placeholder="Where do you want to go?"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 h-11 rounded-xl border-border/50 bg-muted/50 text-sm"
+                variant="inline"
               />
             </div>
           </div>
 
           <main className="flex-1 px-5 sm:px-8 pt-6 pb-12 max-w-6xl mx-auto w-full">
             <div className="space-y-4">
-              {countriesAPI
-                .filter((c) => c.name.toLowerCase().includes(searchQuery.toLowerCase()))
-                .map((country) => {
+              {countriesAPI.map((country) => {
                   const cityCount = getCityCountForCountry(country.code);
                   const tourCount = getToursForCountry(country.code).length;
                   return (
@@ -630,10 +636,6 @@ const ExperiencesPage = () => {
           }
           if (selectedTypes.size > 0) {
             result = result.filter((t) => selectedTypes.has(t.tour_type));
-          }
-          if (searchQuery) {
-            const q = searchQuery.toLowerCase();
-            result = result.filter((t) => t.title.toLowerCase().includes(q));
           }
           return result;
         })();
@@ -705,13 +707,12 @@ const ExperiencesPage = () => {
 
             {/* Search */}
             <div className="sticky top-14 z-40 bg-background/95 backdrop-blur-md px-4 py-3 border-b border-border/30">
-              <div className="relative max-w-6xl mx-auto">
-                <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <Input
+              <div className="max-w-6xl mx-auto">
+                <LocationSearchBar
+                  onSelectCountry={goToCountry}
+                  onSelectDestination={goToDestination}
                   placeholder={`Search tours in ${activeCountry.name}...`}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 h-10 rounded-xl border-border/50 bg-muted/50 text-sm"
+                  variant="inline"
                 />
               </div>
             </div>
@@ -745,7 +746,7 @@ const ExperiencesPage = () => {
 
             <main className="flex-1 px-4 pt-6 pb-8 max-w-6xl mx-auto w-full">
               {/* Destination cards row (quick browse) */}
-              {selectedPlaces.size === 0 && !searchQuery && (
+              {selectedPlaces.size === 0 && (
                 <div className="mb-8">
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Browse by destination</p>
                   <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
