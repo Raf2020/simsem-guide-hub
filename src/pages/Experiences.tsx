@@ -579,9 +579,7 @@ const ExperiencesPage = () => {
 
           <main className="flex-1 px-5 sm:px-8 pt-6 pb-12 max-w-6xl mx-auto w-full">
             <div className="space-y-4">
-              {countriesAPI
-                .filter((c) => c.name.toLowerCase().includes(searchQuery.toLowerCase()))
-                .map((country) => {
+              {countriesAPI.map((country) => {
                   const cityCount = getCityCountForCountry(country.code);
                   const tourCount = getToursForCountry(country.code).length;
                   return (
