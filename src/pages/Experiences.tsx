@@ -484,11 +484,13 @@ const ExperiencesPage = () => {
         <>
           {/* Simsem hero */}
           <div className="relative h-[340px] sm:h-[420px]">
-            <img
-              src="https://images.unsplash.com/photo-1547234935-80c7145ec969?w=1600&q=80"
-              alt="Authentic tours in the Arab world"
-              className="w-full h-full object-cover"
-            />
+            <div className="absolute inset-0 overflow-hidden">
+              <img
+                src="https://images.unsplash.com/photo-1547234935-80c7145ec969?w=1600&q=80"
+                alt="Authentic tours in the Arab world"
+                className="w-full h-full object-cover"
+              />
+            </div>
             <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--foreground))]/90 via-[hsl(var(--foreground))]/40 to-[hsl(var(--foreground))]/10" />
             
             {/* Hero nav */}
