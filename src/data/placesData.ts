@@ -260,6 +260,38 @@ const moroccoPlaces: Place[] = [
 // ─── Combined ───
 export const placesData: Place[] = [...jordanPlaces, ...egyptPlaces, ...moroccoPlaces];
 
+// ─── City/destination descriptions for cards ───
+export const placeDescriptions: Record<string, string> = {
+  // Jordan
+  "amman": "Discover Amman tours with local guides and explore the best things to do in Amman, Jordan. Visit the Citadel, Roman Theater, and Rainbow Street with guided cultural tours...",
+  "jerash": "Discover Jerash tours with local guides and explore one of the best-preserved Roman cities in the world. Walk through ancient colonnaded streets and theaters...",
+  "ajloun": "Discover Ajloun tours with local guides. Visit Ajloun Castle, hike through the forest reserve, and experience the green highlands of northern Jordan...",
+  "irbid": "Discover Irbid tours with local guides. Visit Umm Qais, Pella, and the Yarmouk Forest Reserve in northern Jordan...",
+  "salt": "Discover As-Salt tours with local guides. Walk through the UNESCO World Heritage historic center and its Ottoman-era architecture...",
+  "zarqa": "Discover Zarqa tours with local guides. Visit Azraq Wetland Reserve, Azraq Castle, and the Shaumari Wildlife Reserve...",
+  "desert-castles": "Discover Desert Castles tours with local guides. Explore UNESCO-listed Umayyad palaces including Quseir Amra, Qasr Kharana, and more...",
+  "madaba": "Discover Madaba tours with local guides. See the ancient mosaic map at St George's Church, visit Mount Nebo, and explore Bethany Beyond the Jordan...",
+  "dead-sea": "Discover Dead Sea tours with local guides. Float in the lowest point on Earth, hike Wadi Mujib canyon, and relax at world-class resorts...",
+  "karak": "Discover Karak tours with local guides. Visit the imposing Crusader castle and explore Lot's Cave with panoramic Dead Sea views...",
+  "tafila": "Discover Tafila tours with local guides. Trek through Dana Biosphere Reserve and stay at the eco-friendly Feynan Ecolodge...",
+  "shobak": "Discover Shobak tours with local guides. Visit the dramatic Crusader fortress perched on a hilltop south of Jordan...",
+  "petra-region": "Discover Petra tours with local guides and explore the best things to do in Petra, Jordan. Visit the Treasury, the Monastery, Al-Siq, and Little Petra with guided hiking tours...",
+  "wadi-rum": "Discover Wadi Rum tours with local guides and explore the Valley of the Moon. Experience jeep safaris, camel rides, stargazing, and overnight Bedouin camping...",
+  "aqaba": "Discover Aqaba tours with local guides. Snorkel the Red Sea coral reefs, dive the Cedar Pride wreck, and explore the marine park...",
+  "mafraq": "Discover Mafraq tours with local guides. Visit the ancient basalt city of Umm Al-Jimal in eastern Jordan...",
+  // Egypt
+  "cairo": "Discover Cairo tours with local guides and explore the best things to do in Cairo, Egypt. Visit the Pyramids of Giza, the Egyptian Museum, and the historic markets of Khan El Khalili...",
+  "luxor": "Discover Luxor tours with local guides and explore the best things to do in Luxor, Egypt. Visit the Valley of the Kings, Karnak Temple, and Luxor Temple with guided cultural tours...",
+  "aswan": "Discover Aswan tours with local guides and explore the best things to do in Aswan, Egypt. Visit landmarks like Philae Temple, the High Dam, and take an Abu Simbel day trip...",
+  "dahab": "Discover Dahab tours with local guides and explore the best things to do in Dahab, Egypt. Visit the famous Blue Hole, snorkel the Red Sea coral reefs, and experience desert adventures...",
+  "alexandria": "Discover Alexandria tours with local guides. Visit the Bibliotheca Alexandrina, Qaitbay Citadel, and the ancient Catacombs of Kom El Shoqafa...",
+  // Morocco
+  "marrakech": "Discover Marrakech tours with local guides. Explore the labyrinthine medina, haggle at the souks, and watch sunset from Jemaa El-Fna square...",
+  "fes": "Discover Fes tours with local guides. Explore the medieval medina, visit centuries-old tanneries, and discover the spiritual soul of Morocco...",
+  "chefchaouen": "Discover Chefchaouen tours with local guides. Wander the famous blue-washed streets and enjoy breathtaking Rif Mountain views...",
+  "sahara-morocco": "Discover Sahara Desert tours with local guides. Ride camels over golden dunes at sunset and sleep under the stars in a Berber camp...",
+};
+
 // ─── Helper functions ───
 export function getTopLevelPlaces(): Place[] {
   return placesData.filter((p) => p.parent_id === null);

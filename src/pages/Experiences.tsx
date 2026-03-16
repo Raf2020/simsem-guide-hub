@@ -111,29 +111,55 @@ function TourCard({ tour }: { tour: GuideTour }) {
   );
 }
 
-// ─── Destination card (mobile-native) ───
-function DestinationCard({ place, tourCount, onClick }: { place: Place; tourCount: number; onClick: () => void }) {
+// ─── Destination card (matching Simsem website style) ───
+function DestinationCard({ place, tourCount, countryName, onClick }: { place: Place; tourCount: number; countryName: string; onClick: () => void }) {
+  const description = placeDescriptions[place.id] || `Discover ${place.name} tours with local guides and explore the best things to do in ${place.name}, ${countryName}.`;
   return (
-    <button
-      onClick={onClick}
-      className="w-full text-left rounded-2xl overflow-hidden active:scale-[0.97] transition-transform duration-150 shadow-sm"
-    >
-      <div className="aspect-[2/1] sm:aspect-[16/10] bg-muted relative overflow-hidden">
+    <div className="rounded-2xl overflow-hidden border border-border/40 bg-card shadow-sm flex flex-col h-full">
+      {/* Image */}
+      <div className="relative aspect-[4/3] overflow-hidden">
         <img
           src={destinationImages[place.id] || "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600&h=400&fit=crop"}
-          alt={place.name}
+          alt={`${place.name} tours`}
           className="w-full h-full object-cover"
           loading="lazy"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-foreground/20 to-transparent" />
-        <div className="absolute bottom-3 left-3.5 right-3.5">
-          <h3 className="text-lg font-bold text-primary-foreground drop-shadow-md">{place.name}</h3>
-          <p className="text-xs text-primary-foreground/70 mt-0.5">
-            {tourCount} {tourCount === 1 ? "tour" : "tours"}
-          </p>
+        <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent" />
+        {/* Tour count badge */}
+        <div className="absolute top-3 right-3 bg-card/90 backdrop-blur-md text-foreground text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1">
+          <MapPin size={11} />
+          {tourCount} {tourCount === 1 ? "tour" : "tours"}
+        </div>
+        {/* City name pin */}
+        <div className="absolute bottom-3 left-3 flex items-center gap-1.5">
+          <MapPin size={12} className="text-accent" />
+          <span className="text-primary-foreground font-semibold text-sm drop-shadow-md">{place.name}</span>
         </div>
       </div>
-    </button>
+
+      {/* Content */}
+      <div className="p-4 flex flex-col flex-1">
+        <h3 className="text-base font-bold text-foreground mb-1.5">Tours in {place.name}</h3>
+        <p className="text-muted-foreground text-xs leading-relaxed flex-1 mb-3 line-clamp-3">
+          {description}
+        </p>
+        {/* Star rating */}
+        <div className="flex items-center gap-1 mb-3">
+          {[1, 2, 3, 4, 5].map((s) => (
+            <Star key={s} size={13} className="fill-accent text-accent" />
+          ))}
+          <span className="text-xs text-muted-foreground ml-1">Top rated</span>
+        </div>
+        {/* CTA button */}
+        <button
+          onClick={onClick}
+          className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold active:scale-[0.97] transition-all duration-150"
+        >
+          Explore {place.name}
+          <ArrowRight size={14} />
+        </button>
+      </div>
+    </div>
   );
 }
 
