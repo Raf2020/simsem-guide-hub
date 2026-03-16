@@ -259,6 +259,7 @@ const ExperiencesPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPlaces, setSelectedPlaces] = useState<Set<string>>(new Set());
   const [selectedTypes, setSelectedTypes] = useState<Set<string>>(new Set());
+  const [selectedCategory, setSelectedCategory] = useState<ExperienceCategory | null>(null);
   const [filterOpen, setFilterOpen] = useState(false);
 
   const activeCountry = view.level !== "countries" ? countriesAPI.find((c) => c.code === view.countryCode) : null;
@@ -267,9 +268,17 @@ const ExperiencesPage = () => {
   const allDescendantPlaces = activeDestinationId ? getDescendants(activeDestinationId) : [];
   const breadcrumb = activeDestinationId ? getPlaceBreadcrumb(activeDestinationId) : [];
 
+  // Get available tour types based on selected category
+  const availableTourTypes = selectedCategory
+    ? experienceCategories.find(c => c.id === selectedCategory)?.tourTypes || []
+    : tourTypes as unknown as string[];
+
   const tours = useMemo(() => {
     if (!activeDestinationId) return [];
     let result = getToursForDestination(activeDestinationId);
+    if (selectedCategory) {
+      result = result.filter((t) => t.category === selectedCategory);
+    }
     if (selectedPlaces.size > 0) {
       result = result.filter((t) =>
         t.places.some((p) => selectedPlaces.has(p)) || selectedPlaces.has(t.main_place_id)
@@ -279,7 +288,7 @@ const ExperiencesPage = () => {
       result = result.filter((t) => selectedTypes.has(t.tour_type));
     }
     return result;
-  }, [activeDestinationId, selectedPlaces, selectedTypes]);
+  }, [activeDestinationId, selectedPlaces, selectedTypes, selectedCategory]);
 
   const togglePlace = (id: string) => {
     setSelectedPlaces((prev) => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
@@ -287,8 +296,8 @@ const ExperiencesPage = () => {
   const toggleType = (type: string) => {
     setSelectedTypes((prev) => { const n = new Set(prev); n.has(type) ? n.delete(type) : n.add(type); return n; });
   };
-  const clearFilters = () => { setSelectedPlaces(new Set()); setSelectedTypes(new Set()); };
-  const activeFilterCount = selectedPlaces.size + selectedTypes.size;
+  const clearFilters = () => { setSelectedPlaces(new Set()); setSelectedTypes(new Set()); setSelectedCategory(null); };
+  const activeFilterCount = selectedPlaces.size + selectedTypes.size + (selectedCategory ? 1 : 0);
 
   const goToCountry = (code: string) => {
     setView({ level: "country", countryCode: code });
