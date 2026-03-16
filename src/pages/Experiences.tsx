@@ -9,8 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   countriesAPI, getTopLevelPlacesByCountry, getDescendants, getPlaceById,
-  getPlaceBreadcrumb, mockGuideTours, tourTypes, destinationImages, placeDescriptions,
-  experienceCategories, type ExperienceCategory,
+  getPlaceBreadcrumb, mockGuideTours, destinationImages, placeDescriptions,
+  experienceCategories, getToursForCountry as getToursForCountryFn,
+  type ExperienceCategory,
   type Place, type GuideTour, type CountryInfo,
 } from "@/data/placesData";
 
