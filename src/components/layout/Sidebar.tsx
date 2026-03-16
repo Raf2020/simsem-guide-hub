@@ -25,7 +25,7 @@ const navItems: NavItem[] = [
   { icon: LayoutGrid, label: "Home", href: "/" },
   { icon: MapPin, label: "Experiences", href: "/experiences" },
   { icon: MapPin, label: "Guide Dashboard", href: "/guide-dashboard" },
-  { icon: Plane, label: "Browse Tours", href: "/browse" },
+  { icon: Plane, label: "Browse Tours", href: "/experiences" },
   { icon: Star, label: "Reviews", href: "/reviews" },
   { icon: Gift, label: "Promotions", href: "/promotions" },
   { icon: Users, label: "Hosts", href: "/hosts" },
