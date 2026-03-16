@@ -517,9 +517,10 @@ const ExperiencesPage = () => {
                 <LocationSearchBar
                   onSelectCountry={goToCountry}
                   onSelectDestination={goToDestination}
-                  placeholder="Where do you want to go? Try Petra, Cairo, Wadi Rum..."
+                  placeholder="Where do you want to go? Try Petra, diving, food tour..."
                   variant="hero"
                   className="max-w-lg"
+                  tours={mockGuideTours}
                 />
               </div>
             </div>
