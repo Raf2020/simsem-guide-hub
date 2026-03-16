@@ -394,10 +394,27 @@ const ExperiencesPage = () => {
   const allDescendantPlaces = activeDestinationId ? getDescendants(activeDestinationId) : [];
   const breadcrumb = activeDestinationId ? getPlaceBreadcrumb(activeDestinationId) : [];
 
-  // Get available tour types based on selected category
-  const availableTourTypes = selectedCategory
-    ? experienceCategories.find(c => c.id === selectedCategory)?.tourTypes || []
-    : tourTypes as unknown as string[];
+  // Get available tour types: only show types that exist in actual tours at current level
+  const availableTourTypes = useMemo(() => {
+    // Get all unfiltered tours at current view level
+    let baseTours: GuideTour[] = [];
+    if (view.level === "country" && view.countryCode) {
+      baseTours = getToursForCountry(view.countryCode);
+    } else if (activeDestinationId) {
+      baseTours = getToursForDestination(activeDestinationId);
+    }
+    // Filter by category if selected
+    if (selectedCategory) {
+      baseTours = baseTours.filter((t) => t.category === selectedCategory);
+    }
+    // Extract unique tour types that actually exist
+    const existingTypes = new Set(baseTours.map((t) => t.tour_type));
+    // Preserve category ordering
+    const allOrdered = selectedCategory
+      ? experienceCategories.find(c => c.id === selectedCategory)?.tourTypes || []
+      : experienceCategories.flatMap(c => c.tourTypes);
+    return allOrdered.filter((t) => existingTypes.has(t));
+  }, [view, activeDestinationId, selectedCategory]);
 
   const tours = useMemo(() => {
     if (!activeDestinationId) return [];
