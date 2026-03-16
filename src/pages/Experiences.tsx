@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import {
   MapPin, Clock, Star, Search, SlidersHorizontal, X, ArrowLeft,
-  ChevronRight, ArrowRight, Globe2
+  ChevronRight, ChevronDown, ArrowRight, Globe2
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -33,6 +33,10 @@ function getToursForCountry(countryCode: string): GuideTour[] {
     (t) => t.status === "published" &&
       (allIds.has(t.main_place_id) || t.places.some((p) => allIds.has(p)))
   );
+}
+
+function getCityCountForCountry(countryCode: string): number {
+  return getTopLevelPlacesByCountry(countryCode).length;
 }
 
 // ─── Sub-components ───
@@ -110,33 +114,6 @@ function DestinationCard({ place, tourCount, onClick }: { place: Place; tourCoun
   );
 }
 
-function CountryCard({ country, tourCount, onClick }: { country: CountryInfo; tourCount: number; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className="group text-left overflow-hidden rounded-2xl border border-border/50 hover:shadow-xl transition-all duration-300 w-full"
-    >
-      <div className="aspect-[16/9] bg-muted relative overflow-hidden">
-        <img
-          src={country.heroImage}
-          alt={country.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          loading="lazy"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-foreground/20 to-transparent" />
-        <div className="absolute bottom-5 left-5 right-5">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-2xl">{country.flag}</span>
-            <h3 className="text-2xl font-bold text-primary-foreground drop-shadow-lg">{country.name}</h3>
-          </div>
-          <p className="text-sm text-primary-foreground/75 line-clamp-2">{country.description}</p>
-          <p className="text-xs text-primary-foreground/60 mt-1.5">{tourCount} tours available</p>
-        </div>
-      </div>
-    </button>
-  );
-}
-
 // ─── Main page ───
 
 type View =
@@ -150,7 +127,6 @@ const ExperiencesPage = () => {
   const [selectedPlaces, setSelectedPlaces] = useState<Set<string>>(new Set());
   const [selectedTypes, setSelectedTypes] = useState<Set<string>>(new Set());
 
-  // Derived state
   const activeCountry = view.level !== "countries" ? countriesAPI.find((c) => c.code === view.countryCode) : null;
   const activeDestinationId = view.level === "destination" ? view.destinationId : null;
   const activeDestination = activeDestinationId ? getPlaceById(activeDestinationId) : null;
@@ -199,67 +175,97 @@ const ExperiencesPage = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* ── HERO ── */}
-      <header className="relative h-[55vh] min-h-[380px] flex items-end overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1539650116574-75c0c6d33ca9?w=1600&q=80')" }}
-          aria-hidden="true"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/30 to-transparent" />
-        <div className="relative z-10 w-full max-w-6xl mx-auto px-6 pb-12">
-          <p className="text-accent font-semibold tracking-widest text-xs uppercase mb-2">Experiences</p>
-          <h1 className="text-3xl sm:text-5xl font-bold text-primary-foreground leading-tight mb-3 max-w-3xl">
-            Explore the Arab World Like a Local
-          </h1>
-          <p className="text-primary-foreground/80 text-base max-w-xl">
-            Authentic tours in Egypt, Jordan, Morocco & beyond — guided by people who call it home.
-          </p>
-        </div>
-      </header>
 
-      {/* ── MAIN CONTENT ── */}
-      <main className="max-w-6xl mx-auto px-6 py-10">
+      {/* ═══════ LEVEL 1: Country Accordion Banners ═══════ */}
+      {view.level === "countries" && (
+        <>
+          {/* Minimal top bar */}
+          <div className="bg-primary">
+            <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+              <span className="text-3xl font-script text-accent">Simsem</span>
+              <nav className="flex items-center gap-5 text-sm text-primary-foreground/80">
+                <a href="/" className="hover:text-accent transition-colors">Home</a>
+                <a href="/guide-dashboard" className="hover:text-accent transition-colors">For Guides</a>
+              </nav>
+            </div>
+          </div>
 
-        {/* ═══════ LEVEL 1: Countries ═══════ */}
-        {view.level === "countries" && (
-          <>
+          <main className="max-w-6xl mx-auto px-6 py-10">
             <div className="text-center mb-10">
-              <p className="text-accent font-semibold tracking-widest text-xs uppercase mb-2">Choose a Country</p>
-              <h2 className="text-3xl font-bold text-foreground mb-3">Where do you want to go?</h2>
-              <p className="text-muted-foreground max-w-lg mx-auto">
-                Select a country to discover its cities, landmarks, and local tours.
+              <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">
+                Explore Experiences Across the Arab World
+              </h1>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Choose a country to discover cities, landmarks, and local tours led by trusted guides.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {countriesAPI.map((country) => (
-                <CountryCard
-                  key={country.code}
-                  country={country}
-                  tourCount={getToursForCountry(country.code).length}
-                  onClick={() => goToCountry(country.code)}
-                />
-              ))}
-            </div>
+            {/* Country banners */}
+            <div className="space-y-5">
+              {countriesAPI.map((country) => {
+                const cityCount = getCityCountForCountry(country.code);
+                return (
+                  <button
+                    key={country.code}
+                    onClick={() => goToCountry(country.code)}
+                    className="group w-full text-left rounded-2xl overflow-hidden relative min-h-[160px] flex items-center transition-all duration-300 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    {/* Background */}
+                    <div
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                      style={{ backgroundImage: `url('${country.heroImage}')` }}
+                      aria-hidden="true"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-foreground/70 via-foreground/50 to-foreground/30" />
 
-            {/* Coming soon */}
-            <div className="mt-10 rounded-2xl border border-dashed border-border bg-card/50 p-8 text-center">
-              <Globe2 size={28} className="text-muted-foreground mx-auto mb-2" />
-              <h3 className="text-base font-bold text-foreground mb-1">More Countries Coming Soon</h3>
-              <p className="text-muted-foreground text-sm">
-                Saudi Arabia, UAE, Lebanon, Tunisia, Oman & more
-              </p>
+                    {/* Content */}
+                    <div className="relative z-10 flex items-center justify-between w-full px-6 sm:px-10 py-8">
+                      <div className="flex items-start gap-4 flex-1 min-w-0">
+                        <span className="text-3xl mt-1 shrink-0">{country.flag}</span>
+                        <div className="min-w-0">
+                          <h2 className="text-2xl sm:text-3xl font-bold text-primary-foreground mb-2">
+                            Tours in {country.name}
+                          </h2>
+                          <p className="text-primary-foreground/75 text-sm leading-relaxed max-w-2xl line-clamp-3">
+                            {country.description}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 shrink-0 ml-4">
+                        <span className="hidden sm:flex items-center gap-1.5 text-primary-foreground/70 text-sm whitespace-nowrap">
+                          <Globe2 size={14} />
+                          {cityCount} {cityCount === 1 ? "city" : "cities"}
+                        </span>
+                        <div className="w-9 h-9 rounded-full bg-primary-foreground/20 backdrop-blur-sm flex items-center justify-center border border-primary-foreground/20">
+                          <ChevronDown size={18} className="text-primary-foreground" />
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
-          </>
-        )}
+          </main>
+        </>
+      )}
 
-        {/* ═══════ LEVEL 2: Destinations in Country ═══════ */}
-        {view.level === "country" && activeCountry && (
-          <>
+      {/* ═══════ LEVEL 2: Destinations in Country ═══════ */}
+      {view.level === "country" && activeCountry && (
+        <>
+          <div className="bg-primary">
+            <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+              <span className="text-3xl font-script text-accent">Simsem</span>
+              <nav className="flex items-center gap-5 text-sm text-primary-foreground/80">
+                <a href="/" className="hover:text-accent transition-colors">Home</a>
+                <button onClick={goBack} className="hover:text-accent transition-colors">All Countries</button>
+              </nav>
+            </div>
+          </div>
+
+          <main className="max-w-6xl mx-auto px-6 py-8">
             {/* Breadcrumb */}
             <div className="flex items-center gap-1.5 text-sm text-muted-foreground mb-6">
-              <button onClick={goBack} className="hover:text-primary transition-colors flex items-center gap-1">
+              <button onClick={() => setView({ level: "countries" })} className="hover:text-primary transition-colors flex items-center gap-1">
                 <ArrowLeft size={14} /> All Countries
               </button>
               <ChevronRight size={12} />
@@ -268,12 +274,11 @@ const ExperiencesPage = () => {
               </span>
             </div>
 
-            {/* Country header */}
             <div className="mb-8">
-              <h2 className="text-3xl font-bold text-foreground flex items-center gap-2">
+              <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
                 {activeCountry.flag} Tours in {activeCountry.name}
-              </h2>
-              <p className="text-muted-foreground mt-1.5 max-w-xl">{activeCountry.description}</p>
+              </h1>
+              <p className="text-muted-foreground mt-1.5 max-w-xl text-sm">{activeCountry.description}</p>
             </div>
 
             {/* Search */}
@@ -287,7 +292,6 @@ const ExperiencesPage = () => {
               />
             </div>
 
-            {/* Destination cards */}
             {(() => {
               const destinations = getTopLevelPlacesByCountry(view.countryCode)
                 .filter((p) => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -309,25 +313,29 @@ const ExperiencesPage = () => {
                 </div>
               );
             })()}
-          </>
-        )}
+          </main>
+        </>
+      )}
 
-        {/* ═══════ LEVEL 3: Tours in Destination ═══════ */}
-        {view.level === "destination" && activeCountry && activeDestination && (
-          <>
+      {/* ═══════ LEVEL 3: Tours in Destination ═══════ */}
+      {view.level === "destination" && activeCountry && activeDestination && (
+        <>
+          <div className="bg-primary">
+            <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+              <span className="text-3xl font-script text-accent">Simsem</span>
+              <nav className="flex items-center gap-5 text-sm text-primary-foreground/80">
+                <a href="/" className="hover:text-accent transition-colors">Home</a>
+                <button onClick={() => goToCountry(view.countryCode)} className="hover:text-accent transition-colors">{activeCountry.name}</button>
+              </nav>
+            </div>
+          </div>
+
+          <main className="max-w-6xl mx-auto px-6 py-8">
             {/* Breadcrumb */}
             <div className="flex items-center gap-1.5 text-sm text-muted-foreground mb-6 flex-wrap">
-              <button
-                onClick={() => setView({ level: "countries" })}
-                className="hover:text-primary transition-colors"
-              >
-                All Countries
-              </button>
+              <button onClick={() => setView({ level: "countries" })} className="hover:text-primary transition-colors">All Countries</button>
               <ChevronRight size={12} />
-              <button
-                onClick={() => goToCountry(view.countryCode)}
-                className="hover:text-primary transition-colors flex items-center gap-1"
-              >
+              <button onClick={() => goToCountry(view.countryCode)} className="hover:text-primary transition-colors flex items-center gap-1">
                 {activeCountry.flag} {activeCountry.name}
               </button>
               {breadcrumb.map((p, i) => (
@@ -338,9 +346,8 @@ const ExperiencesPage = () => {
               ))}
             </div>
 
-            {/* Destination header */}
             <div className="mb-6">
-              <h2 className="text-3xl font-bold text-foreground">{activeDestination.name} Tours</h2>
+              <h1 className="text-3xl font-bold text-foreground">{activeDestination.name} Tours</h1>
               <p className="text-muted-foreground mt-1">
                 {tours.length} {tours.length === 1 ? "tour" : "tours"} available
                 {activeFilterCount > 0 && " (filtered)"}
@@ -350,7 +357,6 @@ const ExperiencesPage = () => {
             <div className="flex gap-6">
               {/* Sidebar */}
               <aside className="w-56 shrink-0 hidden md:block space-y-6">
-                {/* Place filters */}
                 {allDescendantPlaces.length > 0 && (
                   <div>
                     <h3 className="text-sm font-semibold text-foreground mb-2.5 flex items-center gap-1.5">
@@ -359,20 +365,13 @@ const ExperiencesPage = () => {
                     <div className="space-y-1 max-h-[300px] overflow-y-auto">
                       {allDescendantPlaces.map((p) => (
                         <label key={p.id} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground cursor-pointer py-1 transition-colors">
-                          <input
-                            type="checkbox"
-                            checked={selectedPlaces.has(p.id)}
-                            onChange={() => togglePlace(p.id)}
-                            className="rounded border-border text-primary focus:ring-primary"
-                          />
+                          <input type="checkbox" checked={selectedPlaces.has(p.id)} onChange={() => togglePlace(p.id)} className="rounded border-border text-primary focus:ring-primary" />
                           <span className="truncate">{p.name}</span>
                         </label>
                       ))}
                     </div>
                   </div>
                 )}
-
-                {/* Tour type filters */}
                 <div>
                   <h3 className="text-sm font-semibold text-foreground mb-2.5 flex items-center gap-1.5">
                     <SlidersHorizontal size={14} /> Tour Type
@@ -380,18 +379,12 @@ const ExperiencesPage = () => {
                   <div className="space-y-1">
                     {tourTypes.map((type) => (
                       <label key={type} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground cursor-pointer py-1 transition-colors">
-                        <input
-                          type="checkbox"
-                          checked={selectedTypes.has(type)}
-                          onChange={() => toggleType(type)}
-                          className="rounded border-border text-primary focus:ring-primary"
-                        />
+                        <input type="checkbox" checked={selectedTypes.has(type)} onChange={() => toggleType(type)} className="rounded border-border text-primary focus:ring-primary" />
                         {type}
                       </label>
                     ))}
                   </div>
                 </div>
-
                 {activeFilterCount > 0 && (
                   <Button variant="outline" size="sm" className="w-full" onClick={clearFilters}>
                     <X size={14} className="mr-1" /> Clear filters
@@ -401,7 +394,6 @@ const ExperiencesPage = () => {
 
               {/* Tours grid */}
               <div className="flex-1">
-                {/* Active filter tags */}
                 {activeFilterCount > 0 && (
                   <div className="flex flex-wrap gap-1.5 mb-4">
                     {Array.from(selectedPlaces).map((pid) => {
@@ -419,7 +411,6 @@ const ExperiencesPage = () => {
                     ))}
                   </div>
                 )}
-
                 {tours.length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     {tours.map((tour) => <TourCard key={tour.id} tour={tour} />)}
@@ -433,9 +424,9 @@ const ExperiencesPage = () => {
                 )}
               </div>
             </div>
-          </>
-        )}
-      </main>
+          </main>
+        </>
+      )}
 
       {/* ── CTA ── */}
       <section className="py-16 bg-primary text-primary-foreground">
