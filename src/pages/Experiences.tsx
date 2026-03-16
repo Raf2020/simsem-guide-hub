@@ -713,13 +713,12 @@ const ExperiencesPage = () => {
 
             {/* Search */}
             <div className="sticky top-14 z-40 bg-background/95 backdrop-blur-md px-4 py-3 border-b border-border/30">
-              <div className="relative max-w-6xl mx-auto">
-                <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <Input
+              <div className="max-w-6xl mx-auto">
+                <LocationSearchBar
+                  onSelectCountry={goToCountry}
+                  onSelectDestination={goToDestination}
                   placeholder={`Search tours in ${activeCountry.name}...`}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 h-10 rounded-xl border-border/50 bg-muted/50 text-sm"
+                  variant="inline"
                 />
               </div>
             </div>
