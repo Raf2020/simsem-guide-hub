@@ -715,47 +715,6 @@ const ExperiencesPage = () => {
                 />
               </div>
             </div>
-                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary-foreground mb-2 font-serif">
-                    Tours in {activeCountry.name}
-                  </h2>
-                  <p className="text-primary-foreground/75 text-xs sm:text-sm leading-relaxed max-w-2xl line-clamp-2 mb-3">
-                    {activeCountry.description.split('.')[0]}.
-                  </p>
-                  {/* Trust signals — E-E-A-T */}
-                  <div className="flex flex-wrap items-center gap-3 sm:gap-5">
-                    <div className="flex items-center gap-1.5 text-primary-foreground/80 text-xs">
-                      <MapPin size={13} className="text-accent" />
-                      <span>{countryDestinations.length} destinations</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-primary-foreground/80 text-xs">
-                      <Compass size={13} className="text-accent" />
-                      <span>{countryTours.length} guided tours</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-primary-foreground/80 text-xs">
-                      {[1,2,3,4,5].map(s => <Star key={s} size={11} className="fill-accent text-accent" />)}
-                      <span className="ml-1">Top rated</span>
-                    </div>
-                    <div className="hidden sm:flex items-center gap-1.5 text-primary-foreground/80 text-xs">
-                      <Shield size={13} className="text-accent" />
-                      <span>Local verified guides</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Search */}
-            <div className="sticky top-14 z-40 bg-background/95 backdrop-blur-md px-4 py-3 border-b border-border/30">
-              <div className="relative max-w-6xl mx-auto">
-                <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  placeholder={`Search tours in ${activeCountry.name}...`}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 h-10 rounded-2xl border-border/50 bg-muted/50 text-sm"
-                />
-              </div>
-            </div>
 
             {/* Category tabs */}
             <div className="px-4 py-3 border-b border-border/30 bg-background">
