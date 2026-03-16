@@ -76,8 +76,8 @@ function TourCard({ tour }: { tour: GuideTour }) {
   return (
     <div className="bg-card rounded-xl overflow-hidden shadow-sm border border-border/30 hover:shadow-lg transition-all duration-300 cursor-pointer group">
       <div className="aspect-[4/3] bg-muted relative overflow-hidden">
-        <img
-          src={destinationImages[tour.main_place_id] || "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600&h=400&fit=crop"}
+         <img
+          src={getTourImage(tour)}
           alt={tour.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
