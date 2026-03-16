@@ -39,7 +39,7 @@ const App = () => (
             {/* Legacy redirect */}
             <Route path="/experiences/wadi-rum-overnight-jeep-tour" element={<WadiRumTour />} />
             <Route path="/guide-dashboard" element={<GuideDashboard />} />
-            <Route path="/browse" element={<TravelerBrowse />} />
+            {/* /browse removed — merged into /experiences */}
             <Route path="/reviews" element={<Reviews />} />
             <Route path="/payments" element={<Payments />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
