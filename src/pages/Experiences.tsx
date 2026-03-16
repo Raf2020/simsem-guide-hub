@@ -869,16 +869,17 @@ const ExperiencesPage = () => {
           />
 
           {/* Destination hero */}
-          <div className="relative h-32 sm:h-40 overflow-hidden">
+          <div className="relative h-36 sm:h-44 overflow-hidden">
             <img
               src={destinationImages[activeDestination.id] || activeCountry.heroImage}
               alt={activeDestination.name}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 to-transparent" />
-            <div className="absolute bottom-3 left-4 right-4">
-              <h2 className="text-lg font-bold text-primary-foreground">{activeDestination.name}</h2>
-              <p className="text-xs text-primary-foreground/70">
+            <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--foreground))]/80 via-[hsl(var(--foreground))]/30 to-transparent" />
+            <div className="absolute bottom-4 left-5 right-5">
+              <span className="text-[hsl(var(--accent))] text-[10px] font-bold uppercase tracking-[0.15em] block mb-1">Explore</span>
+              <h2 className="text-xl sm:text-2xl font-display text-white">{activeDestination.name}</h2>
+              <p className="text-xs text-white/60 mt-0.5">
                 {tours.length} {tours.length === 1 ? "tour" : "tours"}
                 {activeFilterCount > 0 && " · filtered"}
               </p>
