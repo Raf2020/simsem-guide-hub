@@ -523,6 +523,13 @@ const ExperiencesPage = () => {
               </div>
             </div>
 
+            {/* Category tabs */}
+            <div className="px-4 py-3 border-b border-border/30 bg-background">
+              <div className="max-w-6xl mx-auto">
+                <CategoryTabs selected={selectedCategory} onSelect={(cat) => { setSelectedCategory(cat); setSelectedTypes(new Set()); }} />
+              </div>
+            </div>
+
             {/* Active filters (horizontal scroll) */}
             {activeFilterCount > 0 && (
               <div className="flex gap-1.5 px-4 py-2.5 overflow-x-auto no-scrollbar border-b border-border/30">
