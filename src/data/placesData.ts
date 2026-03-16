@@ -30,25 +30,67 @@ export interface GuideTour {
 // ─── Countries ───
 export const countriesAPI: CountryInfo[] = [
   {
-    code: "JO",
-    name: "Jordan",
-    flag: "🇯🇴",
-    heroImage: "https://images.unsplash.com/photo-1580834341580-8c17a3a630ca?w=1200&q=80",
-    description: "From Petra to Wadi Rum and the Dead Sea — where history meets Bedouin hospitality.",
-  },
-  {
     code: "EG",
     name: "Egypt",
     flag: "🇪🇬",
-    heroImage: "https://images.unsplash.com/photo-1539650116574-75c0c6d33ca9?w=1200&q=80",
-    description: "Pyramids, pharaohs, and the Red Sea — 5,000 years of wonder in one country.",
+    heroImage: "https://images.unsplash.com/photo-1568322445389-f64c5bb0e4e4?w=1400&q=80",
+    description: "Discover Egypt tours with local guides and explore the best places to visit in Egypt. Visit the Pyramids of Giza, Luxor, Aswan, and Dahab with guided cultural tours, desert trips, and Nile experiences. Browse and book authentic Egypt tours and travel experiences with trusted local experts.",
+  },
+  {
+    code: "JO",
+    name: "Jordan",
+    flag: "🇯🇴",
+    heroImage: "https://images.unsplash.com/photo-1563492065599-3520f775eeed?w=1400&q=80",
+    description: "Discover Jordan tours with local guides and explore the best places to visit in Jordan. Visit Petra, Wadi Rum, the Dead Sea, Amman, and Jerash with guided cultural tours, desert trips, and local experiences. Browse and book authentic Jordan tours and travel experiences with trusted local experts.",
   },
   {
     code: "MA",
     name: "Morocco",
     flag: "🇲🇦",
-    heroImage: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?w=1200&q=80",
-    description: "Ancient medinas, Saharan dunes, and the world's finest mint tea.",
+    heroImage: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?w=1400&q=80",
+    description: "Discover Morocco tours with local guides and visit places like Marrakech, Fes, Chefchaouen, and the Sahara Desert. Browse and book Morocco tours directly with local experts through Simsem — the zero-commission marketplace for tours in the Arab world.",
+  },
+  {
+    code: "DZ",
+    name: "Algeria",
+    flag: "🇩🇿",
+    heroImage: "https://images.unsplash.com/photo-1583508805133-8fd03a9916d4?w=1400&q=80",
+    description: "Discover Algeria tours with local guides and visit places like the Casbah of Algiers, the Roman ruins of Timgad, and the Sahara desert in Tassili n'Ajjer. Browse and book Algeria tours directly with local experts through Simsem.",
+  },
+  {
+    code: "SY",
+    name: "Syria",
+    flag: "🇸🇾",
+    heroImage: "https://images.unsplash.com/photo-1580834341580-8c17a3a630ca?w=1400&q=80",
+    description: "Discover Syria tours with local guides and explore one of the Middle East's most historic destinations. Visit the Old City of Damascus, the ancient ruins of Palmyra, the markets of Aleppo, and traditional villages across the country.",
+  },
+  {
+    code: "SA",
+    name: "Saudi Arabia",
+    flag: "🇸🇦",
+    heroImage: "https://images.unsplash.com/photo-1586102643897-31b4e6fe0f74?w=1400&q=80",
+    description: "Discover Saudi Arabia tours with local guides. Explore AlUla, Riyadh, Jeddah, and the Red Sea coast. Browse and book authentic Saudi tours with trusted local experts on Simsem.",
+  },
+  {
+    code: "LB",
+    name: "Lebanon",
+    flag: "🇱🇧",
+    heroImage: "https://images.unsplash.com/photo-1564507004663-b6dfb3c824d5?w=1400&q=80",
+    description: "Discover Lebanon tours with local guides. Visit Beirut, Baalbek, Byblos, and the Cedars. Browse and book authentic Lebanese experiences with trusted local experts on Simsem.",
+  },
+  {
+    code: "TN",
+    name: "Tunisia",
+    flag: "🇹🇳",
+    heroImage: "https://images.unsplash.com/photo-1572953109213-3be62398eb95?w=1400&q=80",
+    description: "Discover Tunisia tours with local guides. Visit Carthage, Sidi Bou Said, the Sahara, and Djerba. Browse and book authentic Tunisian experiences with trusted local experts on Simsem.",
+  },
+  {
+    code: "OM",
+    name: "Oman",
+    flag: "🇴🇲",
+    heroImage: "https://images.unsplash.com/photo-1545047068-3eded44b0a78?w=1400&q=80",
+    description: "Discover Oman tours with local guides. Explore Muscat, Nizwa, Wahiba Sands, and the Musandam Peninsula. Browse and book authentic Omani experiences with trusted local experts on Simsem.",
   },
 ];
 
