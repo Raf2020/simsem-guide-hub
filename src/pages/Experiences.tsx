@@ -166,12 +166,12 @@ function DestinationCard({ place, tourCount, countryName, onClick }: { place: Pl
 
 // ─── Bottom sheet filter (mobile) ───
 function FilterSheet({
-  open, onClose, allPlaces, selectedPlaces, selectedTypes, togglePlace, toggleType, clearFilters, activeCount
+  open, onClose, allPlaces, selectedPlaces, selectedTypes, togglePlace, toggleType, clearFilters, activeCount, availableTypes
 }: {
   open: boolean; onClose: () => void;
   allPlaces: Place[]; selectedPlaces: Set<string>; selectedTypes: Set<string>;
   togglePlace: (id: string) => void; toggleType: (type: string) => void;
-  clearFilters: () => void; activeCount: number;
+  clearFilters: () => void; activeCount: number; availableTypes: readonly string[];
 }) {
   if (!open) return null;
   return (
