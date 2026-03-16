@@ -51,6 +51,23 @@ export function PlaceMultiSelect({
           className="pl-8 h-9 text-sm"
         />
       </div>
+      {/* Always show available places as clickable chips */}
+      {unselected.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 pt-1">
+          {unselected.map((p) => (
+            <button
+              key={p.id}
+              onClick={() => onChange([...selected, p.id])}
+              className="inline-flex items-center gap-1 border border-border text-xs font-medium px-2.5 py-1.5 rounded-full hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-colors text-muted-foreground"
+            >
+              <MapPin size={11} />
+              {p.name}
+              <span className="text-[10px] capitalize opacity-60">{p.type}</span>
+            </button>
+          ))}
+        </div>
+      )}
+      {/* Search results dropdown for filtering */}
       {search && filtered.length > 0 && (
         <div className="border border-border rounded-md max-h-40 overflow-y-auto bg-popover">
           {filtered.map((p) => (
@@ -66,7 +83,7 @@ export function PlaceMultiSelect({
           ))}
         </div>
       )}
-      {search && filtered.length === 0 && (
+      {search && filtered.length === 0 && unselected.length === 0 && (
         <p className="text-xs text-muted-foreground px-1">No places found</p>
       )}
     </div>
