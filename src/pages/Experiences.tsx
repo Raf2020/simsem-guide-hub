@@ -540,7 +540,7 @@ const ExperiencesPage = () => {
                   <div key={tour.id} className="shrink-0 w-56 sm:w-64 cursor-pointer group">
                     <div className="aspect-[4/3] rounded-xl overflow-hidden mb-3 relative">
                       <img
-                        src={destinationImages[tour.main_place_id] || "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=300&fit=crop"}
+                        src={getTourImage(tour)}
                         alt={tour.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         loading="lazy"
