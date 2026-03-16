@@ -788,6 +788,7 @@ const ExperiencesPage = () => {
             toggleType={toggleType}
             clearFilters={clearFilters}
             activeCount={activeFilterCount}
+            availableTypes={availableTourTypes as readonly string[]}
           />
         </>
       )}
