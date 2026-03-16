@@ -424,9 +424,11 @@ const ExperiencesPage = () => {
         const countryDestinations = getTopLevelPlacesByCountry(activeCountry.code);
         const countryTours = (() => {
           let result = getToursForCountry(activeCountry.code);
+          if (selectedCategory) {
+            result = result.filter((t) => t.category === selectedCategory);
+          }
           if (selectedPlaces.size > 0) {
             result = result.filter((t) => {
-              // Check if tour's main destination or any of its places match selected destinations
               for (const selectedId of selectedPlaces) {
                 const descendants = getDescendants(selectedId);
                 const allIds = new Set([selectedId, ...descendants.map(d => d.id)]);
