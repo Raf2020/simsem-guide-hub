@@ -221,7 +221,7 @@ function FilterSheet({
               <SlidersHorizontal size={14} /> Tour Type
             </h3>
             <div className="flex flex-wrap gap-2">
-              {tourTypes.map((type) => (
+              {availableTypes.map((type) => (
                 <button
                   key={type}
                   onClick={() => toggleType(type)}
