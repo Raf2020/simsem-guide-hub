@@ -658,22 +658,63 @@ const ExperiencesPage = () => {
               }
             />
 
-            {/* Country hero banner — OTA style */}
-            <div className="relative h-56 sm:h-72 lg:h-80 overflow-hidden">
+            {/* Country hero banner — Simsem style */}
+            <div className="relative h-48 sm:h-64 lg:h-72 overflow-hidden">
               <img
                 src={activeCountry.heroImage}
                 alt={`${activeCountry.name} tours`}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/30 to-foreground/5" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--foreground))]/85 via-[hsl(var(--foreground))]/35 to-[hsl(var(--foreground))]/10" />
               
               {/* Hero content */}
               <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-8">
                 <div className="max-w-6xl mx-auto">
-                  <div className="flex items-center gap-2 mb-1">
+                  <div className="flex items-center gap-2 mb-2">
                     <span className="text-2xl">{activeCountry.flag}</span>
-                    <span className="text-primary-foreground/60 text-xs font-medium uppercase tracking-widest">Explore</span>
+                    <span className="text-[hsl(var(--accent))] text-xs font-bold uppercase tracking-[0.15em]">Explore</span>
                   </div>
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-display text-white mb-2.5">
+                    Tours in {activeCountry.name}
+                  </h2>
+                  <p className="text-white/60 text-xs sm:text-sm leading-relaxed max-w-2xl line-clamp-2 mb-3">
+                    {activeCountry.description.split('.')[0]}.
+                  </p>
+                  {/* Trust signals — E-E-A-T */}
+                  <div className="flex flex-wrap items-center gap-3 sm:gap-5">
+                    <div className="flex items-center gap-1.5 text-white/70 text-xs">
+                      <MapPin size={12} className="text-[hsl(var(--accent))]" />
+                      <span>{countryDestinations.length} destinations</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-white/70 text-xs">
+                      <Compass size={12} className="text-[hsl(var(--accent))]" />
+                      <span>{countryTours.length} guided tours</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-white/70 text-xs">
+                      {[1,2,3,4,5].map(s => <Star key={s} size={10} className="fill-[hsl(var(--accent))] text-[hsl(var(--accent))]" />)}
+                      <span className="ml-1">Top rated</span>
+                    </div>
+                    <div className="hidden sm:flex items-center gap-1.5 text-white/70 text-xs">
+                      <Shield size={12} className="text-[hsl(var(--accent))]" />
+                      <span>Local verified guides</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Search */}
+            <div className="sticky top-14 z-40 bg-background/95 backdrop-blur-md px-4 py-3 border-b border-border/30">
+              <div className="relative max-w-6xl mx-auto">
+                <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder={`Search tours in ${activeCountry.name}...`}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 h-10 rounded-xl border-border/50 bg-muted/50 text-sm"
+                />
+              </div>
+            </div>
                   <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary-foreground mb-2 font-serif">
                     Tours in {activeCountry.name}
                   </h2>
