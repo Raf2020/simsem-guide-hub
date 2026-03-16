@@ -856,11 +856,11 @@ const ExperiencesPage = () => {
             rightContent={
               <button
                 onClick={() => setFilterOpen(true)}
-                className="relative w-10 h-10 flex items-center justify-center rounded-full active:bg-primary-foreground/10 transition-colors"
+                className="relative w-10 h-10 flex items-center justify-center rounded-full active:bg-white/10 transition-colors"
               >
-                <Filter size={20} className="text-primary-foreground" />
+                <Filter size={20} className="text-white" />
                 {activeFilterCount > 0 && (
-                  <span className="absolute top-1 right-1 w-4 h-4 bg-accent text-accent-foreground text-[10px] font-bold rounded-full flex items-center justify-center">
+                  <span className="absolute top-1 right-1 w-4 h-4 bg-[hsl(var(--accent))] text-[hsl(var(--foreground))] text-[10px] font-bold rounded-full flex items-center justify-center">
                     {activeFilterCount}
                   </span>
                 )}
