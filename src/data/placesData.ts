@@ -104,6 +104,7 @@ export interface GuideTour {
   tour_type: string;
   category: ExperienceCategory;
   description: string;
+  image: string;
   status: "draft" | "published";
   created_at: string;
 }
