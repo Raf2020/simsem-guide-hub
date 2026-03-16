@@ -476,60 +476,129 @@ const ExperiencesPage = () => {
       {/* ═══════ LEVEL 1: Countries ═══════ */}
       {view.level === "countries" && (
         <>
-          <AppHeader title="Experiences" />
+          {/* Simsem hero */}
+          <div className="relative h-[340px] sm:h-[420px] overflow-hidden">
+            <img
+              src="https://images.unsplash.com/photo-1547234935-80c7145ec969?w=1600&q=80"
+              alt="Authentic tours in the Arab world"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--foreground))]/90 via-[hsl(var(--foreground))]/40 to-[hsl(var(--foreground))]/10" />
+            
+            {/* Hero nav */}
+            <div className="absolute top-0 left-0 right-0 z-10">
+              <div className="flex items-center justify-between px-5 sm:px-8 py-4 max-w-6xl mx-auto">
+                <span className="text-3xl font-script text-[hsl(var(--accent))]">Simsem</span>
+                <div className="hidden sm:flex items-center gap-6 text-sm text-white/80">
+                  <span className="hover:text-white cursor-pointer transition-colors">About Us</span>
+                  <span className="text-white font-semibold border-b-2 border-[hsl(var(--accent))] pb-0.5">Experiences</span>
+                  <span className="hover:text-white cursor-pointer transition-colors">Travel Guide</span>
+                  <span className="hover:text-white cursor-pointer transition-colors">Contact Us</span>
+                </div>
+              </div>
+            </div>
 
-          {/* Search bar */}
-          <div className="sticky top-14 z-40 bg-background/95 backdrop-blur-md px-4 py-3 border-b border-border/30">
+            {/* Hero content */}
+            <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10">
+              <div className="max-w-6xl mx-auto">
+                <span className="text-[hsl(var(--accent))] text-xs font-bold uppercase tracking-[0.2em] mb-2 block">Experiences</span>
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display text-white leading-tight mb-4 max-w-xl">
+                  Authentic Tours with Local Guides in Egypt, Jordan & the Arab World
+                </h1>
+              </div>
+            </div>
+          </div>
+
+          {/* Intro text */}
+          <div className="px-5 sm:px-8 py-8 max-w-4xl mx-auto text-center">
+            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+              Find top-rated tours in Egypt and Jordan, including Cairo cultural tours, Petra excursions, Wadi Rum desert experiences, food tours, and immersive local activities. Book authentic experiences led by trusted local guides across the Arab world.
+            </p>
+          </div>
+
+          {/* Featured Experiences */}
+          <div className="px-5 sm:px-8 pb-10 max-w-6xl mx-auto w-full">
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-[0.15em] mb-5">Featured Experiences</p>
+            <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+              {mockGuideTours.slice(0, 6).map((tour) => {
+                const mainPlace = getPlaceById(tour.main_place_id);
+                return (
+                  <div key={tour.id} className="shrink-0 w-56 sm:w-64 cursor-pointer group">
+                    <div className="aspect-[4/3] rounded-xl overflow-hidden mb-3 relative">
+                      <img
+                        src={destinationImages[tour.main_place_id] || "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=300&fit=crop"}
+                        alt={tour.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                      />
+                    </div>
+                    <div className="flex items-center gap-2 text-[11px] text-muted-foreground mb-1.5">
+                      <span className="flex items-center gap-0.5"><MapPin size={10} className="text-destructive" /> {mainPlace?.name}</span>
+                      <span className="flex items-center gap-0.5"><Clock size={10} /> {tour.duration}</span>
+                      <span className="flex items-center gap-0.5"><Star size={10} className="text-[hsl(var(--accent))]" fill="currentColor" /> 4.8</span>
+                    </div>
+                    <h3 className="text-sm font-bold text-foreground line-clamp-2 leading-snug mb-1.5 group-hover:text-primary transition-colors">{tour.title}</h3>
+                    <span className="text-destructive font-bold text-sm">From ${tour.price} <span className="text-[10px] font-normal text-muted-foreground">/person</span></span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* "What We Offer" section */}
+          <div className="text-center px-5 py-8 border-t border-border/30">
+            <span className="text-[hsl(var(--accent))] text-xs font-bold uppercase tracking-[0.2em] block mb-2">What We Offer</span>
+            <h2 className="text-2xl sm:text-3xl font-display text-foreground mb-3">
+              Explore Experiences Across Egypt, Jordan & Beyond
+            </h2>
+            <p className="text-sm text-muted-foreground max-w-xl mx-auto leading-relaxed">
+              Choose from cultural tours, adventure experiences, local dining events, desert expeditions, and immersive activities led by verified guides across the Arab world.
+            </p>
+          </div>
+
+          {/* Search */}
+          <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-md px-4 py-3 border-b border-border/30">
             <div className="relative max-w-6xl mx-auto">
               <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Where do you want to go?"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 h-11 rounded-2xl border-border/50 bg-muted/50 text-sm"
+                className="pl-10 h-11 rounded-xl border-border/50 bg-muted/50 text-sm"
               />
             </div>
           </div>
 
-          <main className="flex-1 px-4 pt-4 pb-8 max-w-6xl mx-auto w-full">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-4">Countries</p>
-
-            <div className="space-y-3">
+          <main className="flex-1 px-5 sm:px-8 pt-6 pb-12 max-w-6xl mx-auto w-full">
+            <div className="space-y-4">
               {countriesAPI
                 .filter((c) => c.name.toLowerCase().includes(searchQuery.toLowerCase()))
                 .map((country) => {
                   const cityCount = getCityCountForCountry(country.code);
+                  const tourCount = getToursForCountry(country.code).length;
                   return (
                     <button
                       key={country.code}
                       onClick={() => goToCountry(country.code)}
-                      className="group w-full text-left rounded-2xl overflow-hidden relative min-h-[140px] sm:min-h-[160px] flex items-center active:scale-[0.98] transition-transform duration-150"
+                      className="group w-full text-left rounded-2xl overflow-hidden relative"
                     >
-                      <div
-                        className="absolute inset-0 bg-cover bg-center"
-                        style={{ backgroundImage: `url('${country.heroImage}')` }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-r from-foreground/75 via-foreground/50 to-foreground/25" />
-
-                      <div className="relative z-10 flex items-center justify-between w-full px-5 sm:px-8 py-6">
+                      {/* Dark banner (Simsem style) */}
+                      <div className="bg-[hsl(var(--foreground))] rounded-2xl p-5 sm:p-6 flex items-center justify-between gap-4">
                         <div className="flex items-start gap-3 flex-1 min-w-0">
                           <span className="text-2xl mt-0.5 shrink-0">{country.flag}</span>
                           <div className="min-w-0">
-                            <h2 className="text-xl sm:text-2xl font-bold text-primary-foreground mb-1">
+                            <h3 className="text-lg sm:text-xl font-display text-white mb-1.5">
                               Tours in {country.name}
-                            </h2>
-                            <p className="text-primary-foreground/70 text-xs sm:text-sm leading-relaxed line-clamp-2 sm:line-clamp-3 max-w-xl">
+                            </h3>
+                            <p className="text-white/55 text-xs sm:text-sm leading-relaxed line-clamp-2 max-w-xl">
                               {country.description}
                             </p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2 shrink-0 ml-3">
-                          <span className="hidden sm:flex items-center gap-1 text-primary-foreground/60 text-xs whitespace-nowrap">
-                            <Globe2 size={12} />
-                            {cityCount} cities
-                          </span>
-                          <div className="w-8 h-8 rounded-full bg-primary-foreground/15 flex items-center justify-center">
-                            <ChevronDown size={16} className="text-primary-foreground/80" />
+                        <div className="flex items-center gap-3 shrink-0">
+                          <span className="hidden sm:block text-white/50 text-xs">{cityCount} cities</span>
+                          <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-[hsl(var(--accent))]/20 transition-colors">
+                            <ChevronRight size={16} className="text-white/70 group-hover:text-[hsl(var(--accent))] transition-colors" />
                           </div>
                         </div>
                       </div>
