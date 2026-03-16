@@ -29,10 +29,9 @@ export function PlaceMultiSelect({
   onChange: (ids: string[]) => void;
 }) {
   const [search, setSearch] = useState("");
-  const filtered = available.filter(
-    (p) =>
-      p.name.toLowerCase().includes(search.toLowerCase()) &&
-      !selected.includes(p.id)
+  const unselected = available.filter((p) => !selected.includes(p.id));
+  const filtered = unselected.filter(
+    (p) => p.name.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
