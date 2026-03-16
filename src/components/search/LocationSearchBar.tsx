@@ -7,14 +7,17 @@ import {
 } from "@/data/placesData";
 
 export interface LocationSearchResult {
-  type: "country" | "destination" | "place";
+  type: "country" | "destination" | "place" | "activity";
   id: string;
   name: string;
   countryCode: string;
   countryName: string;
-  parentDestinationId?: string; // for child places, the top-level ancestor
+  parentDestinationId?: string;
   parentDestinationName?: string;
   placeType?: string;
+  tourType?: string;
+  tourPrice?: number;
+  tourDuration?: string;
 }
 
 function getTopLevelAncestor(place: Place): Place {
