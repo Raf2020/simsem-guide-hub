@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   countriesAPI, getTopLevelPlacesByCountry, getDescendants, getPlaceById,
-  getPlaceBreadcrumb, mockGuideTours, tourTypes, destinationImages, placeDescriptions,
+  getPlaceBreadcrumb, mockGuideTours, destinationImages, placeDescriptions,
   experienceCategories, type ExperienceCategory,
   type Place, type GuideTour, type CountryInfo,
 } from "@/data/placesData";
@@ -164,6 +164,111 @@ function DestinationCard({ place, tourCount, countryName, onClick }: { place: Pl
   );
 }
 
+// ─── Grouped tour type filter (sidebar) ───
+function GroupedTourTypeFilter({
+  availableTypes,
+  selectedTypes,
+  toggleType,
+  mode = "checkbox",
+}: {
+  availableTypes: readonly string[];
+  selectedTypes: Set<string>;
+  toggleType: (type: string) => void;
+  mode?: "checkbox" | "pill";
+}) {
+  const [expandedCats, setExpandedCats] = useState<Set<string>>(new Set());
+
+  const toggleCat = (catId: string) => {
+    setExpandedCats((prev) => {
+      const n = new Set(prev);
+      n.has(catId) ? n.delete(catId) : n.add(catId);
+      return n;
+    });
+  };
+
+  // Only show categories that have at least one available type, dedup across categories
+  const seen = new Set<string>();
+  const visibleCategories = experienceCategories
+    .map((cat) => {
+      const types = cat.tourTypes.filter((t) => availableTypes.includes(t) && !seen.has(t));
+      types.forEach((t) => seen.add(t));
+      return { ...cat, types };
+    })
+    .filter((cat) => cat.types.length > 0);
+
+  if (mode === "pill") {
+    // Mobile bottom sheet: pills grouped by category
+    return (
+      <div className="space-y-4">
+        {visibleCategories.map((cat) => (
+          <div key={cat.id}>
+            <p className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
+              <span>{cat.icon}</span> {cat.name}
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {cat.types.map((type) => (
+                <button
+                  key={type}
+                  onClick={() => toggleType(type)}
+                  className={`text-[12px] px-2.5 py-1 rounded-full border transition-colors ${
+                    selectedTypes.has(type)
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-card text-foreground border-border/60"
+                  }`}
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // Desktop sidebar: collapsible checkbox groups
+  return (
+    <div className="space-y-2">
+      {visibleCategories.map((cat) => {
+        const isExpanded = expandedCats.has(cat.id);
+        const selectedInCat = cat.types.filter((t) => selectedTypes.has(t)).length;
+        return (
+          <div key={cat.id}>
+            <button
+              onClick={() => toggleCat(cat.id)}
+              className="w-full flex items-center gap-1.5 text-left py-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ChevronRight size={12} className={`transition-transform ${isExpanded ? "rotate-90" : ""}`} />
+              <span>{cat.icon}</span>
+              <span className="uppercase tracking-wider">{cat.name}</span>
+              {selectedInCat > 0 && (
+                <span className="ml-auto bg-primary text-primary-foreground text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                  {selectedInCat}
+                </span>
+              )}
+            </button>
+            {isExpanded && (
+              <div className="ml-5 space-y-0 pb-1">
+                {cat.types.map((type) => (
+                  <label key={type} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground cursor-pointer py-0.5 transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={selectedTypes.has(type)}
+                      onChange={() => toggleType(type)}
+                      className="rounded border-border text-primary focus:ring-primary"
+                    />
+                    <span className="text-[12px]">{type}</span>
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ─── Bottom sheet filter (mobile) ───
 function FilterSheet({
   open, onClose, allPlaces, selectedPlaces, selectedTypes, togglePlace, toggleType, clearFilters, activeCount, availableTypes
@@ -220,21 +325,12 @@ function FilterSheet({
             <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-1.5">
               <SlidersHorizontal size={14} /> Tour Type
             </h3>
-            <div className="flex flex-wrap gap-2">
-              {availableTypes.map((type) => (
-                <button
-                  key={type}
-                  onClick={() => toggleType(type)}
-                  className={`text-[13px] px-3 py-1.5 rounded-full border transition-colors ${
-                    selectedTypes.has(type)
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-card text-foreground border-border/60"
-                  }`}
-                >
-                  {type}
-                </button>
-              ))}
-            </div>
+            <GroupedTourTypeFilter
+              availableTypes={availableTypes}
+              selectedTypes={selectedTypes}
+              toggleType={toggleType}
+              mode="pill"
+            />
           </div>
         </div>
         <div className="px-5 py-4 border-t border-border/50 safe-bottom">
@@ -300,10 +396,27 @@ const ExperiencesPage = () => {
   const allDescendantPlaces = activeDestinationId ? getDescendants(activeDestinationId) : [];
   const breadcrumb = activeDestinationId ? getPlaceBreadcrumb(activeDestinationId) : [];
 
-  // Get available tour types based on selected category
-  const availableTourTypes = selectedCategory
-    ? experienceCategories.find(c => c.id === selectedCategory)?.tourTypes || []
-    : tourTypes as unknown as string[];
+  // Get available tour types: only show types that exist in actual tours at current level
+  const availableTourTypes = useMemo(() => {
+    // Get all unfiltered tours at current view level
+    let baseTours: GuideTour[] = [];
+    if (view.level === "country" && view.countryCode) {
+      baseTours = getToursForCountry(view.countryCode);
+    } else if (activeDestinationId) {
+      baseTours = getToursForDestination(activeDestinationId);
+    }
+    // Filter by category if selected
+    if (selectedCategory) {
+      baseTours = baseTours.filter((t) => t.category === selectedCategory);
+    }
+    // Extract unique tour types that actually exist
+    const existingTypes = new Set(baseTours.map((t) => t.tour_type));
+    // Preserve category ordering
+    const allOrdered = selectedCategory
+      ? experienceCategories.find(c => c.id === selectedCategory)?.tourTypes || []
+      : [...new Set(experienceCategories.flatMap(c => c.tourTypes))];
+    return allOrdered.filter((t) => existingTypes.has(t));
+  }, [view, activeDestinationId, selectedCategory]);
 
   const tours = useMemo(() => {
     if (!activeDestinationId) return [];
@@ -605,14 +718,11 @@ const ExperiencesPage = () => {
                   </div>
                   <div>
                     <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Tour Type</h3>
-                    <div className="space-y-0.5">
-                      {(availableTourTypes as readonly string[]).map((type) => (
-                        <label key={type} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground cursor-pointer py-1 transition-colors">
-                          <input type="checkbox" checked={selectedTypes.has(type)} onChange={() => toggleType(type)} className="rounded border-border text-primary focus:ring-primary" />
-                          <span className="text-[13px]">{type}</span>
-                        </label>
-                      ))}
-                    </div>
+                    <GroupedTourTypeFilter
+                      availableTypes={availableTourTypes as readonly string[]}
+                      selectedTypes={selectedTypes}
+                      toggleType={toggleType}
+                    />
                   </div>
                   {activeFilterCount > 0 && (
                     <Button variant="outline" size="sm" className="w-full" onClick={clearFilters}>
@@ -744,14 +854,11 @@ const ExperiencesPage = () => {
                 )}
                 <div>
                   <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Tour Type</h3>
-                  <div className="space-y-0.5">
-                    {(availableTourTypes as readonly string[]).map((type) => (
-                      <label key={type} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground cursor-pointer py-1 transition-colors">
-                        <input type="checkbox" checked={selectedTypes.has(type)} onChange={() => toggleType(type)} className="rounded border-border text-primary focus:ring-primary" />
-                        <span className="text-[13px]">{type}</span>
-                      </label>
-                    ))}
-                  </div>
+                  <GroupedTourTypeFilter
+                    availableTypes={availableTourTypes as readonly string[]}
+                    selectedTypes={selectedTypes}
+                    toggleType={toggleType}
+                  />
                 </div>
                 {activeFilterCount > 0 && (
                   <Button variant="outline" size="sm" className="w-full" onClick={clearFilters}>
