@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   countriesAPI, getTopLevelPlacesByCountry, getDescendants, getPlaceById,
   getPlaceBreadcrumb, mockGuideTours, tourTypes, destinationImages, placeDescriptions,
+  experienceCategories, type ExperienceCategory,
   type Place, type GuideTour, type CountryInfo,
 } from "@/data/placesData";
 
