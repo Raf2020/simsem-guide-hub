@@ -14,6 +14,48 @@ export interface CountryInfo {
   description: string;
 }
 
+// ─── Experience Categories (parent level) ───
+export type ExperienceCategory = "getaway" | "local-living" | "dining";
+
+export interface CategoryInfo {
+  id: ExperienceCategory;
+  name: string;
+  icon: string;
+  description: string;
+  tourTypes: string[];
+}
+
+export const experienceCategories: CategoryInfo[] = [
+  {
+    id: "getaway",
+    name: "Getaway",
+    icon: "🏕️",
+    description: "Multi-day escapes with hikes, desert camps, and scenic explorations",
+    tourTypes: ["Jeep Tour", "Hiking", "Camping", "Snorkeling", "Diving", "Day Trip"],
+  },
+  {
+    id: "local-living",
+    name: "Local Living",
+    icon: "🏠",
+    description: "Immersive encounters with local culture, history, and daily life",
+    tourTypes: ["Cultural", "City Walk", "Private Tour"],
+  },
+  {
+    id: "dining",
+    name: "Dining",
+    icon: "🍽️",
+    description: "Savor authentic flavors with locals over traditional dishes",
+    tourTypes: ["Food Tour"],
+  },
+];
+
+export function getCategoryForTourType(tourType: string): ExperienceCategory {
+  for (const cat of experienceCategories) {
+    if (cat.tourTypes.includes(tourType)) return cat.id;
+  }
+  return "getaway";
+}
+
 export interface GuideTour {
   id: string;
   title: string;
@@ -22,6 +64,7 @@ export interface GuideTour {
   price: number;
   duration: string;
   tour_type: string;
+  category: ExperienceCategory;
   description: string;
   status: "draft" | "published";
   created_at: string;
