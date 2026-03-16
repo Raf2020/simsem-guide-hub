@@ -15,7 +15,7 @@ import DahabRedSea from "./pages/DahabRedSea";
 import NapoleonReefDahab from "./pages/NapoleonReefDahab";
 import RedSeaRelaxDahab from "./pages/RedSeaRelaxDahab";
 import GuideDashboard from "./pages/GuideDashboard";
-import TravelerBrowse from "./pages/TravelerBrowse";
+
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
