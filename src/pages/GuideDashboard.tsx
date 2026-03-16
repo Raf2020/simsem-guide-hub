@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import {
   placesData, getTopLevelPlaces, getDescendants, getPlaceById,
-  mockGuideTours, tourTypes, type GuideTour, type Place
+  mockGuideTours, tourTypes, getCategoryForTourType, type GuideTour, type Place
 } from "@/data/placesData";
 
 function PlaceTag({ placeId, onRemove }: { placeId: string; onRemove?: () => void }) {
@@ -118,6 +118,7 @@ function CreateTourForm({ onClose, onSave }: { onClose: () => void; onSave: (tou
       price: parseFloat(price),
       duration,
       tour_type: tourType,
+      category: getCategoryForTourType(tourType),
       description,
       status: "draft",
       created_at: new Date().toISOString().split("T")[0],

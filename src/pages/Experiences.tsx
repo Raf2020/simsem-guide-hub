@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   countriesAPI, getTopLevelPlacesByCountry, getDescendants, getPlaceById,
   getPlaceBreadcrumb, mockGuideTours, tourTypes, destinationImages, placeDescriptions,
+  experienceCategories, type ExperienceCategory,
   type Place, type GuideTour, type CountryInfo,
 } from "@/data/placesData";
 
@@ -165,12 +166,12 @@ function DestinationCard({ place, tourCount, countryName, onClick }: { place: Pl
 
 // ─── Bottom sheet filter (mobile) ───
 function FilterSheet({
-  open, onClose, allPlaces, selectedPlaces, selectedTypes, togglePlace, toggleType, clearFilters, activeCount
+  open, onClose, allPlaces, selectedPlaces, selectedTypes, togglePlace, toggleType, clearFilters, activeCount, availableTypes
 }: {
   open: boolean; onClose: () => void;
   allPlaces: Place[]; selectedPlaces: Set<string>; selectedTypes: Set<string>;
   togglePlace: (id: string) => void; toggleType: (type: string) => void;
-  clearFilters: () => void; activeCount: number;
+  clearFilters: () => void; activeCount: number; availableTypes: readonly string[];
 }) {
   if (!open) return null;
   return (
@@ -220,7 +221,7 @@ function FilterSheet({
               <SlidersHorizontal size={14} /> Tour Type
             </h3>
             <div className="flex flex-wrap gap-2">
-              {tourTypes.map((type) => (
+              {availableTypes.map((type) => (
                 <button
                   key={type}
                   onClick={() => toggleType(type)}
@@ -246,6 +247,38 @@ function FilterSheet({
   );
 }
 
+// ─── Category Tabs ───
+function CategoryTabs({ selected, onSelect }: { selected: ExperienceCategory | null; onSelect: (cat: ExperienceCategory | null) => void }) {
+  return (
+    <div className="flex gap-2 overflow-x-auto no-scrollbar py-1">
+      <button
+        onClick={() => onSelect(null)}
+        className={`shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium border transition-all duration-200 ${
+          selected === null
+            ? "bg-primary text-primary-foreground border-primary shadow-sm"
+            : "bg-card text-muted-foreground border-border/60 hover:border-border hover:text-foreground"
+        }`}
+      >
+        All
+      </button>
+      {experienceCategories.map((cat) => (
+        <button
+          key={cat.id}
+          onClick={() => onSelect(selected === cat.id ? null : cat.id)}
+          className={`shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium border transition-all duration-200 ${
+            selected === cat.id
+              ? "bg-primary text-primary-foreground border-primary shadow-sm"
+              : "bg-card text-muted-foreground border-border/60 hover:border-border hover:text-foreground"
+          }`}
+        >
+          <span>{cat.icon}</span>
+          {cat.name}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 // ─── Main page ───
 
 type View =
@@ -258,6 +291,7 @@ const ExperiencesPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPlaces, setSelectedPlaces] = useState<Set<string>>(new Set());
   const [selectedTypes, setSelectedTypes] = useState<Set<string>>(new Set());
+  const [selectedCategory, setSelectedCategory] = useState<ExperienceCategory | null>(null);
   const [filterOpen, setFilterOpen] = useState(false);
 
   const activeCountry = view.level !== "countries" ? countriesAPI.find((c) => c.code === view.countryCode) : null;
@@ -266,9 +300,17 @@ const ExperiencesPage = () => {
   const allDescendantPlaces = activeDestinationId ? getDescendants(activeDestinationId) : [];
   const breadcrumb = activeDestinationId ? getPlaceBreadcrumb(activeDestinationId) : [];
 
+  // Get available tour types based on selected category
+  const availableTourTypes = selectedCategory
+    ? experienceCategories.find(c => c.id === selectedCategory)?.tourTypes || []
+    : tourTypes as unknown as string[];
+
   const tours = useMemo(() => {
     if (!activeDestinationId) return [];
     let result = getToursForDestination(activeDestinationId);
+    if (selectedCategory) {
+      result = result.filter((t) => t.category === selectedCategory);
+    }
     if (selectedPlaces.size > 0) {
       result = result.filter((t) =>
         t.places.some((p) => selectedPlaces.has(p)) || selectedPlaces.has(t.main_place_id)
@@ -278,7 +320,7 @@ const ExperiencesPage = () => {
       result = result.filter((t) => selectedTypes.has(t.tour_type));
     }
     return result;
-  }, [activeDestinationId, selectedPlaces, selectedTypes]);
+  }, [activeDestinationId, selectedPlaces, selectedTypes, selectedCategory]);
 
   const togglePlace = (id: string) => {
     setSelectedPlaces((prev) => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
@@ -286,8 +328,8 @@ const ExperiencesPage = () => {
   const toggleType = (type: string) => {
     setSelectedTypes((prev) => { const n = new Set(prev); n.has(type) ? n.delete(type) : n.add(type); return n; });
   };
-  const clearFilters = () => { setSelectedPlaces(new Set()); setSelectedTypes(new Set()); };
-  const activeFilterCount = selectedPlaces.size + selectedTypes.size;
+  const clearFilters = () => { setSelectedPlaces(new Set()); setSelectedTypes(new Set()); setSelectedCategory(null); };
+  const activeFilterCount = selectedPlaces.size + selectedTypes.size + (selectedCategory ? 1 : 0);
 
   const goToCountry = (code: string) => {
     setView({ level: "country", countryCode: code });
@@ -382,9 +424,11 @@ const ExperiencesPage = () => {
         const countryDestinations = getTopLevelPlacesByCountry(activeCountry.code);
         const countryTours = (() => {
           let result = getToursForCountry(activeCountry.code);
+          if (selectedCategory) {
+            result = result.filter((t) => t.category === selectedCategory);
+          }
           if (selectedPlaces.size > 0) {
             result = result.filter((t) => {
-              // Check if tour's main destination or any of its places match selected destinations
               for (const selectedId of selectedPlaces) {
                 const descendants = getDescendants(selectedId);
                 const allIds = new Set([selectedId, ...descendants.map(d => d.id)]);
@@ -481,6 +525,13 @@ const ExperiencesPage = () => {
               </div>
             </div>
 
+            {/* Category tabs */}
+            <div className="px-4 py-3 border-b border-border/30 bg-background">
+              <div className="max-w-6xl mx-auto">
+                <CategoryTabs selected={selectedCategory} onSelect={(cat) => { setSelectedCategory(cat); setSelectedTypes(new Set()); }} />
+              </div>
+            </div>
+
             {/* Active filters (horizontal scroll) */}
             {activeFilterCount > 0 && (
               <div className="flex gap-1.5 px-4 py-2.5 overflow-x-auto no-scrollbar border-b border-border/30">
@@ -555,7 +606,7 @@ const ExperiencesPage = () => {
                   <div>
                     <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Tour Type</h3>
                     <div className="space-y-0.5">
-                      {tourTypes.map((type) => (
+                      {(availableTourTypes as readonly string[]).map((type) => (
                         <label key={type} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground cursor-pointer py-1 transition-colors">
                           <input type="checkbox" checked={selectedTypes.has(type)} onChange={() => toggleType(type)} className="rounded border-border text-primary focus:ring-primary" />
                           <span className="text-[13px]">{type}</span>
@@ -602,6 +653,7 @@ const ExperiencesPage = () => {
               toggleType={toggleType}
               clearFilters={clearFilters}
               activeCount={activeFilterCount}
+              availableTypes={availableTourTypes as readonly string[]}
             />
           </>
         );
@@ -642,6 +694,13 @@ const ExperiencesPage = () => {
                 {tours.length} {tours.length === 1 ? "tour" : "tours"}
                 {activeFilterCount > 0 && " · filtered"}
               </p>
+            </div>
+          </div>
+
+          {/* Category tabs */}
+          <div className="px-4 py-3 border-b border-border/30 bg-background">
+            <div className="max-w-6xl mx-auto">
+              <CategoryTabs selected={selectedCategory} onSelect={(cat) => { setSelectedCategory(cat); setSelectedTypes(new Set()); }} />
             </div>
           </div>
 
@@ -686,7 +745,7 @@ const ExperiencesPage = () => {
                 <div>
                   <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Tour Type</h3>
                   <div className="space-y-0.5">
-                    {tourTypes.map((type) => (
+                    {(availableTourTypes as readonly string[]).map((type) => (
                       <label key={type} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground cursor-pointer py-1 transition-colors">
                         <input type="checkbox" checked={selectedTypes.has(type)} onChange={() => toggleType(type)} className="rounded border-border text-primary focus:ring-primary" />
                         <span className="text-[13px]">{type}</span>
@@ -729,6 +788,7 @@ const ExperiencesPage = () => {
             toggleType={toggleType}
             clearFilters={clearFilters}
             activeCount={activeFilterCount}
+            availableTypes={availableTourTypes as readonly string[]}
           />
         </>
       )}

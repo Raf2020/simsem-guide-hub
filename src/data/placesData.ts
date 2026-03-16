@@ -14,6 +14,48 @@ export interface CountryInfo {
   description: string;
 }
 
+// ─── Experience Categories (parent level) ───
+export type ExperienceCategory = "getaway" | "local-living" | "dining";
+
+export interface CategoryInfo {
+  id: ExperienceCategory;
+  name: string;
+  icon: string;
+  description: string;
+  tourTypes: string[];
+}
+
+export const experienceCategories: CategoryInfo[] = [
+  {
+    id: "getaway",
+    name: "Getaway",
+    icon: "🏕️",
+    description: "Multi-day escapes with hikes, desert camps, and scenic explorations",
+    tourTypes: ["Jeep Tour", "Hiking", "Camping", "Snorkeling", "Diving", "Day Trip"],
+  },
+  {
+    id: "local-living",
+    name: "Local Living",
+    icon: "🏠",
+    description: "Immersive encounters with local culture, history, and daily life",
+    tourTypes: ["Cultural", "City Walk", "Private Tour"],
+  },
+  {
+    id: "dining",
+    name: "Dining",
+    icon: "🍽️",
+    description: "Savor authentic flavors with locals over traditional dishes",
+    tourTypes: ["Food Tour"],
+  },
+];
+
+export function getCategoryForTourType(tourType: string): ExperienceCategory {
+  for (const cat of experienceCategories) {
+    if (cat.tourTypes.includes(tourType)) return cat.id;
+  }
+  return "getaway";
+}
+
 export interface GuideTour {
   id: string;
   title: string;
@@ -22,6 +64,7 @@ export interface GuideTour {
   price: number;
   duration: string;
   tour_type: string;
+  category: ExperienceCategory;
   description: string;
   status: "draft" | "published";
   created_at: string;
@@ -364,38 +407,38 @@ export const destinationImages: Record<string, string> = {
 // ─── Mock tours ───
 export const mockGuideTours: GuideTour[] = [
   // Jordan
-  { id: "1", title: "Wadi Rum Overnight 4x4 Jeep Safari", main_place_id: "wadi-rum", places: ["khazali-canyon", "lawrence-spring", "um-frouth-rock-bridge", "seven-pillars-of-wisdom"], price: 147, duration: "2 Days", tour_type: "Jeep Tour", description: "Explore the vast desert landscapes of Wadi Rum on a 4x4 jeep adventure with overnight Bedouin camping.", status: "published", created_at: "2026-02-15" },
-  { id: "2", title: "Petra Full Day Guided Tour", main_place_id: "petra-region", places: ["al-siq", "the-treasury", "the-monastery", "royal-tombs", "high-place-of-sacrifice"], price: 95, duration: "8 Hours", tour_type: "Hiking", description: "Walk through the ancient city of Petra with a local Bedouin guide.", status: "published", created_at: "2026-01-20" },
-  { id: "3", title: "Amman Street Food & Culture Walk", main_place_id: "amman", places: ["downtown-amman", "rainbow-street", "amman-citadel", "roman-theater-amman"], price: 45, duration: "4 Hours", tour_type: "Food Tour", description: "Taste authentic Jordanian street food while exploring Amman's historic downtown.", status: "published", created_at: "2026-03-01" },
-  { id: "4", title: "Dead Sea & Wadi Mujib Adventure", main_place_id: "dead-sea", places: ["sweimeh", "mujib", "mujib-biosphere-reserve"], price: 75, duration: "Full Day", tour_type: "Day Trip", description: "Float in the Dead Sea and hike through the stunning Wadi Mujib canyon.", status: "published", created_at: "2026-02-28" },
-  { id: "5", title: "Aqaba Snorkeling & Reef Tour", main_place_id: "aqaba", places: ["japanese-garden", "cedar-pride-wreck", "aqaba-marine-park"], price: 60, duration: "5 Hours", tour_type: "Snorkeling", description: "Discover the coral reefs and marine life of the Red Sea in Aqaba.", status: "published", created_at: "2026-03-10" },
-  { id: "6", title: "Petra by Night & Treasury Candlelight", main_place_id: "petra-region", places: ["al-siq", "the-treasury"], price: 70, duration: "3 Hours", tour_type: "Cultural", description: "Experience the magic of Petra illuminated by thousands of candles under the stars.", status: "published", created_at: "2026-02-10" },
-  { id: "7", title: "Wadi Rum Sunset Hike & Stargazing", main_place_id: "wadi-rum", places: ["burdah-rock-bridge", "jebel-umm-ad-dami"], price: 85, duration: "6 Hours", tour_type: "Hiking", description: "Hike to Burdah Rock Bridge at sunset then stargaze from Jordan's highest peak.", status: "published", created_at: "2026-03-05" },
-  { id: "8", title: "Jerash & Ajloun Castle Day Trip", main_place_id: "jerash", places: ["jerash-archaeological-site", "ajloun-castle"], price: 65, duration: "Full Day", tour_type: "Day Trip", description: "Visit the best-preserved Roman ruins outside Italy and the medieval Ajloun Castle.", status: "published", created_at: "2026-01-15" },
-  { id: "9", title: "Amman Citadel & Roman Theater Walk", main_place_id: "amman", places: ["amman-citadel", "roman-theater-amman", "jordan-museum"], price: 35, duration: "3 Hours", tour_type: "City Walk", description: "Discover 7,000 years of history at the Citadel hilltop and the ancient Roman Theater.", status: "published", created_at: "2026-02-20" },
-  { id: "10", title: "Dana Nature Reserve Hiking Trail", main_place_id: "tafila", places: ["dana", "dana-biosphere-reserve", "feynan", "feynan-ecolodge"], price: 55, duration: "Full Day", tour_type: "Hiking", description: "Trek through Dana Biosphere Reserve from mountaintop to the Feynan desert valley.", status: "published", created_at: "2026-03-08" },
-  { id: "11", title: "Aqaba Scuba Diving Experience", main_place_id: "aqaba", places: ["cedar-pride-wreck", "aqaba-marine-park", "south-beach"], price: 120, duration: "4 Hours", tour_type: "Diving", description: "Dive the famous Cedar Pride shipwreck and explore vibrant coral gardens.", status: "published", created_at: "2026-02-25" },
-  { id: "12", title: "Madaba Mosaics & Mount Nebo Tour", main_place_id: "madaba", places: ["st-george-church", "madaba-archaeological-park", "mount-nebo"], price: 50, duration: "5 Hours", tour_type: "Cultural", description: "See the ancient mosaic map of the Holy Land and the panoramic views from Mount Nebo.", status: "published", created_at: "2026-01-28" },
-  { id: "13", title: "Wadi Rum Bedouin Camp & Camel Ride", main_place_id: "wadi-rum", places: ["rum-village", "wadi-rum-protected-area", "khazali-canyon"], price: 110, duration: "2 Days", tour_type: "Camping", description: "Stay with Bedouin families, ride camels at sunrise, and sleep under desert stars.", status: "published", created_at: "2026-03-12" },
-  { id: "14", title: "Petra Back Trail to the Monastery", main_place_id: "petra-region", places: ["the-monastery", "qasr-al-bint", "great-temple"], price: 80, duration: "6 Hours", tour_type: "Hiking", description: "Take the less-traveled back trail to the Monastery, avoiding the crowds.", status: "published", created_at: "2026-02-18" },
-  { id: "15", title: "Desert Castles Loop from Amman", main_place_id: "desert-castles", places: ["quseir-amra", "qasr-kharana", "qasr-al-hallabat", "azraq-castle"], price: 70, duration: "Full Day", tour_type: "Day Trip", description: "Explore UNESCO-listed Umayyad desert palaces on a scenic loop through eastern Jordan.", status: "published", created_at: "2026-03-02" },
-  { id: "16", title: "Karak Castle & Dead Sea Panorama", main_place_id: "karak", places: ["karak-castle", "lot-cave"], price: 55, duration: "Full Day", tour_type: "Cultural", description: "Visit the imposing Crusader castle in Karak with views stretching to the Dead Sea.", status: "published", created_at: "2026-01-10" },
-  { id: "17", title: "Umm Qais & Northern Jordan Highlights", main_place_id: "irbid", places: ["umm-qais", "pella", "yarmouk-forest-reserve"], price: 60, duration: "Full Day", tour_type: "Day Trip", description: "Discover the Greco-Roman ruins of Umm Qais with views of the Sea of Galilee.", status: "published", created_at: "2026-02-05" },
-  { id: "18", title: "Private Petra & Little Petra Combo", main_place_id: "petra-region", places: ["petra", "little-petra", "al-siq", "the-treasury", "the-monastery"], price: 180, duration: "2 Days", tour_type: "Private Tour", description: "An exclusive two-day private tour covering both Petra and the hidden gem Little Petra.", status: "published", created_at: "2026-03-14" },
-  { id: "19", title: "Amman to Wadi Rum Express", main_place_id: "wadi-rum", places: ["wadi-rum-protected-area", "seven-pillars-of-wisdom", "lawrence-spring"], price: 130, duration: "Full Day", tour_type: "Jeep Tour", description: "A fast-paced day trip from Amman to experience Wadi Rum's iconic landmarks.", status: "published", created_at: "2026-03-09" },
-  { id: "20", title: "As-Salt Heritage Walk", main_place_id: "salt", places: ["salt-historic-center"], price: 30, duration: "3 Hours", tour_type: "City Walk", description: "Walk through the UNESCO World Heritage town of As-Salt and its Ottoman architecture.", status: "published", created_at: "2026-02-12" },
+  { id: "1", title: "Wadi Rum Overnight 4x4 Jeep Safari", main_place_id: "wadi-rum", places: ["khazali-canyon", "lawrence-spring", "um-frouth-rock-bridge", "seven-pillars-of-wisdom"], price: 147, duration: "2 Days", tour_type: "Jeep Tour", category: "getaway", description: "Explore the vast desert landscapes of Wadi Rum on a 4x4 jeep adventure with overnight Bedouin camping.", status: "published", created_at: "2026-02-15" },
+  { id: "2", title: "Petra Full Day Guided Tour", main_place_id: "petra-region", places: ["al-siq", "the-treasury", "the-monastery", "royal-tombs", "high-place-of-sacrifice"], price: 95, duration: "8 Hours", tour_type: "Hiking", category: "getaway", description: "Walk through the ancient city of Petra with a local Bedouin guide.", status: "published", created_at: "2026-01-20" },
+  { id: "3", title: "Amman Street Food & Culture Walk", main_place_id: "amman", places: ["downtown-amman", "rainbow-street", "amman-citadel", "roman-theater-amman"], price: 45, duration: "4 Hours", tour_type: "Food Tour", category: "dining", description: "Taste authentic Jordanian street food while exploring Amman's historic downtown.", status: "published", created_at: "2026-03-01" },
+  { id: "4", title: "Dead Sea & Wadi Mujib Adventure", main_place_id: "dead-sea", places: ["sweimeh", "mujib", "mujib-biosphere-reserve"], price: 75, duration: "Full Day", tour_type: "Day Trip", category: "getaway", description: "Float in the Dead Sea and hike through the stunning Wadi Mujib canyon.", status: "published", created_at: "2026-02-28" },
+  { id: "5", title: "Aqaba Snorkeling & Reef Tour", main_place_id: "aqaba", places: ["japanese-garden", "cedar-pride-wreck", "aqaba-marine-park"], price: 60, duration: "5 Hours", tour_type: "Snorkeling", category: "getaway", description: "Discover the coral reefs and marine life of the Red Sea in Aqaba.", status: "published", created_at: "2026-03-10" },
+  { id: "6", title: "Petra by Night & Treasury Candlelight", main_place_id: "petra-region", places: ["al-siq", "the-treasury"], price: 70, duration: "3 Hours", tour_type: "Cultural", category: "local-living", description: "Experience the magic of Petra illuminated by thousands of candles under the stars.", status: "published", created_at: "2026-02-10" },
+  { id: "7", title: "Wadi Rum Sunset Hike & Stargazing", main_place_id: "wadi-rum", places: ["burdah-rock-bridge", "jebel-umm-ad-dami"], price: 85, duration: "6 Hours", tour_type: "Hiking", category: "getaway", description: "Hike to Burdah Rock Bridge at sunset then stargaze from Jordan's highest peak.", status: "published", created_at: "2026-03-05" },
+  { id: "8", title: "Jerash & Ajloun Castle Day Trip", main_place_id: "jerash", places: ["jerash-archaeological-site", "ajloun-castle"], price: 65, duration: "Full Day", tour_type: "Day Trip", category: "getaway", description: "Visit the best-preserved Roman ruins outside Italy and the medieval Ajloun Castle.", status: "published", created_at: "2026-01-15" },
+  { id: "9", title: "Amman Citadel & Roman Theater Walk", main_place_id: "amman", places: ["amman-citadel", "roman-theater-amman", "jordan-museum"], price: 35, duration: "3 Hours", tour_type: "City Walk", category: "local-living", description: "Discover 7,000 years of history at the Citadel hilltop and the ancient Roman Theater.", status: "published", created_at: "2026-02-20" },
+  { id: "10", title: "Dana Nature Reserve Hiking Trail", main_place_id: "tafila", places: ["dana", "dana-biosphere-reserve", "feynan", "feynan-ecolodge"], price: 55, duration: "Full Day", tour_type: "Hiking", category: "getaway", description: "Trek through Dana Biosphere Reserve from mountaintop to the Feynan desert valley.", status: "published", created_at: "2026-03-08" },
+  { id: "11", title: "Aqaba Scuba Diving Experience", main_place_id: "aqaba", places: ["cedar-pride-wreck", "aqaba-marine-park", "south-beach"], price: 120, duration: "4 Hours", tour_type: "Diving", category: "getaway", description: "Dive the famous Cedar Pride shipwreck and explore vibrant coral gardens.", status: "published", created_at: "2026-02-25" },
+  { id: "12", title: "Madaba Mosaics & Mount Nebo Tour", main_place_id: "madaba", places: ["st-george-church", "madaba-archaeological-park", "mount-nebo"], price: 50, duration: "5 Hours", tour_type: "Cultural", category: "local-living", description: "See the ancient mosaic map of the Holy Land and the panoramic views from Mount Nebo.", status: "published", created_at: "2026-01-28" },
+  { id: "13", title: "Wadi Rum Bedouin Camp & Camel Ride", main_place_id: "wadi-rum", places: ["rum-village", "wadi-rum-protected-area", "khazali-canyon"], price: 110, duration: "2 Days", tour_type: "Camping", category: "getaway", description: "Stay with Bedouin families, ride camels at sunrise, and sleep under desert stars.", status: "published", created_at: "2026-03-12" },
+  { id: "14", title: "Petra Back Trail to the Monastery", main_place_id: "petra-region", places: ["the-monastery", "qasr-al-bint", "great-temple"], price: 80, duration: "6 Hours", tour_type: "Hiking", category: "getaway", description: "Take the less-traveled back trail to the Monastery, avoiding the crowds.", status: "published", created_at: "2026-02-18" },
+  { id: "15", title: "Desert Castles Loop from Amman", main_place_id: "desert-castles", places: ["quseir-amra", "qasr-kharana", "qasr-al-hallabat", "azraq-castle"], price: 70, duration: "Full Day", tour_type: "Day Trip", category: "getaway", description: "Explore UNESCO-listed Umayyad desert palaces on a scenic loop through eastern Jordan.", status: "published", created_at: "2026-03-02" },
+  { id: "16", title: "Karak Castle & Dead Sea Panorama", main_place_id: "karak", places: ["karak-castle", "lot-cave"], price: 55, duration: "Full Day", tour_type: "Cultural", category: "local-living", description: "Visit the imposing Crusader castle in Karak with views stretching to the Dead Sea.", status: "published", created_at: "2026-01-10" },
+  { id: "17", title: "Umm Qais & Northern Jordan Highlights", main_place_id: "irbid", places: ["umm-qais", "pella", "yarmouk-forest-reserve"], price: 60, duration: "Full Day", tour_type: "Day Trip", category: "getaway", description: "Discover the Greco-Roman ruins of Umm Qais with views of the Sea of Galilee.", status: "published", created_at: "2026-02-05" },
+  { id: "18", title: "Private Petra & Little Petra Combo", main_place_id: "petra-region", places: ["petra", "little-petra", "al-siq", "the-treasury", "the-monastery"], price: 180, duration: "2 Days", tour_type: "Private Tour", category: "local-living", description: "An exclusive two-day private tour covering both Petra and the hidden gem Little Petra.", status: "published", created_at: "2026-03-14" },
+  { id: "19", title: "Amman to Wadi Rum Express", main_place_id: "wadi-rum", places: ["wadi-rum-protected-area", "seven-pillars-of-wisdom", "lawrence-spring"], price: 130, duration: "Full Day", tour_type: "Jeep Tour", category: "getaway", description: "A fast-paced day trip from Amman to experience Wadi Rum's iconic landmarks.", status: "published", created_at: "2026-03-09" },
+  { id: "20", title: "As-Salt Heritage Walk", main_place_id: "salt", places: ["salt-historic-center"], price: 30, duration: "3 Hours", tour_type: "City Walk", category: "local-living", description: "Walk through the UNESCO World Heritage town of As-Salt and its Ottoman architecture.", status: "published", created_at: "2026-02-12" },
 
   // Egypt
-  { id: "21", title: "Pyramids of Giza & Sphinx Tour", main_place_id: "cairo", places: ["giza", "great-pyramids", "sphinx"], price: 65, duration: "5 Hours", tour_type: "Cultural", description: "Stand before the last surviving wonder of the ancient world with an expert Egyptologist.", status: "published", created_at: "2026-03-01" },
-  { id: "22", title: "Cairo Islamic Quarter & Khan El Khalili", main_place_id: "cairo", places: ["islamic-cairo", "khan-el-khalili", "egyptian-museum"], price: 40, duration: "4 Hours", tour_type: "City Walk", description: "Wander through medieval mosques, madrasas, and the legendary bazaar of Cairo.", status: "published", created_at: "2026-02-20" },
-  { id: "23", title: "Luxor West Bank: Valley of the Kings", main_place_id: "luxor", places: ["valley-of-kings", "hatshepsut-temple", "colossi-of-memnon"], price: 80, duration: "6 Hours", tour_type: "Cultural", description: "Explore the tombs of pharaohs and the temple of Egypt's only female pharaoh.", status: "published", created_at: "2026-01-25" },
-  { id: "24", title: "Karnak & Luxor Temple Sunset Walk", main_place_id: "luxor", places: ["karnak-temple", "luxor-temple"], price: 55, duration: "4 Hours", tour_type: "Cultural", description: "Walk the hypostyle halls at golden hour and watch the temples glow at sunset.", status: "published", created_at: "2026-02-14" },
-  { id: "25", title: "Dahab Blue Hole Freediving Day", main_place_id: "dahab", places: ["blue-hole-dahab", "lighthouse-reef"], price: 70, duration: "Full Day", tour_type: "Diving", description: "Freedive the legendary Blue Hole and snorkel the pristine Lighthouse reef.", status: "published", created_at: "2026-03-08" },
-  { id: "26", title: "Aswan Felucca Sail & Nubian Village", main_place_id: "aswan", places: ["philae-temple", "nubian-village"], price: 50, duration: "5 Hours", tour_type: "Cultural", description: "Sail the Nile on a traditional felucca and dine with a Nubian family.", status: "published", created_at: "2026-02-18" },
-  { id: "27", title: "Abu Simbel Sunrise Day Trip", main_place_id: "aswan", places: ["abu-simbel"], price: 110, duration: "Full Day", tour_type: "Day Trip", description: "Witness the sun illuminate Ramses II's face at the Great Temple of Abu Simbel.", status: "published", created_at: "2026-03-12" },
+  { id: "21", title: "Pyramids of Giza & Sphinx Tour", main_place_id: "cairo", places: ["giza", "great-pyramids", "sphinx"], price: 65, duration: "5 Hours", tour_type: "Cultural", category: "local-living", description: "Stand before the last surviving wonder of the ancient world with an expert Egyptologist.", status: "published", created_at: "2026-03-01" },
+  { id: "22", title: "Cairo Islamic Quarter & Khan El Khalili", main_place_id: "cairo", places: ["islamic-cairo", "khan-el-khalili", "egyptian-museum"], price: 40, duration: "4 Hours", tour_type: "City Walk", category: "local-living", description: "Wander through medieval mosques, madrasas, and the legendary bazaar of Cairo.", status: "published", created_at: "2026-02-20" },
+  { id: "23", title: "Luxor West Bank: Valley of the Kings", main_place_id: "luxor", places: ["valley-of-kings", "hatshepsut-temple", "colossi-of-memnon"], price: 80, duration: "6 Hours", tour_type: "Cultural", category: "local-living", description: "Explore the tombs of pharaohs and the temple of Egypt's only female pharaoh.", status: "published", created_at: "2026-01-25" },
+  { id: "24", title: "Karnak & Luxor Temple Sunset Walk", main_place_id: "luxor", places: ["karnak-temple", "luxor-temple"], price: 55, duration: "4 Hours", tour_type: "Cultural", category: "local-living", description: "Walk the hypostyle halls at golden hour and watch the temples glow at sunset.", status: "published", created_at: "2026-02-14" },
+  { id: "25", title: "Dahab Blue Hole Freediving Day", main_place_id: "dahab", places: ["blue-hole-dahab", "lighthouse-reef"], price: 70, duration: "Full Day", tour_type: "Diving", category: "getaway", description: "Freedive the legendary Blue Hole and snorkel the pristine Lighthouse reef.", status: "published", created_at: "2026-03-08" },
+  { id: "26", title: "Aswan Felucca Sail & Nubian Village", main_place_id: "aswan", places: ["philae-temple", "nubian-village"], price: 50, duration: "5 Hours", tour_type: "Cultural", category: "local-living", description: "Sail the Nile on a traditional felucca and dine with a Nubian family.", status: "published", created_at: "2026-02-18" },
+  { id: "27", title: "Abu Simbel Sunrise Day Trip", main_place_id: "aswan", places: ["abu-simbel"], price: 110, duration: "Full Day", tour_type: "Day Trip", category: "getaway", description: "Witness the sun illuminate Ramses II's face at the Great Temple of Abu Simbel.", status: "published", created_at: "2026-03-12" },
 
   // Morocco
-  { id: "28", title: "Marrakech Medina & Souks Tour", main_place_id: "marrakech", places: ["jemaa-el-fna", "medina-marrakech", "bahia-palace"], price: 40, duration: "4 Hours", tour_type: "City Walk", description: "Navigate the labyrinthine medina with a local guide — souks, riads, and rooftop views.", status: "published", created_at: "2026-02-22" },
-  { id: "29", title: "Sahara Desert Camel Trek & Camp", main_place_id: "sahara-morocco", places: ["erg-chebbi", "merzouga"], price: 150, duration: "2 Days", tour_type: "Camping", description: "Ride camels over golden dunes at sunset and sleep under the Saharan stars.", status: "published", created_at: "2026-03-05" },
-  { id: "30", title: "Fes Tanneries & Medieval Medina", main_place_id: "fes", places: ["fes-medina", "chouara-tannery", "bou-inania-madrasa"], price: 35, duration: "3 Hours", tour_type: "Cultural", description: "Explore the world's oldest university city and its centuries-old leather tanneries.", status: "published", created_at: "2026-01-30" },
+  { id: "28", title: "Marrakech Medina & Souks Tour", main_place_id: "marrakech", places: ["jemaa-el-fna", "medina-marrakech", "bahia-palace"], price: 40, duration: "4 Hours", tour_type: "City Walk", category: "local-living", description: "Navigate the labyrinthine medina with a local guide — souks, riads, and rooftop views.", status: "published", created_at: "2026-02-22" },
+  { id: "29", title: "Sahara Desert Camel Trek & Camp", main_place_id: "sahara-morocco", places: ["erg-chebbi", "merzouga"], price: 150, duration: "2 Days", tour_type: "Camping", category: "getaway", description: "Ride camels over golden dunes at sunset and sleep under the Saharan stars.", status: "published", created_at: "2026-03-05" },
+  { id: "30", title: "Fes Tanneries & Medieval Medina", main_place_id: "fes", places: ["fes-medina", "chouara-tannery", "bou-inania-madrasa"], price: 35, duration: "3 Hours", tour_type: "Cultural", category: "local-living", description: "Explore the world's oldest university city and its centuries-old leather tanneries.", status: "published", created_at: "2026-01-30" },
 ];
