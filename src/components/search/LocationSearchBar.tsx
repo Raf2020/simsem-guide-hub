@@ -95,27 +95,51 @@ export function LocationSearchBar({
 
   const searchIndex = useMemo(() => buildSearchIndex(), []);
 
+  // Build tour search entries
+  const tourIndex = useMemo(() => {
+    return tours.filter(t => t.status === "published").map((tour): LocationSearchResult => {
+      const place = placesData.find(p => p.id === tour.main_place_id);
+      const country = countriesAPI.find(c => c.code === place?.country);
+      const ancestor = place ? getTopLevelAncestor(place) : null;
+      return {
+        type: "activity",
+        id: tour.id,
+        name: tour.title,
+        countryCode: place?.country || "",
+        countryName: country?.name || "",
+        parentDestinationId: ancestor?.id,
+        parentDestinationName: ancestor?.name,
+        tourType: tour.tour_type,
+        tourPrice: tour.price,
+        tourDuration: tour.duration,
+      };
+    });
+  }, [tours]);
+
   const results = useMemo(() => {
     if (!query.trim()) return [];
     const q = query.toLowerCase().trim();
-    return searchIndex
+    const allItems = [...searchIndex, ...tourIndex];
+    return allItems
       .filter((r) => r.name.toLowerCase().includes(q))
       .filter((r) => !countryFilter || r.countryCode === countryFilter)
-      .slice(0, 12);
-  }, [query, searchIndex, countryFilter]);
+      .slice(0, 15);
+  }, [query, searchIndex, tourIndex, countryFilter]);
 
   // Group results
   const grouped = useMemo(() => {
     const countries = results.filter((r) => r.type === "country");
     const destinations = results.filter((r) => r.type === "destination");
     const places = results.filter((r) => r.type === "place");
-    return { countries, destinations, places };
+    const activities = results.filter((r) => r.type === "activity");
+    return { countries, destinations, places, activities };
   }, [results]);
 
   const flatResults = useMemo(() => [
     ...grouped.countries,
     ...grouped.destinations,
     ...grouped.places,
+    ...grouped.activities,
   ], [grouped]);
 
   // Close on outside click
