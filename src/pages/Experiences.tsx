@@ -1050,6 +1050,8 @@ const ExperiencesPage = () => {
 
       {/* Mindbody Schedules Widget */}
       <MindbodyWidget />
+      {/* Healcode Registrations Widget */}
+      <HealcodeWidget />
     </div>
   );
 };
