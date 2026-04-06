@@ -76,6 +76,34 @@ function MindbodyWidget() {
   );
 }
 
+// ─── Healcode Registrations Widget ───
+function HealcodeWidget() {
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://widgets.mindbodyonline.com/javascripts/healcode.js";
+    script.type = "text/javascript";
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  return (
+    <section className="max-w-5xl mx-auto px-4 py-10">
+      <h2 className="text-xl font-bold text-foreground mb-4">📝 Registrations</h2>
+      <div className="rounded-xl border border-border bg-card p-4 min-h-[300px]">
+        <healcode-widget
+          data-type="registrations"
+          data-widget-partner="object"
+          data-widget-id="6317232074bf"
+          data-widget-version="0"
+        />
+      </div>
+    </section>
+  );
+}
+
 
 function AppHeader({ title, onBack, rightContent }: { title: string; onBack?: () => void; rightContent?: React.ReactNode }) {
   return (
