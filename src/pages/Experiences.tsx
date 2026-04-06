@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import {
   MapPin, Clock, Star, Search, SlidersHorizontal, X, ArrowLeft,
   ChevronRight, ChevronDown, ArrowRight, Globe2, Filter, Compass, Shield
