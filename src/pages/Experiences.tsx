@@ -989,6 +989,9 @@ const ExperiencesPage = () => {
           />
         </>
       )}
+
+      {/* Mindbody Schedules Widget */}
+      <MindbodyWidget />
     </div>
   );
 };
