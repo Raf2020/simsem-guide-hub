@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import {
   MapPin, Clock, Star, Search, SlidersHorizontal, X, ArrowLeft,
   ChevronRight, ChevronDown, ArrowRight, Globe2, Filter, Compass, Shield
@@ -46,7 +46,37 @@ function getCityCountForCountry(countryCode: string): number {
   return getTopLevelPlacesByCountry(countryCode).length;
 }
 
-// ─── Simsem-style header ───
+// ─── Mindbody Schedules Widget ───
+function MindbodyWidget() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Dynamically load the Mindbody widget script
+    const script = document.createElement("script");
+    script.src = "https://brandedweb.mindbodyonline.com/embed/widget.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      // Cleanup script on unmount
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  return (
+    <section className="max-w-5xl mx-auto px-4 py-10">
+      <h2 className="text-xl font-bold text-foreground mb-4">📅 Schedule & Book</h2>
+      <div
+        ref={containerRef}
+        className="mindbody-widget rounded-xl border border-border bg-card p-4 min-h-[300px]"
+        data-widget-type="Schedules"
+        data-widget-id="634845074bf"
+      />
+    </section>
+  );
+}
+
+
 function AppHeader({ title, onBack, rightContent }: { title: string; onBack?: () => void; rightContent?: React.ReactNode }) {
   return (
     <header className="sticky top-0 z-50 bg-[hsl(var(--foreground))] border-b border-white/10 safe-top">
@@ -989,6 +1019,9 @@ const ExperiencesPage = () => {
           />
         </>
       )}
+
+      {/* Mindbody Schedules Widget */}
+      <MindbodyWidget />
     </div>
   );
 };
