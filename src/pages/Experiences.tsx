@@ -1142,9 +1142,9 @@ const ExperiencesPage = () => {
             availableTypes={availableTourTypes as readonly string[]}
           />
         </>
-      )}
+        );
+      })()}
 
-      {/* Mindbody Schedules Widget */}
       <MindbodyWidget />
       {/* Healcode Registrations Widget */}
       <HealcodeWidget />
