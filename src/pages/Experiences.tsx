@@ -9,11 +9,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  countriesAPI, getTopLevelPlacesByCountry, getDescendants, getPlaceById,
+  countriesAPI, getTopLevelPlacesByCountry, getDescendants, getChildren, getPlaceById,
   getPlaceBreadcrumb, mockGuideTours, destinationImages, tourTypeImages, placeDescriptions,
   experienceCategories, type ExperienceCategory,
   type Place, type GuideTour, type CountryInfo,
 } from "@/data/placesData";
+import { SEOHead } from "@/components/seo/SEOHead";
+import { Breadcrumbs, type BreadcrumbCrumb } from "@/components/seo/Breadcrumbs";
+import { ChildPlaceChips } from "@/components/seo/ChildPlaceChips";
 
 const FALLBACK_IMG = "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&h=600&fit=crop";
 function getTourImage(tour: GuideTour): string {
@@ -540,6 +543,16 @@ const ExperiencesPage = () => {
       {/* ═══════ LEVEL 1: Countries ═══════ */}
       {view.level === "countries" && (
         <>
+          <SEOHead
+            title="Authentic Tours with Local Guides in Egypt, Jordan & the Arab World | SimSem"
+            description="Book authentic local tours across Egypt, Jordan, Lebanon, Morocco, Turkey & more. Petra, Wadi Rum, Pyramids, Cairo food tours, Dahab diving — led by verified local guides."
+            canonical="/experiences"
+            image="https://images.unsplash.com/photo-1547234935-80c7145ec969?w=1200&q=80"
+            breadcrumbs={[
+              { name: "Home", url: "/" },
+              { name: "Experiences", url: "/experiences" },
+            ]}
+          />
           {/* Simsem hero */}
           <div className="relative h-[340px] sm:h-[420px]">
             <div className="absolute inset-0 overflow-hidden">
@@ -706,8 +719,31 @@ const ExperiencesPage = () => {
           return result;
         })();
 
+        const countrySlug = activeCountry.code.toLowerCase();
+        const countryUrl = `/experiences/${countrySlug}`;
+        const seoTitle = `${activeCountry.name} Tours & Local Guides — ${countryDestinations.length}+ Destinations | SimSem`;
+        const seoDesc = `Discover ${countryTours.length}+ authentic tours in ${activeCountry.name}. ${activeCountry.description.split('.')[0]}. Book directly with verified local guides.`;
+
         return (
           <>
+            <SEOHead
+              title={seoTitle}
+              description={seoDesc}
+              canonical={countryUrl}
+              image={activeCountry.heroImage}
+              breadcrumbs={[
+                { name: "Home", url: "/" },
+                { name: "Experiences", url: "/experiences" },
+                { name: activeCountry.name, url: countryUrl },
+              ]}
+              attraction={{
+                name: `${activeCountry.name} Tours`,
+                description: activeCountry.description,
+                image: activeCountry.heroImage,
+                addressCountry: activeCountry.code,
+              }}
+              tourCount={countryTours.length}
+            />
             <AppHeader
               title={activeCountry.name}
               onBack={goBack}
@@ -812,7 +848,17 @@ const ExperiencesPage = () => {
               </div>
             )}
 
-            <main className="flex-1 px-4 pt-6 pb-8 max-w-6xl mx-auto w-full">
+            <main className="flex-1 px-4 pt-4 pb-8 max-w-6xl mx-auto w-full">
+              {/* Breadcrumbs */}
+              <Breadcrumbs
+                className="mb-4"
+                items={[
+                  { name: "Home", onClick: () => setView({ level: "countries" }), isHome: true },
+                  { name: "Experiences", onClick: () => setView({ level: "countries" }) },
+                  { name: activeCountry.name },
+                ]}
+              />
+
               {/* Destination cards row (quick browse) */}
               {selectedPlaces.size === 0 && (
                 <div className="mb-8">
@@ -847,6 +893,23 @@ const ExperiencesPage = () => {
                   </div>
                 </div>
               )}
+
+              {/* Top attractions chips — internal links + SEO */}
+              {(() => {
+                const topAttractions = countryDestinations
+                  .flatMap((d) => getChildren(d.id))
+                  .filter((p) => getToursForDestination(p.id).length > 0)
+                  .slice(0, 18);
+                return topAttractions.length > 0 ? (
+                  <ChildPlaceChips
+                    places={topAttractions}
+                    selectedIds={selectedPlaces}
+                    onToggle={togglePlace}
+                    title={`Top attractions in ${activeCountry.name}`}
+                    maxVisible={18}
+                  />
+                ) : null;
+              })()}
 
               {/* Desktop sidebar + grid */}
               <div className="flex gap-6">
@@ -917,8 +980,41 @@ const ExperiencesPage = () => {
       })()}
 
       {/* ═══════ LEVEL 3: Tours ═══════ */}
-      {view.level === "destination" && activeCountry && activeDestination && (
+      {view.level === "destination" && activeCountry && activeDestination && (() => {
+        const destSlug = activeDestination.id;
+        const destUrl = `/experiences/${activeCountry.code.toLowerCase()}/${destSlug}`;
+        const destDesc = placeDescriptions[activeDestination.id]
+          || `Discover ${activeDestination.name} tours with verified local guides. Book authentic experiences in ${activeDestination.name}, ${activeCountry.name}.`;
+        const seoTitle = `${activeDestination.name} Tours & Activities — ${tours.length} Local Guides | SimSem`;
+        const seoDesc = `${tours.length} authentic tours in ${activeDestination.name}, ${activeCountry.name}. ${destDesc.slice(0, 120)}`;
+        const childPlaces = getChildren(activeDestination.id);
+
+        // Breadcrumb crumbs (parent chain)
+        const parentChain = breadcrumb.slice(0, -1); // exclude current
+
+        return (
         <>
+          <SEOHead
+            title={seoTitle}
+            description={seoDesc}
+            canonical={destUrl}
+            image={destinationImages[activeDestination.id] || activeCountry.heroImage}
+            breadcrumbs={[
+              { name: "Home", url: "/" },
+              { name: "Experiences", url: "/experiences" },
+              { name: activeCountry.name, url: `/experiences/${activeCountry.code.toLowerCase()}` },
+              ...parentChain.map((p) => ({ name: p.name, url: `${destUrl.split('/').slice(0, -1).join('/')}/${p.id}` })),
+              { name: activeDestination.name, url: destUrl },
+            ]}
+            attraction={{
+              name: `${activeDestination.name} Tours`,
+              description: destDesc,
+              image: destinationImages[activeDestination.id],
+              addressCountry: activeCountry.code,
+              addressLocality: activeDestination.name,
+            }}
+            tourCount={tours.length}
+          />
           <AppHeader
             title={`${activeDestination.name} Tours`}
             onBack={goBack}
@@ -983,9 +1079,30 @@ const ExperiencesPage = () => {
           )}
 
           <main className="flex-1 px-4 pt-4 pb-8 max-w-6xl mx-auto w-full">
+            {/* Breadcrumbs */}
+            <Breadcrumbs
+              className="mb-4"
+              items={[
+                { name: "Home", onClick: () => setView({ level: "countries" }), isHome: true },
+                { name: "Experiences", onClick: () => setView({ level: "countries" }) },
+                { name: activeCountry.name, onClick: () => setView({ level: "country", countryCode: activeCountry.code }) },
+                { name: activeDestination.name },
+              ]}
+            />
+
+            {/* Child places chips — internal links + SEO */}
+            {childPlaces.length > 0 && (
+              <ChildPlaceChips
+                places={childPlaces}
+                selectedIds={selectedPlaces}
+                onToggle={togglePlace}
+                title={`Explore places in ${activeDestination.name}`}
+              />
+            )}
+
             {/* Desktop sidebar + grid */}
             <div className="flex gap-6">
-              {/* Desktop sidebar (hidden on mobile — use bottom sheet instead) */}
+
               <aside className="w-52 shrink-0 hidden lg:block space-y-5">
                 {allDescendantPlaces.length > 0 && (
                   <div>
@@ -1046,9 +1163,9 @@ const ExperiencesPage = () => {
             availableTypes={availableTourTypes as readonly string[]}
           />
         </>
-      )}
+        );
+      })()}
 
-      {/* Mindbody Schedules Widget */}
       <MindbodyWidget />
       {/* Healcode Registrations Widget */}
       <HealcodeWidget />
