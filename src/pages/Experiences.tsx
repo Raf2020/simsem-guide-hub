@@ -9,11 +9,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  countriesAPI, getTopLevelPlacesByCountry, getDescendants, getPlaceById,
+  countriesAPI, getTopLevelPlacesByCountry, getDescendants, getChildren, getPlaceById,
   getPlaceBreadcrumb, mockGuideTours, destinationImages, tourTypeImages, placeDescriptions,
   experienceCategories, type ExperienceCategory,
   type Place, type GuideTour, type CountryInfo,
 } from "@/data/placesData";
+import { SEOHead } from "@/components/seo/SEOHead";
+import { Breadcrumbs, type BreadcrumbCrumb } from "@/components/seo/Breadcrumbs";
+import { ChildPlaceChips } from "@/components/seo/ChildPlaceChips";
 
 const FALLBACK_IMG = "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&h=600&fit=crop";
 function getTourImage(tour: GuideTour): string {
