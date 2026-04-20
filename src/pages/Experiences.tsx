@@ -719,8 +719,31 @@ const ExperiencesPage = () => {
           return result;
         })();
 
+        const countrySlug = activeCountry.code.toLowerCase();
+        const countryUrl = `/experiences/${countrySlug}`;
+        const seoTitle = `${activeCountry.name} Tours & Local Guides — ${countryDestinations.length}+ Destinations | SimSem`;
+        const seoDesc = `Discover ${countryTours.length}+ authentic tours in ${activeCountry.name}. ${activeCountry.description.split('.')[0]}. Book directly with verified local guides.`;
+
         return (
           <>
+            <SEOHead
+              title={seoTitle}
+              description={seoDesc}
+              canonical={countryUrl}
+              image={activeCountry.heroImage}
+              breadcrumbs={[
+                { name: "Home", url: "/" },
+                { name: "Experiences", url: "/experiences" },
+                { name: activeCountry.name, url: countryUrl },
+              ]}
+              attraction={{
+                name: `${activeCountry.name} Tours`,
+                description: activeCountry.description,
+                image: activeCountry.heroImage,
+                addressCountry: activeCountry.code,
+              }}
+              tourCount={countryTours.length}
+            />
             <AppHeader
               title={activeCountry.name}
               onBack={goBack}
