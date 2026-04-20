@@ -848,7 +848,17 @@ const ExperiencesPage = () => {
               </div>
             )}
 
-            <main className="flex-1 px-4 pt-6 pb-8 max-w-6xl mx-auto w-full">
+            <main className="flex-1 px-4 pt-4 pb-8 max-w-6xl mx-auto w-full">
+              {/* Breadcrumbs */}
+              <Breadcrumbs
+                className="mb-4"
+                items={[
+                  { name: "Home", onClick: () => setView({ level: "countries" }), isHome: true },
+                  { name: "Experiences", onClick: () => setView({ level: "countries" }) },
+                  { name: activeCountry.name },
+                ]}
+              />
+
               {/* Destination cards row (quick browse) */}
               {selectedPlaces.size === 0 && (
                 <div className="mb-8">
@@ -883,6 +893,23 @@ const ExperiencesPage = () => {
                   </div>
                 </div>
               )}
+
+              {/* Top attractions chips — internal links + SEO */}
+              {(() => {
+                const topAttractions = countryDestinations
+                  .flatMap((d) => getChildren(d.id))
+                  .filter((p) => getToursForDestination(p.id).length > 0)
+                  .slice(0, 18);
+                return topAttractions.length > 0 ? (
+                  <ChildPlaceChips
+                    places={topAttractions}
+                    selectedIds={selectedPlaces}
+                    onToggle={togglePlace}
+                    title={`Top attractions in ${activeCountry.name}`}
+                    maxVisible={18}
+                  />
+                ) : null;
+              })()}
 
               {/* Desktop sidebar + grid */}
               <div className="flex gap-6">
