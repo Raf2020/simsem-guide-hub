@@ -980,8 +980,41 @@ const ExperiencesPage = () => {
       })()}
 
       {/* ═══════ LEVEL 3: Tours ═══════ */}
-      {view.level === "destination" && activeCountry && activeDestination && (
+      {view.level === "destination" && activeCountry && activeDestination && (() => {
+        const destSlug = activeDestination.id;
+        const destUrl = `/experiences/${activeCountry.code.toLowerCase()}/${destSlug}`;
+        const destDesc = placeDescriptions[activeDestination.id]
+          || `Discover ${activeDestination.name} tours with verified local guides. Book authentic experiences in ${activeDestination.name}, ${activeCountry.name}.`;
+        const seoTitle = `${activeDestination.name} Tours & Activities — ${tours.length} Local Guides | SimSem`;
+        const seoDesc = `${tours.length} authentic tours in ${activeDestination.name}, ${activeCountry.name}. ${destDesc.slice(0, 120)}`;
+        const childPlaces = getChildren(activeDestination.id);
+
+        // Breadcrumb crumbs (parent chain)
+        const parentChain = breadcrumb.slice(0, -1); // exclude current
+
+        return (
         <>
+          <SEOHead
+            title={seoTitle}
+            description={seoDesc}
+            canonical={destUrl}
+            image={destinationImages[activeDestination.id] || activeCountry.heroImage}
+            breadcrumbs={[
+              { name: "Home", url: "/" },
+              { name: "Experiences", url: "/experiences" },
+              { name: activeCountry.name, url: `/experiences/${activeCountry.code.toLowerCase()}` },
+              ...parentChain.map((p) => ({ name: p.name, url: `${destUrl.split('/').slice(0, -1).join('/')}/${p.id}` })),
+              { name: activeDestination.name, url: destUrl },
+            ]}
+            attraction={{
+              name: `${activeDestination.name} Tours`,
+              description: destDesc,
+              image: destinationImages[activeDestination.id],
+              addressCountry: activeCountry.code,
+              addressLocality: activeDestination.name,
+            }}
+            tourCount={tours.length}
+          />
           <AppHeader
             title={`${activeDestination.name} Tours`}
             onBack={goBack}
