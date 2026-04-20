@@ -543,6 +543,16 @@ const ExperiencesPage = () => {
       {/* ═══════ LEVEL 1: Countries ═══════ */}
       {view.level === "countries" && (
         <>
+          <SEOHead
+            title="Authentic Tours with Local Guides in Egypt, Jordan & the Arab World | SimSem"
+            description="Book authentic local tours across Egypt, Jordan, Lebanon, Morocco, Turkey & more. Petra, Wadi Rum, Pyramids, Cairo food tours, Dahab diving — led by verified local guides."
+            canonical="/experiences"
+            image="https://images.unsplash.com/photo-1547234935-80c7145ec969?w=1200&q=80"
+            breadcrumbs={[
+              { name: "Home", url: "/" },
+              { name: "Experiences", url: "/experiences" },
+            ]}
+          />
           {/* Simsem hero */}
           <div className="relative h-[340px] sm:h-[420px]">
             <div className="absolute inset-0 overflow-hidden">
