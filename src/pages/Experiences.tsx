@@ -1079,9 +1079,30 @@ const ExperiencesPage = () => {
           )}
 
           <main className="flex-1 px-4 pt-4 pb-8 max-w-6xl mx-auto w-full">
+            {/* Breadcrumbs */}
+            <Breadcrumbs
+              className="mb-4"
+              items={[
+                { name: "Home", onClick: () => setView({ level: "countries" }), isHome: true },
+                { name: "Experiences", onClick: () => setView({ level: "countries" }) },
+                { name: activeCountry.name, onClick: () => setView({ level: "country", countryCode: activeCountry.code }) },
+                { name: activeDestination.name },
+              ]}
+            />
+
+            {/* Child places chips — internal links + SEO */}
+            {childPlaces.length > 0 && (
+              <ChildPlaceChips
+                places={childPlaces}
+                selectedIds={selectedPlaces}
+                onToggle={togglePlace}
+                title={`Explore places in ${activeDestination.name}`}
+              />
+            )}
+
             {/* Desktop sidebar + grid */}
             <div className="flex gap-6">
-              {/* Desktop sidebar (hidden on mobile — use bottom sheet instead) */}
+
               <aside className="w-52 shrink-0 hidden lg:block space-y-5">
                 {allDescendantPlaces.length > 0 && (
                   <div>
