@@ -40,10 +40,12 @@ const PLACE_TYPES = [
   "reef",
 ];
 
+import type { PlaceType } from "@/data/placesData";
+
 interface FormState {
   id: string;
   name: string;
-  type: string;
+  type: PlaceType;
   parent_id: string | null;
   country: string;
 }
@@ -363,7 +365,7 @@ export default function AdminPlaces() {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label>Type</Label>
-                <Select value={form.type} onValueChange={(v) => setForm((f) => ({ ...f, type: v }))}>
+                <Select value={form.type} onValueChange={(v) => setForm((f) => ({ ...f, type: v as PlaceType }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {PLACE_TYPES.map((t) => (

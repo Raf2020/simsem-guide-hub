@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { placesData, countriesAPI, type Place } from "@/data/placesData";
+import { placesData, countriesAPI, type Place, type PlaceType } from "@/data/placesData";
 
 const STORAGE_KEY = "simsem.placesAdmin.v1";
 
@@ -87,9 +87,13 @@ export function usePlacesAdmin() {
     const normalized: AdminPlace[] = parsed.map((p: any) => ({
       id: String(p.id || slugify(p.name || "")),
       name: String(p.name || ""),
-      type: String(p.type || "site"),
+      type: (p.type || "site") as PlaceType,
       parent_id: p.parent_id ?? null,
       country: String(p.country || ""),
+      aliases: Array.isArray(p.aliases) ? p.aliases.map(String) : undefined,
+      lat: typeof p.lat === "number" ? p.lat : undefined,
+      lng: typeof p.lng === "number" ? p.lng : undefined,
+      featured: typeof p.featured === "boolean" ? p.featured : undefined,
     }));
     setPlaces((prev) => {
       if (mode === "replace") return normalized;
@@ -105,7 +109,13 @@ export function usePlacesAdmin() {
 
   const exportJSON = useCallback(() => {
     return JSON.stringify(
-      places.map(({ id, name, parent_id, country, type }) => ({ id, name, type, parent_id, country })),
+      places.map(({ id, name, parent_id, country, type, aliases, lat, lng, featured }) => ({
+        id, name, type, parent_id, country,
+        ...(aliases && aliases.length ? { aliases } : {}),
+        ...(typeof lat === "number" ? { lat } : {}),
+        ...(typeof lng === "number" ? { lng } : {}),
+        ...(featured ? { featured } : {}),
+      })),
       null,
       2,
     );

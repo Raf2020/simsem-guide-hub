@@ -1,9 +1,36 @@
+// ─── Place type taxonomy (locked enum) ───
+export type PlaceType =
+  | "country"
+  | "region"
+  | "city"
+  | "town"
+  | "village"
+  | "district"
+  | "neighborhood"
+  | "site"
+  | "monument"
+  | "museum"
+  | "beach"
+  | "island"
+  | "mountain"
+  | "desert"
+  | "wadi"
+  | "oasis"
+  | "park"
+  | "reef"
+  | "natural"
+  | "resort";
+
 export interface Place {
-  id: string;
-  name: string;
-  type: string;
+  id: string;            // globally unique slug (namespace generic names with parent, e.g. "petra-treasury")
+  name: string;          // human-readable display name
+  type: PlaceType;       // constrained to the enum above
   parent_id: string | null;
-  country: string; // country code: JO, EG, etc.
+  country: string;       // ISO country code: JO, EG, SY, TR, DZ, SA, LB, MA…
+  aliases?: string[];    // search synonyms ("Madain Saleh" → matches "hegra")
+  lat?: number;          // optional geo coords for map view + nearby filters
+  lng?: number;
+  featured?: boolean;    // surface on country landing pages
 }
 
 export interface CountryInfo {
@@ -190,9 +217,8 @@ export const countriesAPI: CountryInfo[] = [
 // ─── EGYPT ───
 const egyptPlaces: Place[] = [
   { id: "cairo", name: "Cairo", type: "city", parent_id: null, country: "EG" },
-  { id: "old-cairo", name: "Old Cairo", type: "district", parent_id: "cairo", country: "EG" },
-  { id: "coptic-cairo", name: "Coptic Cairo", type: "district", parent_id: "old-cairo", country: "EG" },
-  { id: "islamic-cairo", name: "Islamic Cairo", type: "district", parent_id: "old-cairo", country: "EG" },
+  { id: "coptic-cairo", name: "Coptic Cairo", type: "district", parent_id: "cairo", country: "EG" },
+  { id: "islamic-cairo", name: "Islamic Cairo", type: "district", parent_id: "cairo", country: "EG" },
   { id: "khan-el-khalili", name: "Khan El Khalili", type: "site", parent_id: "islamic-cairo", country: "EG" },
   { id: "al-muizz-street", name: "Al Muizz Street", type: "site", parent_id: "islamic-cairo", country: "EG" },
   { id: "citadel-salah-din", name: "Citadel of Salah El Din", type: "site", parent_id: "cairo", country: "EG" },
@@ -203,11 +229,11 @@ const egyptPlaces: Place[] = [
   { id: "garden-city", name: "Garden City", type: "district", parent_id: "cairo", country: "EG" },
 
   { id: "giza", name: "Giza", type: "city", parent_id: null, country: "EG" },
-  { id: "giza-plateau", name: "Giza Plateau", type: "site", parent_id: "giza", country: "EG" },
-  { id: "great-pyramid", name: "Great Pyramid of Khufu", type: "site", parent_id: "giza-plateau", country: "EG" },
+  { id: "giza-plateau", name: "Giza Plateau", type: "site", parent_id: "giza", country: "EG", aliases: ["Pyramids of Giza","Giza Pyramids"], featured: true },
+  { id: "great-pyramid", name: "Great Pyramid of Khufu", type: "site", parent_id: "giza-plateau", country: "EG", aliases: ["Pyramid of Cheops","Khufu Pyramid"], featured: true },
   { id: "khafre-pyramid", name: "Pyramid of Khafre", type: "site", parent_id: "giza-plateau", country: "EG" },
   { id: "menkaure-pyramid", name: "Pyramid of Menkaure", type: "site", parent_id: "giza-plateau", country: "EG" },
-  { id: "sphinx", name: "Great Sphinx", type: "site", parent_id: "giza-plateau", country: "EG" },
+  { id: "sphinx", name: "Great Sphinx", type: "site", parent_id: "giza-plateau", country: "EG", aliases: ["Great Sphinx of Giza","Abu al-Hawl"], featured: true },
   { id: "saqqara", name: "Saqqara", type: "site", parent_id: "giza", country: "EG" },
   { id: "step-pyramid", name: "Step Pyramid of Djoser", type: "site", parent_id: "saqqara", country: "EG" },
   { id: "dahshur", name: "Dahshur", type: "site", parent_id: "giza", country: "EG" },
@@ -221,29 +247,29 @@ const egyptPlaces: Place[] = [
   { id: "montaza-palace", name: "Montaza Palace", type: "site", parent_id: "alexandria", country: "EG" },
   { id: "alexandria-corniche", name: "Alexandria Corniche", type: "site", parent_id: "alexandria", country: "EG" },
 
-  { id: "luxor", name: "Luxor", type: "city", parent_id: null, country: "EG" },
-  { id: "east-bank", name: "Luxor East Bank", type: "district", parent_id: "luxor", country: "EG" },
-  { id: "west-bank", name: "Luxor West Bank", type: "district", parent_id: "luxor", country: "EG" },
-  { id: "karnak-temple", name: "Karnak Temple", type: "site", parent_id: "east-bank", country: "EG" },
-  { id: "luxor-temple", name: "Luxor Temple", type: "site", parent_id: "east-bank", country: "EG" },
-  { id: "valley-of-the-kings", name: "Valley of the Kings", type: "site", parent_id: "west-bank", country: "EG" },
-  { id: "valley-of-the-queens", name: "Valley of the Queens", type: "site", parent_id: "west-bank", country: "EG" },
-  { id: "hatchepsut-temple", name: "Temple of Hatshepsut", type: "site", parent_id: "west-bank", country: "EG" },
-  { id: "colossi-of-memnon", name: "Colossi of Memnon", type: "site", parent_id: "west-bank", country: "EG" },
+  { id: "luxor", name: "Luxor", type: "city", parent_id: null, country: "EG", featured: true },
+  { id: "luxor-east-bank", name: "Luxor East Bank", type: "district", parent_id: "luxor", country: "EG" },
+  { id: "luxor-west-bank", name: "Luxor West Bank", type: "district", parent_id: "luxor", country: "EG" },
+  { id: "karnak-temple", name: "Karnak Temple", type: "site", parent_id: "luxor-east-bank", country: "EG", featured: true },
+  { id: "luxor-temple", name: "Luxor Temple", type: "site", parent_id: "luxor-east-bank", country: "EG" },
+  { id: "valley-of-the-kings", name: "Valley of the Kings", type: "site", parent_id: "luxor-west-bank", country: "EG", featured: true },
+  { id: "valley-of-the-queens", name: "Valley of the Queens", type: "site", parent_id: "luxor-west-bank", country: "EG" },
+  { id: "hatchepsut-temple", name: "Temple of Hatshepsut", type: "site", parent_id: "luxor-west-bank", country: "EG" },
+  { id: "colossi-of-memnon", name: "Colossi of Memnon", type: "site", parent_id: "luxor-west-bank", country: "EG" },
 
   { id: "aswan", name: "Aswan", type: "city", parent_id: null, country: "EG" },
   { id: "philae-temple", name: "Philae Temple", type: "site", parent_id: "aswan", country: "EG" },
-  { id: "abu-simbel", name: "Abu Simbel", type: "site", parent_id: "aswan", country: "EG" },
+  { id: "abu-simbel", name: "Abu Simbel", type: "site", parent_id: "aswan", country: "EG", aliases: ["Temples of Abu Simbel"], featured: true },
   { id: "kom-ombo", name: "Kom Ombo", type: "site", parent_id: "aswan", country: "EG" },
   { id: "edfu", name: "Edfu", type: "site", parent_id: "aswan", country: "EG" },
   { id: "nubian-village", name: "Nubian Village", type: "site", parent_id: "aswan", country: "EG" },
 
-  { id: "red-sea", name: "Red Sea Coast", type: "region", parent_id: null, country: "EG" },
-  { id: "hurghada", name: "Hurghada", type: "city", parent_id: "red-sea", country: "EG" },
+  { id: "red-sea-egypt", name: "Red Sea Coast", type: "region", parent_id: null, country: "EG" },
+  { id: "hurghada", name: "Hurghada", type: "city", parent_id: "red-sea-egypt", country: "EG" },
   { id: "el-gouna", name: "El Gouna", type: "resort", parent_id: "hurghada", country: "EG" },
   { id: "makadi-bay", name: "Makadi Bay", type: "resort", parent_id: "hurghada", country: "EG" },
   { id: "sahl-hasheesh", name: "Sahl Hasheesh", type: "resort", parent_id: "hurghada", country: "EG" },
-  { id: "marsa-alam", name: "Marsa Alam", type: "city", parent_id: "red-sea", country: "EG" },
+  { id: "marsa-alam", name: "Marsa Alam", type: "city", parent_id: "red-sea-egypt", country: "EG" },
   { id: "port-ghalib", name: "Port Ghalib", type: "resort", parent_id: "marsa-alam", country: "EG" },
 
   { id: "sinai", name: "Sinai", type: "region", parent_id: null, country: "EG" },
@@ -281,32 +307,32 @@ const jordanPlaces: Place[] = [
   { id: "amman", name: "Amman", type: "city", parent_id: null, country: "JO" },
   { id: "downtown-amman", name: "Downtown Amman", type: "district", parent_id: "amman", country: "JO" },
   { id: "amman-citadel", name: "Amman Citadel", type: "site", parent_id: "amman", country: "JO" },
-  { id: "roman-theater-amman", name: "Roman Theater", type: "site", parent_id: "downtown-amman", country: "JO" },
+  { id: "amman-roman-theater", name: "Roman Theater", type: "site", parent_id: "downtown-amman", country: "JO" },
   { id: "rainbow-street", name: "Rainbow Street", type: "site", parent_id: "amman", country: "JO" },
   { id: "jabal-al-weibdeh", name: "Jabal Al Weibdeh", type: "district", parent_id: "amman", country: "JO" },
   { id: "jabal-amman", name: "Jabal Amman", type: "district", parent_id: "amman", country: "JO" },
 
   { id: "madaba", name: "Madaba", type: "city", parent_id: null, country: "JO" },
-  { id: "st-george-church", name: "St George Church", type: "site", parent_id: "madaba", country: "JO" },
-  { id: "madaba-mosaic-map", name: "Madaba Mosaic Map", type: "site", parent_id: "st-george-church", country: "JO" },
+  { id: "madaba-st-george-church", name: "St George Church", type: "site", parent_id: "madaba", country: "JO" },
+  { id: "madaba-mosaic-map", name: "Madaba Mosaic Map", type: "site", parent_id: "madaba-st-george-church", country: "JO" },
   { id: "mount-nebo", name: "Mount Nebo", type: "site", parent_id: "madaba", country: "JO" },
 
-  { id: "dead-sea", name: "Dead Sea", type: "natural", parent_id: null, country: "JO" },
+  { id: "dead-sea", name: "Dead Sea", type: "natural", parent_id: null, country: "JO", featured: true },
   { id: "dead-sea-beach", name: "Dead Sea Beach", type: "site", parent_id: "dead-sea", country: "JO" },
   { id: "bethany-beyond-jordan", name: "Bethany Beyond the Jordan", type: "site", parent_id: "dead-sea", country: "JO" },
 
   { id: "petra-region", name: "Petra Region", type: "region", parent_id: null, country: "JO" },
   { id: "wadi-musa", name: "Wadi Musa", type: "town", parent_id: "petra-region", country: "JO" },
-  { id: "petra", name: "Petra", type: "site", parent_id: "wadi-musa", country: "JO" },
-  { id: "siq", name: "Al Siq", type: "site", parent_id: "petra", country: "JO" },
-  { id: "treasury", name: "Treasury", type: "site", parent_id: "petra", country: "JO" },
-  { id: "street-of-facades", name: "Street of Facades", type: "site", parent_id: "petra", country: "JO" },
-  { id: "royal-tombs", name: "Royal Tombs", type: "site", parent_id: "petra", country: "JO" },
-  { id: "monastery", name: "Monastery", type: "site", parent_id: "petra", country: "JO" },
-  { id: "high-place-of-sacrifice", name: "High Place of Sacrifice", type: "site", parent_id: "petra", country: "JO" },
+  { id: "petra", name: "Petra", type: "site", parent_id: "wadi-musa", country: "JO", aliases: ["The Rose City","Raqmu"], featured: true },
+  { id: "petra-siq", name: "Al Siq", type: "site", parent_id: "petra", country: "JO" },
+  { id: "petra-treasury", name: "Treasury", type: "site", parent_id: "petra", country: "JO", aliases: ["Al-Khazneh","Khazneh"] },
+  { id: "petra-street-of-facades", name: "Street of Facades", type: "site", parent_id: "petra", country: "JO" },
+  { id: "petra-royal-tombs", name: "Royal Tombs", type: "site", parent_id: "petra", country: "JO" },
+  { id: "petra-monastery", name: "Monastery", type: "site", parent_id: "petra", country: "JO", aliases: ["Ad Deir","El Deir"] },
+  { id: "petra-high-place", name: "High Place of Sacrifice", type: "site", parent_id: "petra", country: "JO" },
   { id: "little-petra", name: "Little Petra", type: "site", parent_id: "petra-region", country: "JO" },
 
-  { id: "wadi-rum", name: "Wadi Rum", type: "natural", parent_id: null, country: "JO" },
+  { id: "wadi-rum", name: "Wadi Rum", type: "natural", parent_id: null, country: "JO", aliases: ["Valley of the Moon"], featured: true },
   { id: "rum-village", name: "Rum Village", type: "village", parent_id: "wadi-rum", country: "JO" },
   { id: "lawrence-spring", name: "Lawrence Spring", type: "site", parent_id: "wadi-rum", country: "JO" },
   { id: "khazali-canyon", name: "Khazali Canyon", type: "site", parent_id: "wadi-rum", country: "JO" },
@@ -320,10 +346,10 @@ const jordanPlaces: Place[] = [
   { id: "aqaba-marine-park", name: "Aqaba Marine Park", type: "park", parent_id: "aqaba", country: "JO" },
 
   { id: "jerash", name: "Jerash", type: "city", parent_id: null, country: "JO" },
-  { id: "jerash-ruins", name: "Jerash Ruins", type: "site", parent_id: "jerash", country: "JO" },
-  { id: "hadrians-arch", name: "Hadrian's Arch", type: "site", parent_id: "jerash", country: "JO" },
-  { id: "oval-plaza", name: "Oval Plaza", type: "site", parent_id: "jerash", country: "JO" },
-  { id: "cardo-maximus", name: "Cardo Maximus", type: "site", parent_id: "jerash", country: "JO" },
+  { id: "jerash-ruins", name: "Jerash Ruins", type: "site", parent_id: "jerash", country: "JO", featured: true },
+  { id: "jerash-hadrians-arch", name: "Hadrian's Arch", type: "site", parent_id: "jerash", country: "JO" },
+  { id: "jerash-oval-plaza", name: "Oval Plaza", type: "site", parent_id: "jerash", country: "JO" },
+  { id: "jerash-cardo", name: "Cardo Maximus", type: "site", parent_id: "jerash", country: "JO" },
 
   { id: "ajloun", name: "Ajloun", type: "city", parent_id: null, country: "JO" },
   { id: "ajloun-castle", name: "Ajloun Castle", type: "site", parent_id: "ajloun", country: "JO" },
@@ -349,16 +375,16 @@ const jordanPlaces: Place[] = [
   { id: "azraq-wetland", name: "Azraq Wetland Reserve", type: "park", parent_id: "azraq", country: "JO" },
   { id: "qasr-azraq", name: "Qasr Azraq", type: "site", parent_id: "azraq", country: "JO" },
 
-  { id: "eastern-desert", name: "Eastern Desert", type: "region", parent_id: null, country: "JO" },
-  { id: "qasr-amra", name: "Qasr Amra", type: "site", parent_id: "eastern-desert", country: "JO" },
-  { id: "qasr-kharana", name: "Qasr Kharana", type: "site", parent_id: "eastern-desert", country: "JO" },
-  { id: "qasr-mushatta", name: "Qasr Mushatta", type: "site", parent_id: "eastern-desert", country: "JO" },
+  { id: "jordan-eastern-desert", name: "Eastern Desert", type: "region", parent_id: null, country: "JO" },
+  { id: "qasr-amra", name: "Qasr Amra", type: "site", parent_id: "jordan-eastern-desert", country: "JO" },
+  { id: "qasr-kharana", name: "Qasr Kharana", type: "site", parent_id: "jordan-eastern-desert", country: "JO" },
+  { id: "qasr-mushatta", name: "Qasr Mushatta", type: "site", parent_id: "jordan-eastern-desert", country: "JO" },
 ];
 
 // ─── SYRIA ───
 const syriaPlaces: Place[] = [
   { id: "damascus", name: "Damascus", type: "city", parent_id: null, country: "SY" },
-  { id: "old-damascus", name: "Old Damascus", type: "district", parent_id: "damascus", country: "SY" },
+  { id: "old-damascus", name: "Old Damascus", type: "district", parent_id: "damascus", country: "SY", featured: true },
   { id: "umayyad-mosque-damascus", name: "Umayyad Mosque", type: "site", parent_id: "old-damascus", country: "SY" },
   { id: "souq-al-hamidiyah", name: "Souq Al Hamidiyah", type: "site", parent_id: "old-damascus", country: "SY" },
   { id: "azem-palace", name: "Azem Palace", type: "site", parent_id: "old-damascus", country: "SY" },
@@ -383,7 +409,7 @@ const syriaPlaces: Place[] = [
 
   { id: "aleppo", name: "Aleppo", type: "city", parent_id: null, country: "SY" },
   { id: "old-aleppo", name: "Old Aleppo", type: "district", parent_id: "aleppo", country: "SY" },
-  { id: "aleppo-citadel", name: "Aleppo Citadel", type: "site", parent_id: "old-aleppo", country: "SY" },
+  { id: "aleppo-citadel", name: "Aleppo Citadel", type: "site", parent_id: "old-aleppo", country: "SY", featured: true },
   { id: "aleppo-souk", name: "Aleppo Souk", type: "site", parent_id: "old-aleppo", country: "SY" },
   { id: "great-mosque-aleppo", name: "Great Mosque of Aleppo", type: "site", parent_id: "old-aleppo", country: "SY" },
   { id: "khan-al-wazir", name: "Khan Al Wazir", type: "site", parent_id: "old-aleppo", country: "SY" },
@@ -392,7 +418,7 @@ const syriaPlaces: Place[] = [
 
   { id: "homs", name: "Homs", type: "city", parent_id: null, country: "SY" },
   { id: "old-homs", name: "Old Homs", type: "district", parent_id: "homs", country: "SY" },
-  { id: "crac-des-chevaliers", name: "Crac des Chevaliers", type: "site", parent_id: "homs", country: "SY" },
+  { id: "crac-des-chevaliers", name: "Crac des Chevaliers", type: "site", parent_id: "homs", country: "SY", aliases: ["Krak des Chevaliers","Qalat al-Hosn"], featured: true },
   { id: "qalat-salah-eldin", name: "Qalat Salah El Din", type: "site", parent_id: "homs", country: "SY" },
 
   { id: "hama", name: "Hama", type: "city", parent_id: null, country: "SY" },
@@ -415,12 +441,12 @@ const syriaPlaces: Place[] = [
   { id: "margat-castle", name: "Margat Castle", type: "site", parent_id: "tartus", country: "SY" },
 
   { id: "palmyra-region", name: "Palmyra Region", type: "region", parent_id: null, country: "SY" },
-  { id: "palmyra", name: "Palmyra", type: "site", parent_id: "palmyra-region", country: "SY" },
-  { id: "temple-of-bel", name: "Temple of Bel", type: "site", parent_id: "palmyra", country: "SY" },
-  { id: "monumental-arch", name: "Monumental Arch", type: "site", parent_id: "palmyra", country: "SY" },
+  { id: "palmyra", name: "Palmyra", type: "site", parent_id: "palmyra-region", country: "SY", featured: true },
+  { id: "palmyra-temple-bel", name: "Temple of Bel", type: "site", parent_id: "palmyra", country: "SY" },
+  { id: "palmyra-arch", name: "Monumental Arch", type: "site", parent_id: "palmyra", country: "SY" },
   { id: "roman-theater-palmyra", name: "Roman Theater", type: "site", parent_id: "palmyra", country: "SY" },
-  { id: "great-colonnade", name: "Great Colonnade", type: "site", parent_id: "palmyra", country: "SY" },
-  { id: "valley-of-the-tombs", name: "Valley of the Tombs", type: "site", parent_id: "palmyra", country: "SY" },
+  { id: "palmyra-colonnade", name: "Great Colonnade", type: "site", parent_id: "palmyra", country: "SY" },
+  { id: "palmyra-tombs", name: "Valley of the Tombs", type: "site", parent_id: "palmyra", country: "SY" },
 
   { id: "bosra", name: "Bosra", type: "town", parent_id: null, country: "SY" },
   { id: "bosra-roman-theater", name: "Bosra Roman Theater", type: "site", parent_id: "bosra", country: "SY" },
@@ -455,8 +481,8 @@ const syriaPlaces: Place[] = [
 const turkeyPlaces: Place[] = [
   { id: "istanbul", name: "Istanbul", type: "city", parent_id: null, country: "TR" },
   { id: "sultanahmet", name: "Sultanahmet", type: "district", parent_id: "istanbul", country: "TR" },
-  { id: "hagia-sophia", name: "Hagia Sophia", type: "site", parent_id: "sultanahmet", country: "TR" },
-  { id: "blue-mosque", name: "Blue Mosque", type: "site", parent_id: "sultanahmet", country: "TR" },
+  { id: "hagia-sophia", name: "Hagia Sophia", type: "site", parent_id: "sultanahmet", country: "TR", aliases: ["Ayasofya"], featured: true },
+  { id: "blue-mosque", name: "Blue Mosque", type: "site", parent_id: "sultanahmet", country: "TR", aliases: ["Sultan Ahmed Mosque"], featured: true },
   { id: "topkapi-palace", name: "Topkapi Palace", type: "site", parent_id: "sultanahmet", country: "TR" },
   { id: "basilica-cistern", name: "Basilica Cistern", type: "site", parent_id: "sultanahmet", country: "TR" },
   { id: "grand-bazaar", name: "Grand Bazaar", type: "site", parent_id: "istanbul", country: "TR" },
@@ -469,7 +495,7 @@ const turkeyPlaces: Place[] = [
   { id: "ortakoy", name: "Ortakoy", type: "district", parent_id: "istanbul", country: "TR" },
   { id: "bosphorus-cruise", name: "Bosphorus Cruise", type: "site", parent_id: "bosphorus", country: "TR" },
 
-  { id: "cappadocia", name: "Cappadocia", type: "region", parent_id: null, country: "TR" },
+  { id: "cappadocia", name: "Cappadocia", type: "region", parent_id: null, country: "TR", featured: true },
   { id: "goreme", name: "Goreme", type: "town", parent_id: "cappadocia", country: "TR" },
   { id: "goreme-open-air-museum", name: "Goreme Open Air Museum", type: "site", parent_id: "goreme", country: "TR" },
   { id: "love-valley", name: "Love Valley", type: "natural", parent_id: "cappadocia", country: "TR" },
@@ -495,11 +521,11 @@ const turkeyPlaces: Place[] = [
   { id: "fethiye", name: "Fethiye", type: "city", parent_id: null, country: "TR" },
   { id: "butterfly-valley", name: "Butterfly Valley", type: "natural", parent_id: "fethiye", country: "TR" },
 
-  { id: "pamukkale", name: "Pamukkale", type: "town", parent_id: null, country: "TR" },
+  { id: "pamukkale", name: "Pamukkale", type: "town", parent_id: null, country: "TR", featured: true },
   { id: "hierapolis", name: "Hierapolis", type: "site", parent_id: "pamukkale", country: "TR" },
   { id: "travertines", name: "Pamukkale Travertines", type: "natural", parent_id: "pamukkale", country: "TR" },
 
-  { id: "ephesus", name: "Ephesus", type: "site", parent_id: null, country: "TR" },
+  { id: "ephesus", name: "Ephesus", type: "site", parent_id: null, country: "TR", featured: true },
   { id: "library-of-celsus", name: "Library of Celsus", type: "site", parent_id: "ephesus", country: "TR" },
   { id: "temple-of-artemis", name: "Temple of Artemis", type: "site", parent_id: "ephesus", country: "TR" },
   { id: "house-of-virgin-mary", name: "House of Virgin Mary", type: "site", parent_id: "ephesus", country: "TR" },
@@ -526,7 +552,7 @@ const turkeyPlaces: Place[] = [
   { id: "mardin", name: "Mardin", type: "city", parent_id: null, country: "TR" },
   { id: "old-mardin", name: "Old Mardin", type: "district", parent_id: "mardin", country: "TR" },
 
-  { id: "gobekli-tepe", name: "Gobekli Tepe", type: "site", parent_id: null, country: "TR" },
+  { id: "gobekli-tepe", name: "Gobekli Tepe", type: "site", parent_id: null, country: "TR", aliases: ["Göbekli Tepe","Potbelly Hill"], featured: true },
 
   { id: "sanliurfa", name: "Sanliurfa", type: "city", parent_id: null, country: "TR" },
   { id: "balikli-gol", name: "Balikli Gol", type: "site", parent_id: "sanliurfa", country: "TR" },
@@ -535,7 +561,7 @@ const turkeyPlaces: Place[] = [
 // ─── ALGERIA ───
 const algeriaPlaces: Place[] = [
   { id: "algiers", name: "Algiers", type: "city", parent_id: null, country: "DZ" },
-  { id: "casbah-algiers", name: "Casbah of Algiers", type: "site", parent_id: "algiers", country: "DZ" },
+  { id: "casbah-algiers", name: "Casbah of Algiers", type: "site", parent_id: "algiers", country: "DZ", featured: true },
   { id: "ketchaoua-mosque", name: "Ketchaoua Mosque", type: "site", parent_id: "casbah-algiers", country: "DZ" },
   { id: "martyrs-memorial", name: "Martyrs Memorial", type: "site", parent_id: "algiers", country: "DZ" },
   { id: "notre-dame-afrique", name: "Notre Dame d'Afrique", type: "site", parent_id: "algiers", country: "DZ" },
@@ -570,11 +596,11 @@ const algeriaPlaces: Place[] = [
 
   { id: "setif", name: "Setif", type: "city", parent_id: null, country: "DZ" },
   { id: "djemila", name: "Djemila", type: "town", parent_id: "setif", country: "DZ" },
-  { id: "djemila-ruins", name: "Djemila Roman Ruins", type: "site", parent_id: "djemila", country: "DZ" },
+  { id: "djemila-ruins", name: "Djemila Roman Ruins", type: "site", parent_id: "djemila", country: "DZ", featured: true },
 
   { id: "batna", name: "Batna", type: "city", parent_id: null, country: "DZ" },
   { id: "timgad", name: "Timgad", type: "town", parent_id: "batna", country: "DZ" },
-  { id: "timgad-ruins", name: "Timgad Roman Ruins", type: "site", parent_id: "timgad", country: "DZ" },
+  { id: "timgad-ruins", name: "Timgad Roman Ruins", type: "site", parent_id: "timgad", country: "DZ", featured: true },
   { id: "lambaesis", name: "Lambaesis", type: "site", parent_id: "batna", country: "DZ" },
 
   { id: "kabylie", name: "Kabylie", type: "region", parent_id: null, country: "DZ" },
@@ -593,11 +619,11 @@ const algeriaPlaces: Place[] = [
   { id: "el-oued-desert", name: "El Oued Desert", type: "natural", parent_id: "el-oued", country: "DZ" },
 
   { id: "tamanrasset", name: "Tamanrasset", type: "city", parent_id: null, country: "DZ" },
-  { id: "hoggar-mountains", name: "Hoggar Mountains", type: "natural", parent_id: "tamanrasset", country: "DZ" },
+  { id: "hoggar-mountains", name: "Hoggar Mountains", type: "natural", parent_id: "tamanrasset", country: "DZ", featured: true },
   { id: "assekrem", name: "Assekrem", type: "site", parent_id: "hoggar-mountains", country: "DZ" },
 
   { id: "djanet", name: "Djanet", type: "city", parent_id: null, country: "DZ" },
-  { id: "tassili-n-ajjer", name: "Tassili n'Ajjer", type: "park", parent_id: "djanet", country: "DZ" },
+  { id: "tassili-n-ajjer", name: "Tassili n'Ajjer", type: "park", parent_id: "djanet", country: "DZ", featured: true },
   { id: "tassili-rock-art", name: "Tassili Rock Art", type: "site", parent_id: "tassili-n-ajjer", country: "DZ" },
 
   { id: "adrar", name: "Adrar", type: "city", parent_id: null, country: "DZ" },
@@ -627,19 +653,19 @@ const saudiPlaces: Place[] = [
   { id: "red-sea-jeddah", name: "Red Sea Coast (Jeddah)", type: "natural", parent_id: "jeddah", country: "SA" },
 
   { id: "mecca", name: "Mecca", type: "city", parent_id: null, country: "SA" },
-  { id: "masjid-al-haram", name: "Masjid al-Haram", type: "site", parent_id: "mecca", country: "SA" },
+  { id: "masjid-al-haram", name: "Masjid al-Haram", type: "site", parent_id: "mecca", country: "SA", featured: true },
   { id: "kaaba", name: "Kaaba", type: "site", parent_id: "masjid-al-haram", country: "SA" },
   { id: "mina", name: "Mina", type: "site", parent_id: "mecca", country: "SA" },
   { id: "arafat", name: "Mount Arafat", type: "site", parent_id: "mecca", country: "SA" },
   { id: "muzdalifah", name: "Muzdalifah", type: "site", parent_id: "mecca", country: "SA" },
 
   { id: "medina", name: "Medina", type: "city", parent_id: null, country: "SA" },
-  { id: "prophets-mosque", name: "Al-Masjid an-Nabawi", type: "site", parent_id: "medina", country: "SA" },
+  { id: "prophets-mosque", name: "Al-Masjid an-Nabawi", type: "site", parent_id: "medina", country: "SA", featured: true },
   { id: "quba-mosque", name: "Quba Mosque", type: "site", parent_id: "medina", country: "SA" },
   { id: "uhud-mountain", name: "Mount Uhud", type: "site", parent_id: "medina", country: "SA" },
 
-  { id: "alula", name: "AlUla", type: "city", parent_id: null, country: "SA" },
-  { id: "hegra", name: "Hegra (Madain Saleh)", type: "site", parent_id: "alula", country: "SA" },
+  { id: "alula", name: "AlUla", type: "city", parent_id: null, country: "SA", featured: true },
+  { id: "hegra", name: "Hegra (Madain Saleh)", type: "site", parent_id: "alula", country: "SA", aliases: ["Madain Saleh","Mada'in Salih","Al-Hijr"], featured: true },
   { id: "elephant-rock", name: "Elephant Rock", type: "natural", parent_id: "alula", country: "SA" },
   { id: "dadan", name: "Dadan", type: "site", parent_id: "alula", country: "SA" },
   { id: "jabal-ikmah", name: "Jabal Ikmah", type: "site", parent_id: "alula", country: "SA" },
@@ -673,7 +699,7 @@ const saudiPlaces: Place[] = [
   { id: "jubbah", name: "Jubbah Rock Art", type: "site", parent_id: "hail", country: "SA" },
 
   { id: "saudi-desert", name: "Saudi Desert", type: "region", parent_id: null, country: "SA" },
-  { id: "empty-quarter", name: "Rub al Khali (Empty Quarter)", type: "natural", parent_id: "saudi-desert", country: "SA" },
+  { id: "empty-quarter", name: "Rub al Khali (Empty Quarter)", type: "natural", parent_id: "saudi-desert", country: "SA", aliases: ["Rub al Khali","Rub al-Khali"], featured: true },
   { id: "wadi-al-dawasir", name: "Wadi Al Dawasir", type: "natural", parent_id: "saudi-desert", country: "SA" },
 ];
 
@@ -695,7 +721,7 @@ const lebanonPlaces: Place[] = [
   { id: "our-lady-of-lebanon", name: "Our Lady of Lebanon", type: "site", parent_id: "harissa", country: "LB" },
   { id: "jounieh-bay", name: "Jounieh Bay", type: "natural", parent_id: "jounieh", country: "LB" },
 
-  { id: "byblos", name: "Byblos (Jbeil)", type: "city", parent_id: null, country: "LB" },
+  { id: "byblos", name: "Byblos (Jbeil)", type: "city", parent_id: null, country: "LB", featured: true },
   { id: "byblos-old-town", name: "Byblos Old Town", type: "district", parent_id: "byblos", country: "LB" },
   { id: "byblos-port", name: "Byblos Port", type: "site", parent_id: "byblos", country: "LB" },
   { id: "byblos-castle", name: "Byblos Castle", type: "site", parent_id: "byblos", country: "LB" },
@@ -720,7 +746,7 @@ const lebanonPlaces: Place[] = [
 
   { id: "bekaa", name: "Bekaa Valley", type: "region", parent_id: null, country: "LB" },
   { id: "baalbek", name: "Baalbek", type: "town", parent_id: "bekaa", country: "LB" },
-  { id: "baalbek-temples", name: "Baalbek Temples", type: "site", parent_id: "baalbek", country: "LB" },
+  { id: "baalbek-temples", name: "Baalbek Temples", type: "site", parent_id: "baalbek", country: "LB", aliases: ["Heliopolis"], featured: true },
   { id: "ksara", name: "Ksara", type: "town", parent_id: "bekaa", country: "LB" },
   { id: "ksara-winery", name: "Chateau Ksara Winery", type: "site", parent_id: "ksara", country: "LB" },
   { id: "zahle", name: "Zahle", type: "city", parent_id: "bekaa", country: "LB" },
@@ -733,7 +759,7 @@ const lebanonPlaces: Place[] = [
 
   { id: "bcharre", name: "Bcharre", type: "town", parent_id: null, country: "LB" },
   { id: "qadisha-valley", name: "Qadisha Valley", type: "natural", parent_id: "bcharre", country: "LB" },
-  { id: "cedars-of-god", name: "Cedars of God", type: "natural", parent_id: "bcharre", country: "LB" },
+  { id: "cedars-of-god", name: "Cedars of God", type: "natural", parent_id: "bcharre", country: "LB", aliases: ["Arz el-Rab","Cedars of the Lord"], featured: true },
   { id: "gibran-museum", name: "Gibran Museum", type: "museum", parent_id: "bcharre", country: "LB" },
 
   { id: "faraya", name: "Faraya", type: "town", parent_id: null, country: "LB" },
@@ -746,7 +772,7 @@ const lebanonPlaces: Place[] = [
   { id: "qammouaa", name: "Qammouaa", type: "natural", parent_id: "akkar", country: "LB" },
 
   { id: "jeita", name: "Jeita", type: "town", parent_id: null, country: "LB" },
-  { id: "jeita-grotto", name: "Jeita Grotto", type: "site", parent_id: "jeita", country: "LB" },
+  { id: "jeita-grotto", name: "Jeita Grotto", type: "site", parent_id: "jeita", country: "LB", aliases: ["Jeita Caves"], featured: true },
 ];
 
 // ─── MOROCCO (existing) ───
@@ -790,7 +816,7 @@ export const placeDescriptions: Record<string, string> = {
   "alexandria": "Discover Alexandria tours with local guides. Visit the Bibliotheca Alexandrina, Qaitbay Citadel, and Montaza Palace on the Mediterranean coast...",
   "luxor": "Discover Luxor tours with local guides. Visit the Valley of the Kings, Karnak Temple, and Hatshepsut Temple with guided cultural tours...",
   "aswan": "Discover Aswan tours with local guides. Visit Philae Temple, Abu Simbel, and the Nubian Village with guided Nile experiences...",
-  "red-sea": "Discover Red Sea Coast tours with local guides. Snorkel and dive in Hurghada, El Gouna, and Marsa Alam...",
+  "red-sea-egypt": "Discover Red Sea Coast tours with local guides. Snorkel and dive in Hurghada, El Gouna, and Marsa Alam...",
   "sinai": "Discover Sinai tours with local guides. Visit Sharm El Sheikh, Dahab, Mount Sinai, and Saint Catherine...",
   "dahab": "Discover Dahab tours with local guides. Dive the Blue Hole, snorkel pristine reefs, and experience desert adventures...",
   "fayoum": "Discover Fayoum tours with local guides. Visit Wadi El Hitan, Lake Qarun, and the artistic Tunis Village...",
@@ -811,7 +837,7 @@ export const placeDescriptions: Record<string, string> = {
   "karak": "Discover Karak tours with local guides. Visit the imposing Crusader castle with views of the Dead Sea...",
   "dana": "Discover Dana tours with local guides. Trek through Jordan's largest nature reserve...",
   "wadi-mujib": "Discover Wadi Mujib tours with local guides. Hike through the dramatic canyon gorges...",
-  "eastern-desert": "Discover Eastern Desert tours with local guides. Explore UNESCO-listed Umayyad desert palaces...",
+  "jordan-eastern-desert": "Discover Eastern Desert tours with local guides. Explore UNESCO-listed Umayyad desert palaces...",
   // Syria
   "damascus": "Discover Damascus tours with local guides. Visit the Umayyad Mosque, Souq Al Hamidiyah, and the Old City...",
   "aleppo": "Discover Aleppo tours with local guides. Visit the Citadel, the ancient souk, and the Old City...",
@@ -919,7 +945,7 @@ export const destinationImages: Record<string, string> = {
   "alexandria": "https://images.unsplash.com/photo-1562979314-bee7453e911c?w=800&h=600&fit=crop",
   "luxor": "https://images.unsplash.com/photo-1568322503652-5e6e5b8b4c0e?w=800&h=600&fit=crop",
   "aswan": "https://images.unsplash.com/photo-1539650116574-75c0c6d33ca9?w=800&h=600&fit=crop",
-  "red-sea": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&h=600&fit=crop",
+  "red-sea-egypt": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&h=600&fit=crop",
   "sinai": "https://images.unsplash.com/photo-1548013146-72479768bada?w=800&h=600&fit=crop",
   "dahab": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&h=600&fit=crop",
   "hurghada": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&h=600&fit=crop",
@@ -940,7 +966,7 @@ export const destinationImages: Record<string, string> = {
   "karak": "https://images.unsplash.com/photo-1568322503652-5e6e5b8b4c0e?w=800&h=600&fit=crop",
   "dana": "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&h=600&fit=crop",
   "wadi-mujib": "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&h=600&fit=crop",
-  "eastern-desert": "https://images.unsplash.com/photo-1518684079-3c830dcef090?w=800&h=600&fit=crop",
+  "jordan-eastern-desert": "https://images.unsplash.com/photo-1518684079-3c830dcef090?w=800&h=600&fit=crop",
   "shobak": "https://images.unsplash.com/photo-1518684079-3c830dcef090?w=800&h=600&fit=crop",
   // Syria
   "damascus": "https://images.unsplash.com/photo-1580834341580-8c17a3a630ca?w=800&h=600&fit=crop",
@@ -1057,23 +1083,23 @@ export const tourTypeImages: Record<string, string> = {
 export const mockGuideTours: GuideTour[] = [
   // Jordan
   { id: "1", title: "Wadi Rum Overnight 4x4 Jeep Safari", main_place_id: "wadi-rum", places: ["khazali-canyon", "lawrence-spring", "um-frouth-rock-bridge"], price: 147, duration: "2 Days", tour_type: "Jeep Tour", category: "getaway", description: "Explore the vast desert landscapes of Wadi Rum on a 4x4 jeep adventure with overnight Bedouin camping.", image: "https://images.unsplash.com/photo-1682695797221-8164ff1fafc9?w=800&h=600&fit=crop", status: "published", created_at: "2026-02-15" },
-  { id: "2", title: "Petra Full Day Guided Tour", main_place_id: "petra-region", places: ["siq", "treasury", "monastery", "royal-tombs", "high-place-of-sacrifice"], price: 95, duration: "8 Hours", tour_type: "Hiking", category: "getaway", description: "Walk through the ancient city of Petra with a local Bedouin guide.", image: "https://images.unsplash.com/photo-1579606032821-4e6161c81571?w=800&h=600&fit=crop", status: "published", created_at: "2026-01-20" },
-  { id: "3", title: "Amman Street Food & Culture Walk", main_place_id: "amman", places: ["downtown-amman", "rainbow-street", "amman-citadel", "roman-theater-amman"], price: 45, duration: "4 Hours", tour_type: "Food Tour", category: "dining", description: "Taste authentic Jordanian street food while exploring Amman's historic downtown.", image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=600&fit=crop", status: "published", created_at: "2026-03-01" },
+  { id: "2", title: "Petra Full Day Guided Tour", main_place_id: "petra-region", places: ["petra-siq", "petra-treasury", "petra-monastery", "petra-royal-tombs", "petra-high-place"], price: 95, duration: "8 Hours", tour_type: "Hiking", category: "getaway", description: "Walk through the ancient city of Petra with a local Bedouin guide.", image: "https://images.unsplash.com/photo-1579606032821-4e6161c81571?w=800&h=600&fit=crop", status: "published", created_at: "2026-01-20" },
+  { id: "3", title: "Amman Street Food & Culture Walk", main_place_id: "amman", places: ["downtown-amman", "rainbow-street", "amman-citadel", "amman-roman-theater"], price: 45, duration: "4 Hours", tour_type: "Food Tour", category: "dining", description: "Taste authentic Jordanian street food while exploring Amman's historic downtown.", image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=600&fit=crop", status: "published", created_at: "2026-03-01" },
   { id: "4", title: "Dead Sea & Wadi Mujib Adventure", main_place_id: "dead-sea", places: ["dead-sea-beach", "wadi-mujib-reserve"], price: 75, duration: "Full Day", tour_type: "Day Trip", category: "getaway", description: "Float in the Dead Sea and hike through the stunning Wadi Mujib canyon.", image: "https://images.unsplash.com/photo-1544551763-77932df47f1f?w=800&h=600&fit=crop", status: "published", created_at: "2026-02-28" },
   { id: "5", title: "Aqaba Snorkeling & Reef Tour", main_place_id: "aqaba", places: ["aqaba-marine-park", "aqaba-beach"], price: 60, duration: "5 Hours", tour_type: "Snorkeling", category: "getaway", description: "Discover the coral reefs and marine life of the Red Sea in Aqaba.", image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&h=600&fit=crop", status: "published", created_at: "2026-03-10" },
-  { id: "6", title: "Petra by Night & Treasury Candlelight", main_place_id: "petra-region", places: ["siq", "treasury"], price: 70, duration: "3 Hours", tour_type: "Cultural", category: "local-living", description: "Experience the magic of Petra illuminated by thousands of candles under the stars.", image: "https://images.unsplash.com/photo-1563631292-c4bba4023273?w=800&h=600&fit=crop", status: "published", created_at: "2026-02-10" },
+  { id: "6", title: "Petra by Night & Treasury Candlelight", main_place_id: "petra-region", places: ["petra-siq", "petra-treasury"], price: 70, duration: "3 Hours", tour_type: "Cultural", category: "local-living", description: "Experience the magic of Petra illuminated by thousands of candles under the stars.", image: "https://images.unsplash.com/photo-1563631292-c4bba4023273?w=800&h=600&fit=crop", status: "published", created_at: "2026-02-10" },
   { id: "7", title: "Wadi Rum Sunset Hike & Stargazing", main_place_id: "wadi-rum", places: ["burdah-rock-bridge"], price: 85, duration: "6 Hours", tour_type: "Hiking", category: "getaway", description: "Hike to Burdah Rock Bridge at sunset then stargaze from the desert.", image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&h=600&fit=crop", status: "published", created_at: "2026-03-05" },
   { id: "8", title: "Jerash & Ajloun Castle Day Trip", main_place_id: "jerash", places: ["jerash-ruins", "ajloun-castle"], price: 65, duration: "Full Day", tour_type: "Day Trip", category: "getaway", description: "Visit the best-preserved Roman ruins outside Italy and the medieval Ajloun Castle.", image: "https://images.unsplash.com/photo-1586015555751-63bb77f4322a?w=800&h=600&fit=crop", status: "published", created_at: "2026-01-15" },
-  { id: "9", title: "Amman Citadel & Roman Theater Walk", main_place_id: "amman", places: ["amman-citadel", "roman-theater-amman"], price: 35, duration: "3 Hours", tour_type: "City Walk", category: "local-living", description: "Discover 7,000 years of history at the Citadel hilltop and the ancient Roman Theater.", image: "https://images.unsplash.com/photo-1563235876-dd5e5db6b536?w=800&h=600&fit=crop", status: "published", created_at: "2026-02-20" },
+  { id: "9", title: "Amman Citadel & Roman Theater Walk", main_place_id: "amman", places: ["amman-citadel", "amman-roman-theater"], price: 35, duration: "3 Hours", tour_type: "City Walk", category: "local-living", description: "Discover 7,000 years of history at the Citadel hilltop and the ancient Roman Theater.", image: "https://images.unsplash.com/photo-1563235876-dd5e5db6b536?w=800&h=600&fit=crop", status: "published", created_at: "2026-02-20" },
   { id: "10", title: "Dana Nature Reserve Hiking Trail", main_place_id: "dana", places: ["dana-biosphere"], price: 55, duration: "Full Day", tour_type: "Hiking", category: "getaway", description: "Trek through Dana Biosphere Reserve from mountaintop to the desert valley.", image: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&h=600&fit=crop", status: "published", created_at: "2026-03-08" },
   { id: "11", title: "Aqaba Scuba Diving Experience", main_place_id: "aqaba", places: ["aqaba-marine-park", "aqaba-beach"], price: 120, duration: "4 Hours", tour_type: "Diving", category: "getaway", description: "Dive the Red Sea and explore vibrant coral gardens.", image: "https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=800&h=600&fit=crop", status: "published", created_at: "2026-02-25" },
-  { id: "12", title: "Madaba Mosaics & Mount Nebo Tour", main_place_id: "madaba", places: ["st-george-church", "mount-nebo"], price: 50, duration: "5 Hours", tour_type: "Cultural", category: "local-living", description: "See the ancient mosaic map of the Holy Land and the panoramic views from Mount Nebo.", image: "https://images.unsplash.com/photo-1548013146-72479768bada?w=800&h=600&fit=crop", status: "published", created_at: "2026-01-28" },
+  { id: "12", title: "Madaba Mosaics & Mount Nebo Tour", main_place_id: "madaba", places: ["madaba-st-george-church", "mount-nebo"], price: 50, duration: "5 Hours", tour_type: "Cultural", category: "local-living", description: "See the ancient mosaic map of the Holy Land and the panoramic views from Mount Nebo.", image: "https://images.unsplash.com/photo-1548013146-72479768bada?w=800&h=600&fit=crop", status: "published", created_at: "2026-01-28" },
   { id: "13", title: "Wadi Rum Bedouin Camp & Camel Ride", main_place_id: "wadi-rum", places: ["rum-village", "wadi-rum-desert", "khazali-canyon"], price: 110, duration: "2 Days", tour_type: "Camping", category: "getaway", description: "Stay with Bedouin families, ride camels at sunrise, and sleep under desert stars.", image: "https://images.unsplash.com/photo-1549144511-f099e773c147?w=800&h=600&fit=crop", status: "published", created_at: "2026-03-12" },
-  { id: "14", title: "Petra Back Trail to the Monastery", main_place_id: "petra-region", places: ["monastery"], price: 80, duration: "6 Hours", tour_type: "Hiking", category: "getaway", description: "Take the less-traveled back trail to the Monastery, avoiding the crowds.", image: "https://images.unsplash.com/photo-1548013146-72479768bada?w=800&h=600&fit=crop", status: "published", created_at: "2026-02-18" },
-  { id: "15", title: "Desert Castles Loop from Amman", main_place_id: "eastern-desert", places: ["qasr-amra", "qasr-kharana", "qasr-azraq"], price: 70, duration: "Full Day", tour_type: "Day Trip", category: "getaway", description: "Explore UNESCO-listed Umayyad desert palaces on a scenic loop through eastern Jordan.", image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?w=800&h=600&fit=crop", status: "published", created_at: "2026-03-02" },
+  { id: "14", title: "Petra Back Trail to the Monastery", main_place_id: "petra-region", places: ["petra-monastery"], price: 80, duration: "6 Hours", tour_type: "Hiking", category: "getaway", description: "Take the less-traveled back trail to the Monastery, avoiding the crowds.", image: "https://images.unsplash.com/photo-1548013146-72479768bada?w=800&h=600&fit=crop", status: "published", created_at: "2026-02-18" },
+  { id: "15", title: "Desert Castles Loop from Amman", main_place_id: "jordan-eastern-desert", places: ["qasr-amra", "qasr-kharana", "qasr-azraq"], price: 70, duration: "Full Day", tour_type: "Day Trip", category: "getaway", description: "Explore UNESCO-listed Umayyad desert palaces on a scenic loop through eastern Jordan.", image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?w=800&h=600&fit=crop", status: "published", created_at: "2026-03-02" },
   { id: "16", title: "Karak Castle & Dead Sea Panorama", main_place_id: "karak", places: ["karak-castle"], price: 55, duration: "Full Day", tour_type: "Cultural", category: "local-living", description: "Visit the imposing Crusader castle in Karak with views stretching to the Dead Sea.", image: "https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?w=800&h=600&fit=crop", status: "published", created_at: "2026-01-10" },
   { id: "17", title: "Umm Qais & Northern Jordan Highlights", main_place_id: "irbid", places: ["umm-qais", "gadara-ruins"], price: 60, duration: "Full Day", tour_type: "Day Trip", category: "getaway", description: "Discover the Greco-Roman ruins of Umm Qais with views of the Sea of Galilee.", image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800&h=600&fit=crop", status: "published", created_at: "2026-02-05" },
-  { id: "18", title: "Private Petra & Little Petra Combo", main_place_id: "petra-region", places: ["petra", "little-petra", "siq", "treasury", "monastery"], price: 180, duration: "2 Days", tour_type: "Private Tour", category: "local-living", description: "An exclusive two-day private tour covering both Petra and the hidden gem Little Petra.", image: "https://images.unsplash.com/photo-1579606032821-4e6161c81571?w=800&h=600&fit=crop", status: "published", created_at: "2026-03-14" },
+  { id: "18", title: "Private Petra & Little Petra Combo", main_place_id: "petra-region", places: ["petra", "little-petra", "petra-siq", "petra-treasury", "petra-monastery"], price: 180, duration: "2 Days", tour_type: "Private Tour", category: "local-living", description: "An exclusive two-day private tour covering both Petra and the hidden gem Little Petra.", image: "https://images.unsplash.com/photo-1579606032821-4e6161c81571?w=800&h=600&fit=crop", status: "published", created_at: "2026-03-14" },
   { id: "19", title: "Amman to Wadi Rum Express", main_place_id: "wadi-rum", places: ["wadi-rum-desert", "lawrence-spring"], price: 130, duration: "Full Day", tour_type: "Jeep Tour", category: "getaway", description: "A fast-paced day trip from Amman to experience Wadi Rum's iconic landmarks.", image: "https://images.unsplash.com/photo-1682695797221-8164ff1fafc9?w=800&h=600&fit=crop", status: "published", created_at: "2026-03-09" },
   { id: "20", title: "Wadi Rum Desert Safari by 4x4", main_place_id: "wadi-rum", places: ["khazali-canyon", "lawrence-spring"], price: 95, duration: "6 Hours", tour_type: "Desert Safari", category: "getaway", description: "Blast across red sand valleys and ancient rock formations in a classic 4x4 desert safari.", image: "https://images.unsplash.com/photo-1451337516015-6b6e9a44a8a3?w=800&h=600&fit=crop", status: "published", created_at: "2026-03-01" },
 
