@@ -1,9 +1,36 @@
+// ─── Place type taxonomy (locked enum) ───
+export type PlaceType =
+  | "country"
+  | "region"
+  | "city"
+  | "town"
+  | "village"
+  | "district"
+  | "neighborhood"
+  | "site"
+  | "monument"
+  | "museum"
+  | "beach"
+  | "island"
+  | "mountain"
+  | "desert"
+  | "wadi"
+  | "oasis"
+  | "park"
+  | "reef"
+  | "natural"
+  | "resort";
+
 export interface Place {
-  id: string;
-  name: string;
-  type: string;
+  id: string;            // globally unique slug (namespace generic names with parent, e.g. "petra-treasury")
+  name: string;          // human-readable display name
+  type: PlaceType;       // constrained to the enum above
   parent_id: string | null;
-  country: string; // country code: JO, EG, etc.
+  country: string;       // ISO country code: JO, EG, SY, TR, DZ, SA, LB, MA…
+  aliases?: string[];    // search synonyms ("Madain Saleh" → matches "hegra")
+  lat?: number;          // optional geo coords for map view + nearby filters
+  lng?: number;
+  featured?: boolean;    // surface on country landing pages
 }
 
 export interface CountryInfo {
