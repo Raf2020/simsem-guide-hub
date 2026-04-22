@@ -15,6 +15,7 @@ import DahabRedSea from "./pages/DahabRedSea";
 import NapoleonReefDahab from "./pages/NapoleonReefDahab";
 import RedSeaRelaxDahab from "./pages/RedSeaRelaxDahab";
 import GuideDashboard from "./pages/GuideDashboard";
+import AdminPlaces from "./pages/AdminPlaces";
 
 import NotFound from "./pages/NotFound";
 
@@ -39,6 +40,7 @@ const App = () => (
             {/* Legacy redirect */}
             <Route path="/experiences/wadi-rum-overnight-jeep-tour" element={<WadiRumTour />} />
             <Route path="/guide-dashboard" element={<GuideDashboard />} />
+            <Route path="/admin/places" element={<AdminPlaces />} />
             {/* /browse removed — merged into /experiences */}
             <Route path="/reviews" element={<Reviews />} />
             <Route path="/payments" element={<Payments />} />
